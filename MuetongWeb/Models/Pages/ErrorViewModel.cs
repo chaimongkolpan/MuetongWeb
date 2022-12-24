@@ -1,4 +1,4 @@
-namespace MuetongWeb.Models
+namespace MuetongWeb.Models.Pages
 {
     public class ErrorViewModel
     {
