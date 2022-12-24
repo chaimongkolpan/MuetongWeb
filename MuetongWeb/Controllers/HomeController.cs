@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MuetongWeb.Models;
+using MuetongWeb.Models.Pages;
 using System.Diagnostics;
 
 namespace MuetongWeb.Controllers
@@ -17,8 +17,8 @@ namespace MuetongWeb.Controllers
         {
             return View();
         }
-
-        public IActionResult Privacy()
+        [Route("Login")]
+        public IActionResult Login()
         {
             return View();
         }

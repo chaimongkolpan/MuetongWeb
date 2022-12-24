@@ -1,0 +1,26 @@
+﻿Scaffold-DbContext -f "Server=122.155.180.56;Database=Muetong_Test;User ID=sa;Password=Seemoney;" Microsoft.EntityFrameworkCore.SqlServer  -OutputDir "Models/Entities" -Schema "dbo"
+
+for mac
+dotnet ef dbcontext scaffold 'Server=122.155.180.56;Database=Muetong_Test;User ID=sa;Password=Seemoney;' Microsoft.EntityFrameworkCore.SqlServer --output-dir 'Models/Entities' --force
+
+
+        private readonly string? _connectionString;
+
+        public MuetongContext(string connectionString)
+        {
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception("ConnectionString can't be empty");
+            }
+
+            _connectionString = connectionString;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder builder)
+        {
+            if (!string.IsNullOrEmpty(_connectionString))
+            {
+                builder.UseSqlServer(_connectionString);
+                base.OnConfiguring(builder);
+            }
+        }
