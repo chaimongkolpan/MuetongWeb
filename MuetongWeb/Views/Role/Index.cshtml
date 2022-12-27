@@ -1,0 +1,115 @@
+﻿@using Newtonsoft.Json;
+@if(Model == null)
+{
+    <script>location.href = '/';</script>
+}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Home Page</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            int i = 1;
+            foreach (var role in Model.Roles)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@role.Name</td>
+                    <td>@role.HomePageUrl</td>
+                    <td>
+                        @if (Model.CanEdit)
+                        {
+                            <button onclick="showEdit(@role.Id)" type="button">Edit</button>
+
+                        }
+                        else
+                        {
+                            <button type="button" disabled>Edit</button>
+                        }
+                    </td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>
+
+<div id="modal" style="display: none;">
+    <input type="hidden" id="edit-id" />
+    <input type="text" id="edit-name" /><br />
+    <input type="text" id="edit-url" /><br />
+    @if (Model != null)
+    {
+        foreach (var permission in Model.Permissions)
+        {
+            @permission.Name <input type="checkbox" id="permission_@permission.Id" name="@permission.Name"/><br />
+        }
+    }
+    <button class="login-form-btn" onclick="save()" type="button">Save</button>
+</div>
+<script type="text/javascript">
+var model = @Html.Raw(JsonConvert.SerializeObject(Model));
+var getDetailUrl = '/role/detail/';
+var updateUrl = '/role/update';
+var _prefix = 'permission_';
+var messages = {
+    getDetailFailed: "Failed to get role detail.",
+    updateSuccess: "Update success.",
+    updateFailed: "Update failed."
+};
+function getPermissionId(name, prefix) {
+    return name.replace(prefix, '');
+}
+function showEdit(id) {
+    var url = getDetailUrl + id;
+    var jqxhr = $.get(url)
+    .done(function(response) {
+        $('#edit-id').val(response.id);
+        $('#edit-name').val(response.name);
+        $('#edit-url').val(response.url);
+        $("input[id^='" + _prefix + "']").prop('checked', false);
+        if (response.permissions != null) {
+            for (var permission of response.permissions) {
+                $('#' + _prefix + permission).prop('checked', true);
+            }
+        }
+        $('#modal').show();
+    })
+    .fail(function(response) {
+        console.log(response);
+        alert(messages.getDetailFailed);
+    });
+}
+function save() {
+    var url = updateUrl;
+    var checkboxes = $("input[id^='" + _prefix + "']");
+    var permissions = [];
+    for (var checkbox of checkboxes) {
+        if (checkbox.checked) {
+            var id = getPermissionId(checkbox.id, _prefix);
+            permissions.push(id);
+        }
+    }
+    var request = {
+        'Id': $('#edit-id').val(),
+        'Name': $('#edit-name').val(),
+        'HomePageUrl': $('#edit-url').val(),
+        'Permissions': permissions
+    };
+    var jqxhr = $.post(url, request)
+    .done(function(response) {
+        alert(messages.updateSuccess);
+        location.reload();
+    })
+    .fail(function(response) {
+        console.log(response);
+        alert(messages.updateFailed);
+    });
+}
+</script>

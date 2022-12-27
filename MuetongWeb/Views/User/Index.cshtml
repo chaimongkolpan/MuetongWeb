@@ -1,0 +1,87 @@
+﻿@using Newtonsoft.Json;
+@if(Model == null)
+{
+    <script>location.href = '/';</script>
+}
+@if (Model != null)
+{
+    if (!string.IsNullOrWhiteSpace(Model.Message))
+    {
+        <span style="color:red;font-size:smaller;">@Model.Message</span><br />
+    }
+    <button type="button" onclick="addClick();">Add</button>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int i = 1; }
+            @foreach(var user in Model.Users)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@user.Username</td>
+                    <td>@user.Fullname</td>
+                    <td>
+                        <button type="button" onclick="editClick(@user.Id);">Edit</button>
+                        <button type="button" onclick="deleteClick(@user.Id, '@user.Username');">Delete</button>
+                    </td>
+                </tr>
+                i++;
+            }
+        </tbody>
+    </table>
+    <div class="pagina-container" id="pagina"></div>
+    <p>Total users : @Model.TotalCount</p>
+    <div id="add-modal" style="display: none;">
+
+    </div>
+    <div id="edit-modal" style="display: none;">aSWDFV
+
+    </div>
+}
+<script type="text/javascript">
+var model = @Html.Raw(JsonConvert.SerializeObject(Model));
+var currentPage = model.Page;
+function createPagination(total, page, size) {
+    var totalPage = Math.ceil(total / size);
+    totalPage = 10;
+    var html = '';
+    html += '<span class="pagina-page" name="pagina_prev"><</span>';
+    for (var i = 1; i <= totalPage; i++) {
+        if (i == page) {
+            html += '<span class="pagina-page active">' + i + '</span>';
+        } else {
+            html += '<span class="pagina-page" name="pagina_' + i + '">' + i + '</span>';
+        }
+    }
+    html += '<span class="pagina-page" name="pagina_next">></span>';
+    $('#pagina').empty();
+    $('#pagina').append(html);
+}
+function addClick() {
+    // clear data from modal
+    // show modal
+}
+function editClick(id) {
+    // call get user detail
+    // set data to modal
+    // show modal
+}
+function deleteClick(id, username) {
+    if (confirm('Do you want to delete user "' + username + '"?')) {
+        // call delete user
+    }
+}
+$(document).ready(function() {
+    createPagination(model.TotalCount, model.Page, model.PageSize);
+    $('[name^=pagina_]').click(function(event) {
+        console.log(event.target.innerHTML);
+    });
+});
+</script>
