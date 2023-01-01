@@ -34,7 +34,7 @@ namespace MuetongWeb.Services
                 var user = await _userRepositories.GetLogin(request.Username, EncryptionHelpers.Encrypt(request.Password));
                 if (user == null)
                     return null;
-                var permissions = await _rolePermissionRepositories.GetPermissionsAsync(user.RoleId);
+                var permissions = user.Role.RolePermissions.Select(rolePermission => rolePermission.Permission).ToList();
                 return new UserInfoModel(user, permissions);
             }
             catch (Exception ex)

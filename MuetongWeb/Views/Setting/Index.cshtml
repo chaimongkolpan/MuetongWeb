@@ -1,0 +1,60 @@
+﻿@using Newtonsoft.Json;
+@if(Model == null)
+{
+    <script>location.href = '/';</script>
+}
+@if (Model != null)
+{
+    if (!string.IsNullOrWhiteSpace(Model.Message))
+    {
+        <span style="color:red;font-size:smaller;">@Model.Message</span><br />
+    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            async function AJAXSubmit(oFormElement) {
+                var result = oFormElement.elements.namedItem("result");
+                const formData = new FormData(oFormElement);
+                try {
+                    const response = await fetch(oFormElement.action, {
+                        method: "POST",
+                        body: formData
+                    });
+                    alert("Imported");
+                } catch (e) {
+                    console.log(e);
+                    alert("Import failed");
+                }
+            }
+        });
+    </script>
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <form class="login100-form validate-form" method="post" action="@Url.Action("ImportCustomer", "Setting")" enctype="multipart/form-data" onsubmit="AJAXSubmit(this); return false;">
+                    <span class="login100-form-title">
+                        <b>Import Customer File</b>
+                    </span>
+                    <div class="wrap-input100 validate-input">
+                        <input type="file" name="customerFile" placeholder="Customer File" />
+                    </div>
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-4">
+                <form class="login100-form validate-form" method="post" action="@Url.Action("ImportStore", "Setting")" enctype="multipart/form-data" onsubmit="AJAXSubmit(this); return false;">
+                    <span class="login100-form-title">
+                        <b>Import Store File</b>
+                    </span>
+                    <div class="wrap-input100 validate-input">
+                        <input type="file" name="storeFile" placeholder="Store File" />
+                    </div>
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

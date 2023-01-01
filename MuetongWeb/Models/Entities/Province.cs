@@ -7,6 +7,10 @@ namespace MuetongWeb.Models.Entities
     {
         public Province()
         {
+            Contractors = new HashSet<Contractor>();
+            Customers = new HashSet<Customer>();
+            Projects = new HashSet<Project>();
+            Stores = new HashSet<Store>();
             Users = new HashSet<User>();
         }
 
@@ -14,6 +18,10 @@ namespace MuetongWeb.Models.Entities
         public string NameTh { get; set; } = null!;
         public string NameEn { get; set; } = null!;
 
+        public virtual ICollection<Contractor> Contractors { get; set; }
+        public virtual ICollection<Customer> Customers { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<Store> Stores { get; set; }
         public virtual ICollection<User> Users { get; set; }
     }
 }

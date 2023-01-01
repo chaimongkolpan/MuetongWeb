@@ -13,7 +13,7 @@ namespace MuetongWeb.Repositories
         public async Task<User?> GetLogin(string username, string password)
         {
             var user = await _dbContext.Users.Where(user => user.Username == username && user.Password == password)
-                                        .Include(user => user.Role)
+                                        .Include(user => user.Role).ThenInclude(role => role.RolePermissions).ThenInclude(rolePermission => rolePermission.Permission)
                                         .Include(user => user.SubDepartment)
                                         .ThenInclude(subDepartment => subDepartment.Department)
                                         .ThenInclude(department => department.Line)
