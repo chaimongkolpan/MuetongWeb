@@ -1,7 +1,7 @@
 ﻿@using Newtonsoft.Json;
 @if(Model == null)
 {
-    <script>location.href = '/';</script>
+    <script>location.href = '~/';</script>
 }
 <table>
     <thead>
@@ -55,8 +55,8 @@
 </div>
 <script type="text/javascript">
 var model = @Html.Raw(JsonConvert.SerializeObject(Model));
-var getDetailUrl = '/role/detail/';
-var updateUrl = '/role/update';
+var getDetailUrl = './role/detail/';
+var updateUrl = './role/update';
 var _prefix = 'permission_';
 var messages = {
     getDetailFailed: "Failed to get role detail.",
