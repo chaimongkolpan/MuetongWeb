@@ -7,9 +7,21 @@ namespace MuetongWeb.Models.Entities
     {
         public User()
         {
+            Billings = new HashSet<Billing>();
+            Contractors = new HashSet<Contractor>();
+            Customers = new HashSet<Customer>();
             Departments = new HashSet<Department>();
             InverseUserNavigation = new HashSet<User>();
             Lines = new HashSet<Line>();
+            PoApprovers = new HashSet<Po>();
+            PoUsers = new HashSet<Po>();
+            PrApprovers = new HashSet<Pr>();
+            PrReceives = new HashSet<PrReceive>();
+            PrUsers = new HashSet<Pr>();
+            Products = new HashSet<Product>();
+            ProjectUsers = new HashSet<ProjectUser>();
+            Projects = new HashSet<Project>();
+            Stores = new HashSet<Store>();
             SubDepartments = new HashSet<SubDepartment>();
         }
 
@@ -34,9 +46,21 @@ namespace MuetongWeb.Models.Entities
         public virtual Role Role { get; set; } = null!;
         public virtual SubDepartment SubDepartment { get; set; } = null!;
         public virtual User UserNavigation { get; set; } = null!;
+        public virtual ICollection<Billing> Billings { get; set; }
+        public virtual ICollection<Contractor> Contractors { get; set; }
+        public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<Department> Departments { get; set; }
         public virtual ICollection<User> InverseUserNavigation { get; set; }
         public virtual ICollection<Line> Lines { get; set; }
+        public virtual ICollection<Po> PoApprovers { get; set; }
+        public virtual ICollection<Po> PoUsers { get; set; }
+        public virtual ICollection<Pr> PrApprovers { get; set; }
+        public virtual ICollection<PrReceive> PrReceives { get; set; }
+        public virtual ICollection<Pr> PrUsers { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<ProjectUser> ProjectUsers { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<Store> Stores { get; set; }
         public virtual ICollection<SubDepartment> SubDepartments { get; set; }
     }
 }
