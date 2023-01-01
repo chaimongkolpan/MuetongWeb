@@ -16,5 +16,9 @@
         #region User
         public static string UserNotFound = "Not found user";
         #endregion
+        #region Setting
+        public static string SettingSomethingWrong = "Something went wrong";
+        public static string SettingInvalidFileFormat = "Invalid file format";
+        #endregion
     }
 }
