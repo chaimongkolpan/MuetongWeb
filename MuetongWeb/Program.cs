@@ -75,7 +75,7 @@ builder.Services.AddSession(options =>
 #region Build App
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
