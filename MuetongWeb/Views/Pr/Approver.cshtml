@@ -1,6 +1,6 @@
 ﻿@using Newtonsoft.Json;
 @{
-    ViewData["Title"] = "สั่งสินค้า";
+    ViewData["Title"] = "ตรวจสอบสั่งสินค้า";
 }
 @if (Model == null)
 {
@@ -51,11 +51,6 @@
         <div class="d-flex justify-content-center ">
             <button type="button" class="btn btn-outline-success"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
         </div>
-        <div class="d-flex justify-content-end ">
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#AddOrder">
-                <i class="fa fa-plus"> &nbsp;เพิ่มการสั่งสินค้า</i>
-            </button>
-        </div>
 
         <br>
         <!-- Nav tabs -->
@@ -64,7 +59,10 @@
                 <a class="nav-link active" data-bs-toggle="tab" href="#All">ทั้งหมด</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Approve">ตรวจสอบสั่งสินค้า</a>
+                <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Approve">
+                    สั่งสินค้า&nbsp;
+                    <span class="badge bg-primary">2</span>
+                </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Cancel">
@@ -107,7 +105,7 @@
                                 <td rowspan="2">1</td>
                                 <td rowspan="2">
                                     <span class="material-symbols-outlined" style="color:#0752AE;"
-                                          data-bs-toggle="modal" data-bs-target="#ActionOrder">view_list</span>
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span>
                                 </td>
                                 <td rowspan="2">
                                     <span class="material-symbols-outlined" style="color:#A42206;"
@@ -149,7 +147,7 @@
                                 <td rowspan="2">2</td>
                                 <td rowspan="2">
                                     <span class="material-symbols-outlined" style="color:#0752AE;"
-                                          data-bs-toggle="modal" data-bs-target="#ActionOrder">view_list</span>
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span>
                                 </td>
                                 <td rowspan="2">
                                     <span class="material-symbols-outlined" style="color:#A42206;"
@@ -194,6 +192,7 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
+                                <th scope="col">ตรวจสอบสั่งสินค้า</th>
                                 <th scope="col">ลำดับ</th>
                                 <th scope="col" colspan="2">ดำเนินการ</th>
                                 <th scope="col">โครงการ</th>
@@ -215,10 +214,14 @@
                         </thead>
                         <tbody>
                             <tr>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:green;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionConfirm"> check_circle</span>
+                                </td>
                                 <td rowspan="2">1</td>
                                 <td rowspan="2">
                                     <span class="material-symbols-outlined" style="color:#0752AE;"
-                                          data-bs-toggle="modal" data-bs-target="#ActionOrder">view_list</span>
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span>
                                 </td>
                                 <td rowspan="2">
                                     <span class="material-symbols-outlined" style="color:#A42206;"
@@ -256,10 +259,14 @@
                                 <td>รอตรวจสอบสั่งสินค้า</td>
                             </tr>
                             <tr>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:green;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionConfirm">check_circle</span>
+                                </td>
                                 <td rowspan="2">2</td>
                                 <td rowspan="2">
                                     <span class="material-symbols-outlined" style="color:#0752AE;"
-                                          data-bs-toggle="modal" data-bs-target="#ActionOrder">view_list</span>
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span>
                                 </td>
                                 <td rowspan="2">
                                     <span class="material-symbols-outlined" style="color:#A42206;"
@@ -366,156 +373,9 @@
             </div>
             <br>
         </div>
-        <!-- The Modal AddOrder -->
-        <div class="modal" id="AddOrder">
-            <div class="modal-dialog modal-fullscreen modal-dialog-centered">
-                <div class="modal-content">
 
-                    <!-- Modal Header -->
-                    <div class="modal-header" style="background-color:#ae6378;color:white;">
-                        <h4 class="modal-title"><b>เพิ่มการสั่งสินค้า</b></h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        <div class="row row-cols-1 row-cols-lg-2">
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text" for="ProjectName">ชื่อโครงการ</label>
-                                    <select class="form-select" id="ProjectName">
-                                        <option selected>ทั้งหมด</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text" for="ProjectName">แผนก</label>
-                                    <select class="form-select" id="ProjectName">
-                                        <option selected>ทั้งหมด</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
-                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1">
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-text">
-                                        <input type="checkbox">
-                                    </div>
-                                    <span class="input-group-text" id="basic-addon1">หักผู้รับเหมา</span>
-                                    <span class="input-group-text" for="ProjectName">ผู้รับเหมา</span>
-                                    <select class="form-select" id="ProjectName">
-                                        <option selected>ชื่อผู้รับเหมา</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <h6><b>เอกสารอ้างอิงสั่งสินค้า</b></h6>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <div class="file-loading">
-                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 p-3" style="overflow-x:auto;">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">ลำดับ</th>
-                                            <th scope="col" colspan="2">ดำเนินการ</th>
-                                            <th scope="col">รายการสินค้า</th>
-                                            <th scope="col">จำนวน</th>
-                                            <th scope="col">หน่วย</th>
-                                            <th scope="col">วันที่ต้องการส่งมอบ</th>
-                                            <th scope="col">จุดประสงค์</th>
-                                            <th scope="col">หมายเหตุสินค้า</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>
-                                                <span class="material-symbols-outlined" style="color:#0752AE;">
-                                                    edit
-                                                </span>
-                                            </td>
-                                            <td rowspan="2">
-                                                <span class="material-symbols-outlined" style="color:#A42206;"
-                                                      data-bs-toggle="modal" data-bs-target="#ActionCancel"> delete </span>
-                                            </td>
-                                            <td>ทรายหยาบ</td>
-                                            <td>3</td>
-                                            <td>คิว</td>
-                                            <td>30/12/65</td>
-                                            <td>3.3.4</td>
-                                            <td>ด่วน</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-12 d-flex justify-content-center ">
-                                <button type="button" class="btn btn-warning"><i class="fa fa-plus"></i></button>
-                            </div>
-                            <p></p>
-                            <!-- ///////////เพิ่มรายการ//////////// -->
-                            <div class="col-12">
-                                <div class="card border">
-                                    <div class="card-body">
-                                        <h4 class="text-center" style="color:black;">เพิ่มรายการ</h4>
-                                        <div class="row row-cols-1 row-cols-lg-2">
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <label class="input-group-text" for="ProjectName">รายการสินค้า</label>
-                                                    <select class="form-select" id="ProjectName">
-                                                        <option selected>ทั้งหมด</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">จำนวน</span>
-                                                    <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
-                                                    <span class="input-group-text" id="basic-addon1">หน่วย</span>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">วันที่ต้องการส่งมอบ</span>
-                                                    <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1">
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">หมายเหตุสินค้า</span>
-                                                    <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
-                                                </div>
-                                            </div>
-                                            <div class="col-12 d-flex justify-content-center ">
-                                                <button type="button" class="btn btn-warning">เพิ่มรายการ</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                        <button type="button" class="btn btn-success">สั่งสินค้า</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- ///////////////// -->
-        <!-- The Modal ActionOrder -->
-        <div class="modal" id="ActionOrder">
+        <!-- The Modal ActionApproveOrder -->
+        <div class="modal" id="ActionApproveOrder">
             <div class="modal-dialog modal-fullscreen modal-dialog-centered">
                 <div class="modal-content">
 
@@ -531,7 +391,7 @@
                             <div class="col">
                                 <div class="input-group mb-3">
                                     <label class="input-group-text" for="ProjectName">ชื่อโครงการ</label>
-                                    <select class="form-select" id="ProjectName">
+                                    <select class="form-select" id="ProjectName" disabled>
                                         <option selected>ทั้งหมด</option>
                                     </select>
                                 </div>
@@ -539,7 +399,7 @@
                             <div class="col">
                                 <div class="input-group mb-3">
                                     <label class="input-group-text" for="ProjectName">แผนก</label>
-                                    <select class="form-select" id="ProjectName">
+                                    <select class="form-select" id="ProjectName" disabled>
                                         <option selected>ทั้งหมด</option>
                                     </select>
                                 </div>
@@ -547,17 +407,17 @@
                             <div class="col">
                                 <div class="input-group mb-3">
                                     <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
-                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1">
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" disabled>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="input-group mb-3">
                                     <div class="input-group-text">
-                                        <input type="checkbox">
+                                        <input type="checkbox" disabled>
                                     </div>
                                     <span class="input-group-text" id="basic-addon1">หักผู้รับเหมา</span>
                                     <span class="input-group-text" for="ProjectName">ผู้รับเหมา</span>
-                                    <select class="form-select" id="ProjectName">
+                                    <select class="form-select" id="ProjectName" disabled>
                                         <option selected>ชื่อผู้รับเหมา</option>
                                     </select>
                                 </div>
@@ -566,7 +426,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <div class="file-loading">
-                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
                                     </div>
                                 </div>
                             </div>
@@ -575,7 +435,6 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">ลำดับ</th>
-                                            <th scope="col" colspan="2">ดำเนินการ</th>
                                             <th scope="col">รายการสินค้า</th>
                                             <th scope="col">จำนวน</th>
                                             <th scope="col">หน่วย</th>
@@ -587,15 +446,6 @@
                                     <tbody>
                                         <tr>
                                             <td>1</td>
-                                            <td>
-                                                <span class="material-symbols-outlined" style="color:#0752AE;">
-                                                    edit
-                                                </span>
-                                            </td>
-                                            <td rowspan="2">
-                                                <span class="material-symbols-outlined" style="color:#A42206;"
-                                                      data-bs-toggle="modal" data-bs-target="#ActionCancel"> delete </span>
-                                            </td>
                                             <td>ทรายหยาบ</td>
                                             <td>3</td>
                                             <td>คิว</td>
@@ -606,47 +456,11 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-12 d-flex justify-content-center ">
-                                <button type="button" class="btn btn-warning"><i class="fa fa-plus"></i></button>
-                            </div>
-                            <p></p>
-                            <!-- ///////////เพิ่มรายการ//////////// -->
+                            <h6><b>เอกสารอ้างอิงตรวจสอบสั่งสินค้า</b></h6>
                             <div class="col-12">
-                                <div class="card border">
-                                    <div class="card-body">
-                                        <h4 class="text-center" style="color:black;">เพิ่มรายการ</h4>
-                                        <div class="row row-cols-1 row-cols-lg-2">
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <label class="input-group-text" for="ProjectName">รายการสินค้า</label>
-                                                    <select class="form-select" id="ProjectName">
-                                                        <option selected>ทั้งหมด</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">จำนวน</span>
-                                                    <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
-                                                    <span class="input-group-text" id="basic-addon1">หน่วย</span>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">วันที่ต้องการส่งมอบ</span>
-                                                    <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1">
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">หมายเหตุสินค้า</span>
-                                                    <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
-                                                </div>
-                                            </div>
-                                            <div class="col-12 d-flex justify-content-center ">
-                                                <button type="button" class="btn btn-warning">เพิ่มรายการ</button>
-                                            </div>
-                                        </div>
+                                <div class="form-group">
+                                    <div class="file-loading">
+                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
                                     </div>
                                 </div>
                             </div>
@@ -656,8 +470,33 @@
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                        <button type="button" class="btn btn-success">บันทึก</button>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+        <!-- The Modal ActionConfirm-->
+        <div class="modal" id="ActionConfirm">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">ตรวจสอบสั่งสินค้า</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        ท่านต้องการยืนยันตรวจสอบสั่งสินค้า เลขที่ PR 005/0218
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="button" class="btn btn-success">ยืนยันตรวจสอบสั่งสินค้า</button>
+                    </div>
+
                 </div>
             </div>
         </div>

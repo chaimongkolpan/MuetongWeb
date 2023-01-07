@@ -20,5 +20,15 @@ namespace MuetongWeb.Controllers
         {
             return View(1);
         }
+        [Route("Approver")]
+        public IActionResult Approver()
+        {
+            return View(1);
+        }
+        [Route("Receive")]
+        public IActionResult Receive()
+        {
+            return View(1);
+        }
     }
 }

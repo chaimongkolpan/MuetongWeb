@@ -1,0 +1,938 @@
+﻿@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "ตรวจสอบสั่งซื้อ";
+}
+@if (Model == null)
+{
+    <script>location.href = '~/';</script>
+}
+@if (Model != null)
+{
+    <div class="container-fluid" style="background-color:#fcfcfc">
+        <div class="row row-cols-1 row-cols-md-2">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="ProjectName"><b>ชื่อโครงการ</b></label>
+                    <select class="form-select" id="ProjectName">
+                        <option selected>ทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
+                    <select class="form-select" id="PrNo">
+                        <option selected>ทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="PrNo"><b>เลขที่ PO</b></label>
+                    <select class="form-select" id="PrNo">
+                        <option selected>ทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
+                    <select class="form-select" id="RequesterId">
+                        <option selected>ทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="Status"><b>สถานะสินค้า</b></label>
+                    <select class="form-select" id="PrNo">
+                        <option selected>ทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center ">
+            <button type="button" class="btn btn-outline-success"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
+        </div>
+        <br>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs nav-justified" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#All">ทั้งหมด</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Purchase">
+                    สั่งซื้อ&nbsp;
+                    <span class="badge bg-primary">1</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Cancel">
+                    ยกเลิก&nbsp;
+                    <span class="badge bg-danger">1</span>
+                </a>
+            </li>
+        </ul>
+
+
+        <div class="tab-content">
+            <!-- Tab panes All -->
+            <div id="All" class="container-fluid tab-pane active">
+                <br>
+                <div class="col-12 p-3" style="overflow-x:auto;">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="bgpo" scope="col">ลำดับ</th>
+                                <th class="bgpo" scope="col" colspan="2">ดำเนินการ</th>
+                                <th class="bgpo" scope="col">เลขที่ P0</th>
+                                <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                                <th class="bgpo" scope="col">ที่อยู่</th>
+                                <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                                <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                                <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                                <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                                <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                                <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                                <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                                <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                                <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                                <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                                <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                                <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                                <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                                <th class="bgpo" scope="col">แพลนของเข้า</th>
+                                <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                                <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                                <th class="bgpr" scope="col">โครงการ</th>
+                                <th class="bgpr" scope="col">เลขที่ PR</th>
+                                <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                                <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                                <th class="bgpr" class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                                <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                                <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                                <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                                <th class="bgpr" scope="col">รายการสินค้า</th>
+                                <th class="bgpr" scope="col">จุดประสงค์</th>
+                                <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                                <th class="bgpr" scope="col">หน่วย</th>
+                                <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                                <th class="bgpr" scope="col">ส่วนลด</th>
+                                <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                                <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                                <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                                <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                                <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                                <th class="bgpr" scope="col">สถานะสินค้า</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bgpo" rowspan="2">1</td>
+                                <td class="bgpo" rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#0752AE;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionApprovePurchase">view_list</span>
+                                </td>
+                                <td class="bgpo" rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#A42206;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionCancel"> delete </span>
+                                </td>
+                                <td class="bgpo" rowspan="2">C004-2212047</td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2">ชื่อผู้สั่งซื้อ</td>
+                                <td class="bgpo" rowspan="2">ชื่อผู้ตรวจสอบสั่งซื้อ</td>
+                                <td class="bgpr">สฟ.ท่าลาน 3</td>
+                                <td class="bgpr">005/0218</td>
+                                <td class="bgpr">12/12/65</td>
+                                <td class="bgpr">ชื่อผู้สั่งสินค้า</td>
+                                <td class="bgpr">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td class="bgpr">
+                                    <span class="material-symbols-outlined"
+                                          style="color:#000;">done</span>
+                                </td>
+                                <td class="bgpr">ชื่อผู้รับเหมา</td>
+                                <td class="bgpr">1</td>
+                                <td class="bgpr">ทรายหยาบ</td>
+                                <td class="bgpr">3.3.4</td>
+                                <td class="bgpr">3.00</td>
+                                <td class="bgpr">คิว</td>
+                                <td class="bgpr">200</td>
+                                <td class="bgpr">10</td>
+                                <td class="bgpr">14</td>
+                                <td class="bgpr">6</td>
+                                <td class="bgpr">210</td>
+                                <td class="bgpr">31/12/65</td>
+                                <td class="bgpr"></td>
+                                <td class="bgpr">รอสินค้าจัดส่ง</td>
+                            </tr>
+                            <tr>
+                                <td class="bgpr">สฟ.ท่าลาน 3</td>
+                                <td class="bgpr">005/0218</td>
+                                <td class="bgpr">12/12/65</td>
+                                <td class="bgpr">ชื่อผู้สั่งสินค้า</td>
+                                <td class="bgpr">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td class="bgpr">
+                                    <span class="material-symbols-outlined"
+                                          style="color:#000;">done</span>
+                                </td>
+                                <td class="bgpr">ชื่อผู้รับเหมา</td>
+                                <td class="bgpr">2</td>
+                                <td class="bgpr">ทรายหยาบ</td>
+                                <td class="bgpr">3.3.4</td>
+                                <td class="bgpr">3.00</td>
+                                <td class="bgpr">คิว</td>
+                                <td class="bgpr">200</td>
+                                <td class="bgpr">10</td>
+                                <td class="bgpr">14</td>
+                                <td class="bgpr">6</td>
+                                <td class="bgpr">210</td>
+                                <td class="bgpr">31/12/65</td>
+                                <td class="bgpr"></td>
+                                <td class="bgpr">รอสินค้าจัดส่ง</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--/////////////////////-->
+            <!-- Tab panes Purchase -->
+            <div id="Purchase" class="container-fluid tab-pane fade">
+                <br>
+                <div class="col-12 p-3" style="overflow-x:auto;">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="bgpo" scope="col"></th>
+                                <th class="bgpo" scope="col">ลำดับ</th>
+                                <th class="bgpo" scope="col" colspan="2">ดำเนินการ</th>
+                                <th class="bgpo" scope="col">เลขที่ P0</th>
+                                <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                                <th class="bgpo" scope="col">ที่อยู่</th>
+                                <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                                <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                                <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                                <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                                <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                                <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                                <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                                <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                                <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                                <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                                <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                                <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                                <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                                <th class="bgpo" scope="col">แพลนของเข้า</th>
+                                <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                                <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                                <th class="bgpr" scope="col">โครงการ</th>
+                                <th class="bgpr" scope="col">เลขที่ PR</th>
+                                <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                                <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                                <th class="bgpr" class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                                <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                                <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                                <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                                <th class="bgpr" scope="col">รายการสินค้า</th>
+                                <th class="bgpr" scope="col">จุดประสงค์</th>
+                                <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                                <th class="bgpr" scope="col">หน่วย</th>
+                                <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                                <th class="bgpr" scope="col">ส่วนลด</th>
+                                <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                                <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                                <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                                <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                                <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                                <th class="bgpr" scope="col">สถานะสินค้า</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bgpo" rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:green;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionConfirm"> check_circle</span>
+                                </td>
+                                <td class="bgpo" rowspan="2">1</td>
+                                <td class="bgpo" rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#0752AE;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionApprovePurchase">view_list</span>
+                                </td>
+                                <td class="bgpo" rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#A42206;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionCancel"> delete </span>
+                                </td>
+                                <td class="bgpo" rowspan="2">C004-2212047</td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2">ชื่อผู้สั่งซื้อ</td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpr">สฟ.ท่าลาน 3</td>
+                                <td class="bgpr">005/0218</td>
+                                <td class="bgpr">12/12/65</td>
+                                <td class="bgpr">ชื่อผู้สั่งสินค้า</td>
+                                <td class="bgpr">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td class="bgpr">
+                                    <span class="material-symbols-outlined"
+                                          style="color:#000;">done</span>
+                                </td>
+                                <td class="bgpr">ชื่อผู้รับเหมา</td>
+                                <td class="bgpr">1</td>
+                                <td class="bgpr">ทรายหยาบ</td>
+                                <td class="bgpr">3.3.4</td>
+                                <td class="bgpr">3.00</td>
+                                <td class="bgpr">คิว</td>
+                                <td class="bgpr">200</td>
+                                <td class="bgpr">10</td>
+                                <td class="bgpr">14</td>
+                                <td class="bgpr">6</td>
+                                <td class="bgpr">210</td>
+                                <td class="bgpr">31/12/65</td>
+                                <td class="bgpr"></td>
+                                <td class="bgpr">รอสินค้าจัดส่ง</td>
+                            </tr>
+                            <tr>
+                                <td class="bgpr">สฟ.ท่าลาน 3</td>
+                                <td class="bgpr">005/0218</td>
+                                <td class="bgpr">12/12/65</td>
+                                <td class="bgpr">ชื่อผู้สั่งสินค้า</td>
+                                <td class="bgpr">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td class="bgpr">
+                                    <span class="material-symbols-outlined"
+                                          style="color:#000;">done</span>
+                                </td>
+                                <td class="bgpr">ชื่อผู้รับเหมา</td>
+                                <td class="bgpr">2</td>
+                                <td class="bgpr">ทรายหยาบ</td>
+                                <td class="bgpr">3.3.4</td>
+                                <td class="bgpr">3.00</td>
+                                <td class="bgpr">คิว</td>
+                                <td class="bgpr">200</td>
+                                <td class="bgpr">10</td>
+                                <td class="bgpr">14</td>
+                                <td class="bgpr">6</td>
+                                <td class="bgpr">210</td>
+                                <td class="bgpr">31/12/65</td>
+                                <td class="bgpr"></td>
+                                <td class="bgpr">รอสินค้าจัดส่ง</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--/////////////////////-->
+            <!-- Tab panes Cancel -->
+            <div id="Cancel" class="container-fluid tab-pane fade">
+                <br>
+                <div class="col-12 p-3" style="overflow-x:auto;">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="bgpo" scope="col"></th>
+                                <th class="bgpo" scope="col">ลำดับ</th>
+                                <th class="bgpo" scope="col">เลขที่ P0</th>
+                                <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                                <th class="bgpo" scope="col">ที่อยู่</th>
+                                <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                                <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                                <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                                <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                                <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                                <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                                <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                                <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                                <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                                <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                                <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                                <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                                <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                                <th class="bgpo" scope="col">แพลนของเข้า</th>
+                                <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                                <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                                <th class="bgpr" scope="col">โครงการ</th>
+                                <th class="bgpr" scope="col">เลขที่ PR</th>
+                                <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                                <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                                <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                                <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                                <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                                <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                                <th class="bgpr" scope="col">รายการสินค้า</th>
+                                <th class="bgpr" scope="col">จุดประสงค์</th>
+                                <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                                <th class="bgpr" scope="col">หน่วย</th>
+                                <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                                <th class="bgpr" scope="col">ส่วนลด</th>
+                                <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                                <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                                <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                                <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                                <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                                <th class="bgpr" scope="col">สถานะสินค้า</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bgpo" rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#A42206;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveCancel"> assignment_late </span>
+                                </td>
+                                <td class="bgpo" rowspan="2">1</td>
+                                <td class="bgpo" rowspan="2">C004-2212047</td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2"></td>
+                                <td class="bgpo" rowspan="2">ชื่อผู้สั่งซื้อ</td>
+                                <td class="bgpo" rowspan="2">ชื่อผู้ตรวจสอบสั่งซื้อ</td>
+                                <td class="bgpr">สฟ.ท่าลาน 3</td>
+                                <td class="bgpr">005/0218</td>
+                                <td class="bgpr">12/12/65</td>
+                                <td class="bgpr">ชื่อผู้สั่งสินค้า</td>
+                                <td class="bgpr">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td class="bgpr">
+                                    <span class="material-symbols-outlined"
+                                          style="color:#000;">done</span>
+                                </td>
+                                <td class="bgpr">ชื่อผู้รับเหมา</td>
+                                <td class="bgpr">1</td>
+                                <td class="bgpr">ทรายหยาบ</td>
+                                <td class="bgpr">3.3.4</td>
+                                <td class="bgpr">3.00</td>
+                                <td class="bgpr">คิว</td>
+                                <td class="bgpr">200</td>
+                                <td class="bgpr">10</td>
+                                <td class="bgpr">14</td>
+                                <td class="bgpr">6</td>
+                                <td class="bgpr">210</td>
+                                <td class="bgpr">31/12/65</td>
+                                <td class="bgpr"></td>
+                                <td class="bgpr">รอตรวจสอบสั่งซื้อ</td>
+                            </tr>
+                            <tr>
+                                <td class="bgpr">สฟ.ท่าลาน 3</td>
+                                <td class="bgpr">005/0218</td>
+                                <td class="bgpr">12/12/65</td>
+                                <td class="bgpr">ชื่อผู้สั่งสินค้า</td>
+                                <td class="bgpr">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td class="bgpr">
+                                    <span class="material-symbols-outlined"
+                                          style="color:#000;">done</span>
+                                </td>
+                                <td class="bgpr">ชื่อผู้รับเหมา</td>
+                                <td class="bgpr">2</td>
+                                <td class="bgpr">ทรายหยาบ</td>
+                                <td class="bgpr">3.3.4</td>
+                                <td class="bgpr">3.00</td>
+                                <td class="bgpr">คิว</td>
+                                <td class="bgpr">200</td>
+                                <td class="bgpr">10</td>
+                                <td class="bgpr">14</td>
+                                <td class="bgpr">6</td>
+                                <td class="bgpr">210</td>
+                                <td class="bgpr">31/12/65</td>
+                                <td class="bgpr"></td>
+                                <td class="bgpr">รอตรวจสอบสั่งซื้อ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--/////////////////////-->
+        </div>
+
+        <!-- The Modal ActionApprovePurchase -->
+        <div class="modal" id="ActionApprovePurchase">
+            <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header" style="background-color:#ae6378;color:white;">
+                        <h4 class="modal-title"><b>รายการสั่งซื้อ</b></h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="row row-cols-1 row-cols-lg-2">
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="ProjectName">ผู้จำหน่าย</label>
+                                    <select class="form-select" id="ProjectName" required disabled>
+                                        <option selected>ทั้งหมด</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">ที่อยู่</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">เบอร์ติดต่อ</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">เลขประจำตัวผู้เสียภาษี</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="ProjectName">หลักประกันร้านค้า</label>
+                                    <select class="form-select" id="ProjectName" required disabled>
+                                        <option selected>Non credit (ไม่มีหลักประกัน)</option>
+                                        <option>BG (หนังสือค้ำประกันธนาคาร)</option>
+                                        <option>Port Check</option>
+                                        <option>หลังรับสินค้า</option>
+                                        <option>หลังรับวางบิล</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- ////////////////Non credit (ไม่มีหลักประกัน)/////////////////// -->
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">ชำระล่วงหน้า</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" required disabled>
+                                    <span class="input-group-text" id="basic-addon1">วัน</span>
+                                </div>
+                            </div>
+                            <!-- ////////////////BG (หนังสือค้ำประกันธนาคาร)/////////////////// -->
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">เลขที่สัญญา</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" required disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">วันที่ชำระเงิน</span>
+                                    <input type="date" class="form-control" id="PrNo" aria-describedby="basic-addon1" required disabled>
+                                </div>
+                            </div>
+                            <!-- ////////////////Port Check////////////////// -->
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">เลขที่เช็ค</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" required disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">วันที่ชำระเงิน</span>
+                                    <input type="date" class="form-control" id="PrNo" aria-describedby="basic-addon1" required disabled>
+                                </div>
+                            </div>
+                            <!-- ////////////////หลังรับสินค้า/////////////////// -->
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">จำนวนวัน</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" required disabled>
+                                    <span class="input-group-text" id="basic-addon1">วัน</span>
+                                </div>
+                            </div>
+                            <!-- ////////////////หลังรับวางบิล/////////////////// -->
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">จำนวนวัน</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" required disabled>
+                                    <span class="input-group-text" id="basic-addon1">วัน</span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="ProjectName">ช่องทางการชำระเงิน</label>
+                                    <select class="form-select" id="ProjectName" required disabled>
+                                        <option selected>เงินสด</option>
+                                        <option>โอนเงิน</option>
+                                        <option>บัตรเครดิต</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="ProjectName">บัญชีโอนเงิน</label>
+                                    <select class="form-select" id="ProjectName" required disabled>
+                                        <option selected>ธนาคารกสิกร 1234xxxxx</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">วันที่ต้องชำระ</span>
+                                    <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1" required disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">ช่องทางรับใบวางบิล</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" required disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" required disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">แพลนของเข้า</span>
+                                    <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1" required disabled>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-text">
+                                    <input type="checkbox" checked disabled>
+                                </div>
+                                <span class="input-group-text" for="ProjectName">ค่าใช้จ่ายเพิ่มเติม</span>
+                                <select class="form-select" id="ProjectName" required disabled>
+                                    <option selected>ค่าขนส่ง</option>
+                                    <option>อื่นๆ</option>
+                                </select>
+
+                                <input type="text" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1" disabled required>
+
+                            </div>
+                            <div class="col-12 p-3" style="overflow-x:auto;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">เอกสารอ้างอิงสั่งสินค้า</th>
+                                            <th scope="col">เอกสารอ้างอิงตรวจสอบสั่งสินค้า</th>
+                                            <th scope="col">เอกสารอ้างสั่งซื้อ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefOrder">
+                                                    description
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefApproverOrder">
+                                                    description
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefPurchase">
+                                                    description
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-12 p-3" style="overflow-x:auto;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ลำดับ</th>
+                                            <th scope="col">โครงการ</th>
+                                            <th scope="col">เลขที่ PR</th>
+                                            <th scope="col">หักผู้รับเหมา</th>
+                                            <th scope="col">ผู้รับเหมา</th>
+                                            <th scope="col">ผู้สั่งสินค้า</th>
+                                            <th scope="col">รายการสินค้า</th>
+                                            <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                            <th scope="col">จุดประสงค์</th>
+                                            <th scope="col">หมายเหตุสินค้า</th>
+                                            <th scope="col">สถานะสินค้า</th>
+                                            <th scope="col">จำนวน</th>
+                                            <th scope="col">หน่วย</th>
+                                            <th scope="col">ราคา/หน่วย</th>
+                                            <th scope="col">ส่วนลด</th>
+                                            <th scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                                            <th scope="col">หัก ณ ที่จ่าย 3 %</th>
+                                            <th scope="col">รวมเงินทั้งสิ้น</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>สฟ.ท่าลาน 3</td>
+                                            <td>005/0218</td>
+                                            <td>
+                                                <span class="material-symbols-outlined"
+                                                      style="color:#000;">done</span>
+                                            </td>
+                                            <td>ชื่อผู้รับเหมา</td>
+                                            <td>นายทดลอง</td>
+                                            <td>ทรายหยาบ</td>
+                                            <td>30/12/65</td>
+                                            <td>3.3.4</td>
+                                            <td>ด่วน</td>
+                                            <td>รอสินค้าจัดส่ง</td>
+                                            <td>3.00</td>
+                                            <td>คิว</td>
+                                            <td>200.00</td>
+                                            <td>10.00</td>
+                                            <td>14.00</td>
+                                            <td>6.00</td>
+                                            <td>210.00</td>
+                                        </tr>
+                                        <!-- ////////////////ค่าใช้จ่ายเพิ่มเติม/////////////////// -->
+                                        <tr>
+                                            <td>2</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>ค่าขนส่ง</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>500.00</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                            <td>0.00 </td>
+                                            <td>500.00</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="10" style="text-align: end"><b>รวมเงิน</b></td>
+                                            <td colspan="1"></td>
+                                            <td colspan="9" style="text-align: start"><b>4,300.00</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="10" style="text-align: end"><b>ส่วนลด</b></td>
+                                            <td colspan="1"></td>
+                                            <td colspan="9" style="text-align: start"><b>0.00</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="10" style="text-align: end"><b>ภาษีมูลค่าเพิ่ม 7%</b></td>
+                                            <td colspan="1"></td>
+                                            <td colspan="9" style="text-align: start"><b>301.00</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="10" style="text-align: end"><b>รวมเงินทั้งสิ้น</b></td>
+                                            <td colspan="1"></td>
+                                            <td colspan="9" style="text-align: start"><b>4,701.00</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="10" style="text-align: end"><b>หัก ณ ที่จ่าย 3%</b></td>
+                                            <td colspan="1"></td>
+                                            <td colspan="9" style="text-align: start"><b>0.00</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="10" style="text-align: end"><b>จำนวนเงินทั้งสิ้น</b></td>
+                                            <td colspan="1"></td>
+                                            <td colspan="9" style="text-align: start"><b>4,701.00</b></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="file-loading">
+                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/////////////////////-->
+        <!-- The Modal ActionCancel-->
+        <div class="modal" id="ActionCancel">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">ยกเลิกการสั่งซื้อ</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        ท่านต้องการยกเลิกการสั่งซื้อ เลขที่ P02301001
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="button" class="btn btn-danger">ยืนยันยกเลิก</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+        <!-- The Modal RefOrder-->
+        <div class="modal" id="RefOrder">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">เอกสารอ้างอิงสั่งสินค้า</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="file-loading">
+                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+        <!-- The Modal RefApproverOrder-->
+        <div class="modal" id="RefApproverOrder">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">เอกสารอ้างอิงตรวจสอบสั่งสินค้า</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="file-loading">
+                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+        <!-- The Modal ActionApproveCancel-->
+        <div class="modal" id="ActionApproveCancel">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">รับทราบการยกเลิกการซื้อสินค้า</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        ท่านรับทราบการยกเลิกการสั่งซื้อ เลขที่ P02301001
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="button" class="btn btn-danger">ตกลง</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+        <!-- The Modal ActionConfirm-->
+        <div class="modal" id="ActionConfirm">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">ตรวจสอบสั่งซื้อ</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        ท่านต้องการยืนยันตรวจสอบสั่งซื้อ เลขที่ P02301001
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="button" class="btn btn-success">ยืนยันตรวจสอบสั่งซื้อ</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+    </div>
+}
