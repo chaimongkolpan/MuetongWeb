@@ -74,6 +74,10 @@ namespace MuetongWeb.Models.Entities
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
 
+                entity.Property(e => e.ApproveDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ApproveRemark).IsUnicode(false);
+
                 entity.Property(e => e.BillingDate).HasColumnType("datetime");
 
                 entity.Property(e => e.BillingNo)

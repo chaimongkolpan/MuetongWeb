@@ -1,0 +1,557 @@
+﻿@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "ตรวจสอบสั่งสินค้า";
+}
+@if (Model == null)
+{
+    <script>location.href = '~/';</script>
+}
+@if (Model != null)
+{
+    <div class="container-fluid" style="background-color:#fcfcfc">
+        <div class="row row-cols-1 row-cols-md-2">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="ProjectName"><b>ชื่อโครงการ</b></label>
+                    <select class="form-select" id="ProjectName">
+                        <option selected>ทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
+                    <select class="form-select" id="PrNo">
+                        <option selected>ทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
+                    <select class="form-select" id="RequesterId">
+                        <option selected>ทั้งหมด</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="Status"><b>สถานะสินค้า</b></label>
+                    <select class="form-select" id="PrNo">
+                        <option selected>ทั้งหมด</option>
+                        <option>สั่งสินค้า</option>
+                        <option>รอตรวจสอบสั่งสินค้า</option>
+                        <option>รอสั่งซื้อ</option>
+                        <option>รอสินค้าจัดส่ง</option>
+                        <option>จัดส่งสำเร็จ</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center ">
+            <button type="button" class="btn btn-outline-success"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
+        </div>
+
+        <br>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs nav-justified" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#All">ทั้งหมด</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Approve">
+                    สั่งสินค้า&nbsp;
+                    <span class="badge bg-primary">2</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Cancel">
+                    ยกเลิก&nbsp;
+                    <span class="badge bg-danger">1</span>
+                </a>
+            </li>
+        </ul>
+
+
+        <div class="tab-content">
+            <!-- Tab panes All-->
+            <div id="All" class="container-fluid tab-pane active">
+                <br>
+                <div class="col-12 p-3" style="overflow-x:auto;">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">ลำดับ</th>
+                                <th scope="col" colspan="2">ดำเนินการ</th>
+                                <th scope="col">โครงการ</th>
+                                <th scope="col">เลขที่ PR</th>
+                                <th scope="col">หักผู้รับเหมา</th>
+                                <th scope="col">ผู้รับเหมา</th>
+                                <th scope="col">ผู้สั่งสินค้า</th>
+                                <th scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                                <th scope="col">ลำดับสินค้า</th>
+                                <th scope="col">รายการสินค้า</th>
+                                <th scope="col">จำนวน</th>
+                                <th scope="col">หน่วย</th>
+                                <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                <th scope="col">แพลนของเข้า</th>
+                                <th scope="col">จุดประสงค์</th>
+                                <th scope="col">หมายเหตุสินค้า</th>
+                                <th scope="col">สถานะสินค้า</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">1</td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#0752AE;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span>
+                                </td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#A42206;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionCancel"> delete </span>
+                                </td>
+                                <td rowspan="2">สฟ.ท่าลาน 3</td>
+                                <td rowspan="2">005/0218</td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#000;">
+                                        done
+                                    </span>
+                                </td>
+                                <td rowspan="2">ชื่อผู้รับเหมา</td>
+                                <td rowspan="2">ชื่อผู้สั่งสินค้า</td>
+                                <td rowspan="2">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td>1</td>
+                                <td>ทรายหยาบ</td>
+                                <td>3.00</td>
+                                <td>คิว</td>
+                                <td>30/12/65</td>
+                                <td>30/12/65</td>
+                                <td>3.3.4</td>
+                                <td>ด่วน</td>
+                                <td>รอสินค้าจัดส่ง</td>
+                            </tr>
+                            <tr>
+
+                                <td>2</td>
+                                <td>เครื่องกรีดถนน</td>
+                                <td>1.00</td>
+                                <td>วัน</td>
+                                <td>31/12/65</td>
+                                <td>31/12/65</td>
+                                <td>3.3.5</td>
+                                <td></td>
+                                <td>รอสินค้าจัดส่ง</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">2</td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#0752AE;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span>
+                                </td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#A42206;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionCancel"> delete </span>
+                                </td>
+                                <td rowspan="2">สฟ.ท่าลาน 5</td>
+                                <td rowspan="2">005/0219</td>
+                                <td rowspan="2"></td>
+                                <td rowspan="2">ชื่อผู้รับเหมา</td>
+                                <td rowspan="2">ชื่อผู้สั่งสินค้า</td>
+                                <td rowspan="2">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td>1</td>
+                                <td>ทรายหยาบ</td>
+                                <td>3.00</td>
+                                <td>คิว</td>
+                                <td>30/12/65</td>
+                                <td>30/12/65</td>
+                                <td>3.3.4</td>
+                                <td></td>
+                                <td>รอสั่งซื้อ</td>
+                            </tr>
+                            <tr>
+
+                                <td>2</td>
+                                <td>เครื่องกรีดถนน</td>
+                                <td>1.00</td>
+                                <td>วัน</td>
+                                <td>31/12/65</td>
+                                <td>31/12/65</td>
+                                <td>3.3.5</td>
+                                <td></td>
+                                <td>รอสั่งซื้อ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Tab panes Approve-->
+            <div id="Approve" class="container-fluid tab-pane fade">
+                <br>
+                <div class="col-12 p-3" style="overflow-x:auto;">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">ตรวจสอบสั่งสินค้า</th>
+                                <th scope="col">ลำดับ</th>
+                                <th scope="col" colspan="2">ดำเนินการ</th>
+                                <th scope="col">โครงการ</th>
+                                <th scope="col">เลขที่ PR</th>
+                                <th scope="col">หักผู้รับเหมา</th>
+                                <th scope="col">ผู้รับเหมา</th>
+                                <th scope="col">ผู้สั่งสินค้า</th>
+                                <th scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                                <th scope="col">ลำดับสินค้า</th>
+                                <th scope="col">รายการสินค้า</th>
+                                <th scope="col">จำนวน</th>
+                                <th scope="col">หน่วย</th>
+                                <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                <th scope="col">แพลนของเข้า</th>
+                                <th scope="col">จุดประสงค์</th>
+                                <th scope="col">หมายเหตุสินค้า</th>
+                                <th scope="col">สถานะสินค้า</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:green;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionConfirm"> check_circle</span>
+                                </td>
+                                <td rowspan="2">1</td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#0752AE;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span>
+                                </td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#A42206;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionCancel"> delete </span>
+                                </td>
+                                <td rowspan="2">สฟ.ท่าลาน 3</td>
+                                <td rowspan="2">005/0218</td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#000;">
+                                        done
+                                    </span>
+                                </td>
+                                <td rowspan="2">ชื่อผู้รับเหมา</td>
+                                <td rowspan="2">ชื่อผู้สั่งสินค้า</td>
+                                <td rowspan="2">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td>1</td>
+                                <td>ทรายหยาบ</td>
+                                <td>3.00</td>
+                                <td>คิว</td>
+                                <td>30/12/65</td>
+                                <td>30/12/65</td>
+                                <td>3.3.4</td>
+                                <td>ด่วน</td>
+                                <td>รอตรวจสอบสั่งสินค้า</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>เครื่องกรีดถนน</td>
+                                <td>1.00</td>
+                                <td>วัน</td>
+                                <td>31/12/65</td>
+                                <td>31/12/65</td>
+                                <td>3.3.5</td>
+                                <td></td>
+                                <td>รอตรวจสอบสั่งสินค้า</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:green;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionConfirm">check_circle</span>
+                                </td>
+                                <td rowspan="2">2</td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#0752AE;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span>
+                                </td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#A42206;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionCancel"> delete </span>
+                                </td>
+                                <td rowspan="2">สฟ.ท่าลาน 5</td>
+                                <td rowspan="2">005/0219</td>
+                                <td rowspan="2"></td>
+                                <td rowspan="2">ชื่อผู้รับเหมา</td>
+                                <td rowspan="2">ชื่อผู้สั่งสินค้า</td>
+                                <td rowspan="2">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td>1</td>
+                                <td>ทรายหยาบ</td>
+                                <td>3.00</td>
+                                <td>คิว</td>
+                                <td>30/12/65</td>
+                                <td>30/12/65</td>
+                                <td>3.3.4</td>
+                                <td></td>
+                                <td>รอตรวจสอบสั่งสินค้า</td>
+                            </tr>
+                            <tr>
+
+                                <td>2</td>
+                                <td>เครื่องกรีดถนน</td>
+                                <td>1.00</td>
+                                <td>วัน</td>
+                                <td>31/12/65</td>
+                                <td>31/12/65</td>
+                                <td>3.3.5</td>
+                                <td></td>
+                                <td>รอตรวจสอบสั่งสินค้า</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Tab panes Cancel-->
+            <div id="Cancel" class="container-fluid tab-pane fade">
+                <br>
+                <div class="col-12 p-3" style="overflow-x:auto;">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">ลำดับ</th>
+                                <th scope="col">โครงการ</th>
+                                <th scope="col">เลขที่ PR</th>
+                                <th scope="col">หักผู้รับเหมา</th>
+                                <th scope="col">ผู้รับเหมา</th>
+                                <th scope="col">ผู้สั่งสินค้า</th>
+                                <th scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                                <th scope="col">ลำดับสินค้า</th>
+                                <th scope="col">รายการสินค้า</th>
+                                <th scope="col">จำนวน</th>
+                                <th scope="col">หน่วย</th>
+                                <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                <th scope="col">แพลนของเข้า</th>
+                                <th scope="col">จุดประสงค์</th>
+                                <th scope="col">หมายเหตุสินค้า</th>
+                                <th scope="col">สถานะสินค้า</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined" style="color:#A42206;"
+                                          data-bs-toggle="modal" data-bs-target="#ActionApproveCancel"> assignment_late </span>
+                                </td>
+                                <td rowspan="2">1</td>
+                                <td rowspan="2">สฟ.ท่าลาน 3</td>
+                                <td rowspan="2">005/0218</td>
+                                <td rowspan="2">
+                                    <span class="material-symbols-outlined"
+                                          style="color:#000;">done</span>
+                                </td>
+                                <td rowspan="2">ชื่อผู้รับเหมา</td>
+                                <td rowspan="2">ชื่อผู้สั่งสินค้า</td>
+                                <td rowspan="2">ชื่อผู้ตรวจสอบสั่งสินค้า</td>
+                                <td>1</td>
+                                <td>ทรายหยาบ</td>
+                                <td>3.00</td>
+                                <td>คิว</td>
+                                <td>30/12/65</td>
+                                <td>30/12/65</td>
+                                <td>3.3.4</td>
+                                <td>ด่วน</td>
+                                <td>รอตรวจสอบสั่งสินค้า</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>เครื่องกรีดถนน</td>
+                                <td>1.00</td>
+                                <td>วัน</td>
+                                <td>31/12/65</td>
+                                <td>31/12/65</td>
+                                <td>3.3.5</td>
+                                <td></td>
+                                <td>รอตรวจสอบสั่งสินค้า</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <br>
+        </div>
+
+        <!-- The Modal ActionApproveOrder -->
+        <div class="modal" id="ActionApproveOrder">
+            <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header" style="background-color:#ae6378;color:white;">
+                        <h4 class="modal-title"><b>รายละเอียดการสั่งสินค้า</b></h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="row row-cols-1 row-cols-lg-2">
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="ProjectName">ชื่อโครงการ</label>
+                                    <select class="form-select" id="ProjectName" disabled>
+                                        <option selected>ทั้งหมด</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="ProjectName">แผนก</label>
+                                    <select class="form-select" id="ProjectName" disabled>
+                                        <option selected>ทั้งหมด</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
+                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1" disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" disabled>
+                                    </div>
+                                    <span class="input-group-text" id="basic-addon1">หักผู้รับเหมา</span>
+                                    <span class="input-group-text" for="ProjectName">ผู้รับเหมา</span>
+                                    <select class="form-select" id="ProjectName" disabled>
+                                        <option selected>ชื่อผู้รับเหมา</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <h6><b>เอกสารอ้างอิงสั่งสินค้า</b></h6>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="file-loading">
+                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 p-3" style="overflow-x:auto;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ลำดับ</th>
+                                            <th scope="col">รายการสินค้า</th>
+                                            <th scope="col">จำนวน</th>
+                                            <th scope="col">หน่วย</th>
+                                            <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                            <th scope="col">จุดประสงค์</th>
+                                            <th scope="col">หมายเหตุสินค้า</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>ทรายหยาบ</td>
+                                            <td>3</td>
+                                            <td>คิว</td>
+                                            <td>30/12/65</td>
+                                            <td>3.3.4</td>
+                                            <td>ด่วน</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h6><b>เอกสารอ้างอิงตรวจสอบสั่งสินค้า</b></h6>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="file-loading">
+                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+        <!-- The Modal ActionConfirm-->
+        <div class="modal" id="ActionConfirm">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">ตรวจสอบสั่งสินค้า</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        ท่านต้องการยืนยันตรวจสอบสั่งสินค้า เลขที่ PR 005/0218
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="button" class="btn btn-success">ยืนยันตรวจสอบสั่งสินค้า</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+        <!-- The Modal ActionCancel-->
+        <div class="modal" id="ActionCancel">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">ยกเลิกการสั่งสินค้า</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        ท่านต้องการยกเลิกการสั่งสินค้า เลขที่ PR 005/0218
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="button" class="btn btn-danger">ยืนยันยกเลิก</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+        <!-- The Modal ActionApproveCancel-->
+        <div class="modal" id="ActionApproveCancel">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">รับทราบการยกเลิกการสั่งสินค้า</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        ท่านรับทราบการยกเลิกการสั่งสินค้า เลขที่ PR 005/0218
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        <button type="button" class="btn btn-danger">ตกลง</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ///////////////// -->
+    </div>
+}

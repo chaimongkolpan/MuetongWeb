@@ -24,6 +24,9 @@ namespace MuetongWeb.Models.Entities
         public long UserId { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public long? ApproverId { get; set; }
+        public DateTime? ApproveDate { get; set; }
+        public string? ApproveRemark { get; set; }
 
         public virtual PaymentAccount? PaymentAccount { get; set; }
         public virtual SettingConstant PaymentTypeNavigation { get; set; } = null!;
