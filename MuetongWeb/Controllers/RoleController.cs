@@ -29,7 +29,7 @@ namespace MuetongWeb.Controllers
                     if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Role_Index_View, user.Permissions))
                     {
                         var response = await _roleServices.GetRole(PermissionHelpers.Authenticate(PermissionConstants.Role_Index_Edit, user.Permissions));
-                        response.Set(user.Role);
+                        response.Set(user);
                         return View(response);
                     }
                 }

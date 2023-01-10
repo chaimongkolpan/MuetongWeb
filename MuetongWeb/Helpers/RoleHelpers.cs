@@ -32,5 +32,10 @@ namespace MuetongWeb.Helpers
                 || role == RoleConstants.RolePurchase
                 || role == RoleConstants.RolePurchaseApprover;
         }
+        public static bool CanSeeAllProject(string role)
+        {
+            return role == RoleConstants.RoleAdmin
+                || role == RoleConstants.RoleManager;
+        }
     }
 }

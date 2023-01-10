@@ -20,7 +20,7 @@ namespace MuetongWeb.Controllers
             _prServices = prServices;
         }
         #region Pr Index
-        public async Task<IActionResult> Index(PrIndexSearchRequest? request)
+        public async Task<IActionResult> Index()
         {
             try
             {
@@ -29,12 +29,8 @@ namespace MuetongWeb.Controllers
                     var user = SessionHelpers.GetUserInfo(HttpContext.Session);
                     if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_View, user.Permissions))
                     {
-                        if (request == null)
-                        {
-                            request = new PrIndexSearchRequest();
-                        }
-                        var response = await _prServices.IndexSearchAsync(PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_Edit, user.Permissions), request);
-                        response.Set(user.Role);
+                        var response = await _prServices.IndexAsync(PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_Edit, user.Permissions), user);
+                        response.Set(user);
                         return View(response);
                     }
                 }

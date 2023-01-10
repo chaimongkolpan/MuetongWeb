@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿
+@if (Model == null)
+{
+    <script>location.href = '~/';</script>
+}
+else
+{
+    ViewData["Username"] = "ผู้ดูแลระบบ";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -126,7 +135,7 @@
                                 <!-- Admin -->
                                 <li class="flex-shrink-0 dropdown">
                                     <a id="admin-dropdown" href="#" class="d-flex nav-link align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="material-symbols-outlined">person_filled</span>ผู้ดูแลระบบ
+                                        <span class="material-symbols-outlined">person_filled</span>@ViewData["Username"]
                                     </a>
                                     <ul class="dropdown-menu text-small shadow" aria-labelledby="admin-dropdown">
                                         <li><a id="admin-setting" class="dropdown-item" asp-area="" asp-controller="Setting" asp-action="Index">ตั้งค่า</a></li>

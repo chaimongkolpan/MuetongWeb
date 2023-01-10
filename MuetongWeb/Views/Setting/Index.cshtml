@@ -1,8 +1,4 @@
 ﻿@using Newtonsoft.Json;
-@if(Model == null)
-{
-    <script>location.href = '~/';</script>
-}
 @if (Model != null)
 {
     if (!string.IsNullOrWhiteSpace(Model.Message))

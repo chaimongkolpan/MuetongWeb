@@ -11,7 +11,14 @@ namespace MuetongWeb.Repositories
         {
             _dbContext = dbContext;
         }
-        // Get
+        public async Task<IEnumerable<Product>> GetAsync()
+        {
+            return await _dbContext.Products.ToListAsync();
+        }
+        public async Task<Product?> GetAsync(long id)
+        {
+            return await _dbContext.Products.FindAsync(id);
+        }
         public async Task<bool> AddAsync(Product product)
         {
             await _dbContext.Products.AddAsync(product);

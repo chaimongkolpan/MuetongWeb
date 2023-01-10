@@ -34,7 +34,7 @@ namespace MuetongWeb.Controllers
                     if (user != null)
                     {
                         var response = await _settingServices.ImportCustomerFileAsync(request, user.Id);
-                        // response.Set(user.Role);
+                        // response.Set(user);
                         return View("Index", response);
                     }
                 }
@@ -57,7 +57,7 @@ namespace MuetongWeb.Controllers
                     if (user != null)
                     {
                         var response = await _settingServices.ImportStoreFileAsync(request, user.Id);
-                        // response.Set(user.Role);
+                        // response.Set(user);
                         return View("Index", response);
                     }
                 }

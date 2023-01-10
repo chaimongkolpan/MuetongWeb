@@ -2,24 +2,27 @@
 @{
     ViewData["Title"] = "สั่งสินค้า";
 }
-@if (Model == null)
-{
-    <script>location.href = '~/';</script>
-}
 <div class="container-fluid" style="background-color:#fcfcfc">
     <div class="row row-cols-1 row-cols-md-2">
         <div class="col">
             <div class="input-group mb-3">
-                <label class="input-group-text" for="ProjectName"><b>ชื่อโครงการ</b></label>
-                <select class="form-select" id="ProjectName">
-                    <option selected>ทั้งหมด</option>
+                <label class="input-group-text" for="ProjectId"><b>ชื่อโครงการ</b></label>
+                <select class="form-select" id="ProjectId" name="ProjectId">
+                    <option value="0" selected>ทั้งหมด</option>
+                    @if (Model != null)
+                    {
+                        @foreach (var item in Model.Projects)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
                 </select>
             </div>
         </div>
         <div class="col">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
-                <select class="form-select" id="PrNo">
+                <select class="form-select" id="PrNo" name="PrNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
@@ -27,15 +30,15 @@
         <div class="col">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
-                <select class="form-select" id="RequesterId">
-                    <option selected>ทั้งหมด</option>
+                <select class="form-select" id="RequesterId" name="RequesterId">
+                    <option value="0" selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="Status"><b>สถานะสินค้า</b></label>
-                <select class="form-select" id="PrNo">
+                <select class="form-select" id="Status" name="Status">
                     <option selected>ทั้งหมด</option>
                     <option>สั่งสินค้า</option>
                     <option>รอตรวจสอบสั่งสินค้า</option>
@@ -50,7 +53,7 @@
         <button type="button" class="btn btn-outline-success"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
     </div>
     <div class="d-flex justify-content-end ">
-        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#AddOrder">
+        <button type="button" id="add_btn" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#AddOrder">
             <i class="fa fa-plus"> &nbsp;เพิ่มการสั่งสินค้า</i>
         </button>
     </div>
@@ -66,11 +69,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Cancel">
-                ยกเลิก
-                @if (Model != null)
-                {
-                    @Html.Raw("&nbsp;<span class=\"badge bg-danger\">" + 1 + "</span>");
-                }
+                ยกเลิก&nbsp;<span class="badge bg-danger">1</span>
             </a>
         </li>
     </ul>
@@ -385,43 +384,41 @@
                     <div class="row row-cols-1 row-cols-lg-2">
                         <div class="col">
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="ProjectName">ชื่อโครงการ</label>
-                                <select class="form-select" id="ProjectName">
-                                    <option selected>ทั้งหมด</option>
+                                <label class="input-group-text" for="add_project">ชื่อโครงการ</label>
+                                <select class="form-select" id="add_project">
+                                    @if (Model != null)
+                                    {
+                                        @foreach (var item in Model.Projects)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
                                 </select>
                             </div>
                         </div>
                         <div class="col">
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="ProjectName">แผนก</label>
-                                <select class="form-select" id="ProjectName">
-                                    <option selected>ทั้งหมด</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
-                                <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1">
+                                <span class="input-group-text" for="add_pr_no">เลขที่ PR</span>
+                                <input type="text" class="form-control" id="add_pr_no" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col">
                             <div class="input-group mb-3">
                                 <div class="input-group-text">
-                                    <input type="checkbox">
+                                    <input type="checkbox" id="add_advance_pay">
                                 </div>
-                                <span class="input-group-text" id="basic-addon1">หักผู้รับเหมา</span>
-                                <span class="input-group-text" for="ProjectName">ผู้รับเหมา</span>
-                                <select class="form-select" id="ProjectName">
-                                    <option selected>ชื่อผู้รับเหมา</option>
+                                <span class="input-group-text" for="add_advance_pay">หักผู้รับเหมา</span>
+                                <span class="input-group-text" for="add_contractor">ผู้รับเหมา</span>
+                                <select class="form-select" id="add_contractor">
                                 </select>
                             </div>
                         </div>
+                        <div cllass="col"></div>
                         <h6><b>เอกสารอ้างอิงสั่งสินค้า</b></h6>
                         <div class="col-12">
                             <div class="form-group">
                                 <div class="file-loading">
-                                    <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                                    <input id="add_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
                                 </div>
                             </div>
                         </div>
@@ -439,7 +436,7 @@
                                         <th scope="col">หมายเหตุสินค้า</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="add_detail_table">
                                     <tr>
                                         <td>1</td>
                                         <td>
@@ -461,45 +458,51 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-12 d-flex justify-content-center ">
-                            <button type="button" class="btn btn-warning"><i class="fa fa-plus"></i></button>
+                        <div class="col-12 d-flex justify-content-center">
+                            <button type="button" id="show_add_btn" class="btn btn-warning"><i class="fa fa-plus"></i></button>
                         </div>
-                        <p></p>
+                        <p></p><br />
                         <!-- ///////////เพิ่มรายการ//////////// -->
-                        <div class="col-12">
+                        <div id="add_detail_pane" class="col-12" style="display:none;">
                             <div class="card border">
                                 <div class="card-body">
                                     <h4 class="text-center" style="color:black;">เพิ่มรายการ</h4>
                                     <div class="row row-cols-1 row-cols-lg-2">
                                         <div class="col">
                                             <div class="input-group mb-3">
-                                                <label class="input-group-text" for="ProjectName">รายการสินค้า</label>
-                                                <select class="form-select" id="ProjectName">
-                                                    <option selected>ทั้งหมด</option>
+                                                <label class="input-group-text" for="add_detail_product">รายการสินค้า</label>
+                                                <select class="form-select" id="add_detail_product">
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col">
                                             <div class="input-group mb-3">
-                                                <span class="input-group-text" id="basic-addon1">จำนวน</span>
-                                                <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
+                                                <span class="input-group-text" for="add_detail_quantity">จำนวน</span>
+                                                <input type="text" class="form-control" id="add_detail_quantity" aria-describedby="basic-addon1">
                                                 <span class="input-group-text" id="basic-addon1">หน่วย</span>
                                             </div>
                                         </div>
                                         <div class="col">
                                             <div class="input-group mb-3">
-                                                <span class="input-group-text" id="basic-addon1">วันที่ต้องการส่งมอบ</span>
-                                                <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1">
+                                                <label class="input-group-text" for="ProjectName">จุดประสงค์</label>
+                                                <select class="form-select" id="add_detail_project_code">
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="col">
                                             <div class="input-group mb-3">
-                                                <span class="input-group-text" id="basic-addon1">หมายเหตุสินค้า</span>
-                                                <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
+                                                <span class="input-group-text" id="basic-addon1">วันที่ต้องการส่งมอบ</span>
+                                                <input type="date" class="form-control" id="add_detail_usedate" aria-describedby="basic-addon1">
                                             </div>
                                         </div>
-                                        <div class="col-12 d-flex justify-content-center ">
-                                            <button type="button" class="btn btn-warning">เพิ่มรายการ</button>
+                                        <div class="col-12">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text" id="basic-addon1">หมายเหตุสินค้า</span>
+                                                <input type="text" class="form-control" id="add_detail_remark" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button type="button" id="add_detail_btn" class="btn btn-warning">เพิ่มรายการ</button>
                                         </div>
                                     </div>
                                 </div>
@@ -511,7 +514,7 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                    <button type="button" class="btn btn-success">สั่งสินค้า</button>
+                    <button type="button" id="add_pr_btn" class="btn btn-success">สั่งสินค้า</button>
                 </div>
             </div>
         </div>
@@ -718,3 +721,173 @@
     </div>
     <!-- ///////////////// -->
 </div>
+<script>
+    var model = @Html.Raw(JsonConvert.SerializeObject(Model));
+    var baseUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
+    baseUrl = baseUrl + (baseUrl == '/' ? 'api/pr/' : '/api/pr/');
+    var add_detail = [];
+    var products = [];
+    var projectCodes = [];
+    function bindFilter(projectId) {
+        var requesterUrl = baseUrl + 'requester/' + projectId;
+        var jqxhr = $.get(requesterUrl)
+        .done(function (response) {
+            console.log(response);
+            $('#RequesterId').empty();
+            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            for (var item in response) {
+                var html = '<option value="' + item.Id + '" selected>' + item.Fullname + '</option>';
+                $('#RequesterId').append(html);
+            }
+        })
+        .fail(function (response) {
+            console.log(response);
+            $('#RequesterId').empty();
+            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+        });
+        var prnoUrl = baseUrl + 'prno/' + projectId;
+        var jqxhr = $.get(prnoUrl)
+        .done(function (response) {
+            console.log(response);
+            $('#PrNo').empty();
+            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            for (var item in response) {
+                var html = '<option selected>' + item + '</option>';
+                $('#PrNo').append(html);
+            }
+        })
+        .fail(function (response) {
+            console.log(response);
+            $('#PrNo').empty();
+            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+        });
+    }
+    function bindContractor(projectId) {
+        var contractorUrl = baseUrl + 'contractor/' + projectId;
+        $('#add_contractor').empty();
+        var jqxhr = $.get(contractorUrl)
+        .done(function (response) {
+            console.log(response);
+            for (var item in response) {
+                var html = '<option value="' + item.Id + '" selected>' + item.Name + '</option>';
+                $('#add_contractor').append(html);
+            }
+        })
+        .fail(function (response) {
+            console.log(response);
+        });
+    }
+    function bindCode(projectId) {
+        var codeUrl = baseUrl + 'code/' + projectId;
+        $('#add_detail_project_code').empty();
+        var jqxhr = $.get(codeUrl)
+            .done(function (response) {
+                console.log(response);
+                projectCodes = response;
+                for (var item in response) {
+                    var html = '<option value="' + item.Id + '" selected>' + item.Name + '</option>';
+                    $('#add_detail_project_code').append(html);
+                }
+            })
+            .fail(function (response) {
+                console.log(response);
+            });
+    }
+    function bindProduct() {
+        var productUrl = baseUrl + 'product';
+        $('#add_detail_product').empty();
+        var jqxhr = $.get(productUrl)
+        .done(function (response) {
+            console.log(response);
+            products = response;
+            for (var item in response) {
+                var html = '<option value="' + item.Id + '" selected>' + item.Name + '</option>';
+                $('#add_detail_product').append(html);
+            }
+        })
+        .fail(function (response) {
+            console.log(response);
+        });
+    }
+    $('#ProjectId').change(function () {
+        bindFilter($('#ProjectId').val());
+        $('#PrNo').val('ทั้งหมด');
+        $('#RequesterId').val(0);
+    });
+    // search
+    function add_edit_detail(index) {
+        console.log(index);
+    }
+    function add_delete_detail(index) {
+        console.log(index);
+        add_detail.splice(index);
+        $('#add_detail_table').children().eq(index).remove();
+    }
+    $('#add_project').change(function () {
+        var projectId = $('#add_project').val();
+        bindContractor(projectId);
+        projectCodes = [];
+        bindCode(projectId);
+    });
+    $('#add_btn').click(function () {
+        $('#add_detail_pane').hide();
+        $('#add_detail_table').empty();
+        $('#add_pr_no').val('');
+        $('#add_advance_pay').prop('checked', false);
+        $('#add_contractor').prop('disabled', 'disabled');
+    });
+    $('#add_advance_pay').change(function () {
+        if (this.checked) {
+            $('#add_contractor').prop('disabled', false);
+        } else {
+            $('#add_contractor').prop('disabled', 'disabled');
+        }
+    });
+    $('#show_add_btn').click(function () {
+        $('#add_detail_pane').show();
+        $('#add_detail_quantity').val('');
+        $('#add_detail_usedate').val(null);
+        $('#add_detail_remark').val('');
+    });
+    $('#add_detail_btn').click(function () {
+        var html = '';
+        var ind = add_detail.length;
+        var product = products.find(x => x.id == $('#add_detail_product').val());
+        var projectCode = projectCodes.find(x => x.id == $('#add_detail_project_code').val());
+        var detail = {
+            productId: product.id,
+            quantity: $('#add_detail_quantity').val(),
+            projectCodeId: projectCode.id,
+            useDate: $('#add_detail_usedate').val(),
+            remark: $('#add_detail_remark').val()
+        };
+        console.log(detail);
+        html += '<tr>';
+        html += '<td>' + (ind + 1) + '</td>';
+        html += '<td><span class="material-symbols-outlined" onclick="add_edit_detail(' + ind + ')" style="color:#0752AE;">edit</span></td>';
+        html += '<td><span class="material-symbols-outlined" onclick="add_delete_detail(' + ind + ')" style="color:#A42206;">delete</span></td>';
+        html += '<td>' + product.name + '</td>';
+        html += '<td>' + detail.quantity + '</td>';
+        html += '<td>' + product.unit + '</td>';
+        html += '<td>' + detail.useDate + '</td>';
+        html += '<td>' + projectCode.code + '</td>';
+        html += '<td>' + detail.remark + '</td>';
+        html += '</tr>';
+        $('#add_detail_table').append(html);
+        add_detail.push(detail);
+        $('#add_detail_pane').hide();
+    });
+    $('#add_pr_btn').click(function () {
+        console.log(add_detail);
+        // save pr
+        // reload pr
+    });
+    // edit
+    // cancel
+    // read cancle noti
+    $(document).ready(function () {
+        console.log('ready', model);
+        bindFilter(0)
+        bindProduct();
+    });
+</script>
