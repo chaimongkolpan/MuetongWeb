@@ -29,6 +29,10 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="Controllers\Api\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Controllers\Api\" />
+  </ItemGroup>
 </Project>

@@ -28,7 +28,7 @@ namespace MuetongWeb.Controllers
                     if (user == null)
                         return View(new PageModel());
                     if (string.IsNullOrWhiteSpace(user.HomePageUrl))
-                        return View(new PageModel(user.Role));
+                        return View(new PageModel(user));
                     return Redirect(user.HomePageUrl);
                 }
                 else

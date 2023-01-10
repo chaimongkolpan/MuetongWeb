@@ -12,9 +12,25 @@ namespace MuetongWeb.Repositories
             _dbContext = dbContext;
         }
         #region Project
+        public async Task<IEnumerable<Project>> GetAsync()
+        {
+            return await _dbContext.Projects
+                                   .OrderBy(project => project.CreateDate)
+                                   .Include(project => project.Customer)
+                                   .Include(project => project.Province)
+                                   .ToListAsync();
+        }
         public async Task<IEnumerable<Project>> GetByCustomerAsync(long customerId)
         {
             return await _dbContext.Projects.Where(project => project.CustomerId == customerId)
+                                   .OrderBy(project => project.CreateDate)
+                                   .Include(project => project.Customer)
+                                   .Include(project => project.Province)
+                                   .ToListAsync();
+        }
+        public async Task<IEnumerable<Project>> GetByUserIdAsync(long userId)
+        {
+            return await _dbContext.Projects.Where(project => project.ProjectUsers != null && project.ProjectUsers.Any(pUser => pUser.UserId == userId))
                                    .OrderBy(project => project.CreateDate)
                                    .Include(project => project.Customer)
                                    .Include(project => project.Province)
@@ -76,6 +92,12 @@ namespace MuetongWeb.Repositories
         }
         #endregion
         #region Contractor
+        public async Task<IEnumerable<ProjectContractor>> GetContractorAsync(long projectId)
+        {
+            return await _dbContext.ProjectContractors.Where(project => project.ProjectId == projectId)
+                                                      .Include(project => project.Contractor)
+                                                      .ToListAsync();
+        }
         public async Task<bool> AddContractorAsync(List<ProjectContractor> projectContractors)
         {
             await _dbContext.ProjectContractors.AddRangeAsync(projectContractors);

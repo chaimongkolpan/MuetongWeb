@@ -60,6 +60,18 @@ namespace MuetongWeb.Repositories
                                         .Include(user => user.Role)
                                         .FirstOrDefaultAsync();
         }
+        public async Task<IEnumerable<User>> GetListAsync(long[] userIds)
+        {
+            var users = await _dbContext.Users.Where(user => userIds.Contains(user.Id)
+                                        )
+                                        .Include(user => user.SubDepartment)
+                                        .ThenInclude(subDepartment => subDepartment.Department)
+                                        .ThenInclude(department => department.Line)
+                                        .Include(user => user.Province)
+                                        .Include(user => user.Role)
+                                        .ToListAsync();
+            return users;
+        }
         public async Task<bool> AddAsync(User user)
         {
             await _dbContext.Users.AddAsync(user);
