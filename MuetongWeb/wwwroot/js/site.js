@@ -54,3 +54,20 @@ if ((url.includes("/Po") || url.includes("/po"))
     $('#admin-dropdown').addClass("active");
     $('#admin-password').addClass("active");
 }
+
+function dateValue(date) {
+    if (date == null) return '';
+    var dateTime = new Date(date);
+    var y = dateTime.getFullYear();
+    var m = dateTime.getMonth() + 1;
+    var d = dateTime.getDate();
+    return y + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2);
+}
+function dateFormat(date) {
+    if (date == null || date == '') return '';
+    var dateTime = new Date(date);
+    var y = dateTime.getFullYear() + 543;
+    var m = dateTime.getMonth() + 1;
+    var d = dateTime.getDate();
+    return d + '/' + m + '/' + y;
+}

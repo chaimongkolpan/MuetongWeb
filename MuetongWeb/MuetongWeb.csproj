@@ -30,9 +30,16 @@
   <ItemGroup>
     <Folder Include="Logs\" />
     <Folder Include="Controllers\Api\" />
+    <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\uploads\Pr\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Controllers\Api\" />
+    <None Remove="Models\Requests\PrIndexUpdateRequest.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\img\" />
+    <Content Remove="wwwroot\uploads\Pr\" />
   </ItemGroup>
 </Project>

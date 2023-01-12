@@ -23,6 +23,7 @@ namespace MuetongWeb.Models.Entities
         public DateTime? ModifyDate { get; set; }
         public bool? IsAdvancePay { get; set; }
         public long? ContractorId { get; set; }
+        public bool? IsReadCancel { get; set; }
 
         public virtual User? Approver { get; set; }
         public virtual Contractor? Contractor { get; set; }
