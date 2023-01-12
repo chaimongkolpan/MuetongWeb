@@ -10,5 +10,20 @@ namespace MuetongWeb.Repositories
         {
             _dbContext = dbContext;
         }
+        public async Task<IEnumerable<Po>> GetAsync()
+        {
+            return await _dbContext.Pos.OrderBy(po => po.CreateDate)
+                                       .Include(po => po.PoDetails)
+                                       .Include(po => po.User)
+                                       .ToListAsync();
+        }
+        public async Task<IEnumerable<Po>> GetByProjectAsync(long projectId)
+        {
+            return await _dbContext.Pos//.Where(po => po.ProjectId == projectId)
+                                       .OrderBy(po => po.CreateDate)
+                                       .Include(po => po.PoDetails)
+                                       .Include(po => po.User)
+                                       .ToListAsync();
+        }
     }
 }

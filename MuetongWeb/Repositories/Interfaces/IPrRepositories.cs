@@ -6,6 +6,7 @@ namespace MuetongWeb.Repositories.Interfaces
     public interface IPrRepositories
     {
         Task<IEnumerable<Pr>> SearchAsync(PrIndexSearchRequest request);
+        Task<IEnumerable<Pr>> SearchAsync(PoIndexSearchRequest request);
         Task<Pr?> GetAsync(long id);
         Task<IEnumerable<Pr>> GetAsync();
         Task<IEnumerable<Pr>> GetByProjectAsync(long projectId);
