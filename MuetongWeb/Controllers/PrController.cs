@@ -44,9 +44,26 @@ namespace MuetongWeb.Controllers
         #endregion
         #region Pr Approver
         [Route("Approver")]
-        public IActionResult Approver()
+        public async Task<IActionResult> Approver()
         {
-            return View(1);
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Pr_Approver_View, user.Permissions))
+                    {
+                        var response = await _prServices.ApproverAsync(PermissionHelpers.Authenticate(PermissionConstants.Pr_Approver_Edit, user.Permissions), user);
+                        response.Set(user);
+                        return View(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrController => Approver: " + ex.Message);
+            }
+            return Redirect(ViewConstants.DefaultHomePage);
         }
         #endregion
         #region Pr Receive

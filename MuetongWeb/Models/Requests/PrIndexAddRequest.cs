@@ -8,9 +8,10 @@ namespace MuetongWeb.Models.Requests
 		public bool AdvancePay { get; set; } = false;
 		public long ContractorId { get; set; }
 		public List<IFormFile>? Files { get; set; }
-		public List<PrDetail>? Details { get; set; }
+        public string? JsonDetails { get; set; }
+        public List<PrDetailRequest>? Details { get; set; }
 	}
-	public class PrDetail
+	public class PrDetailRequest
 	{
 		public long ProductId { get; set; }
         public decimal? Quantity { get; set; }

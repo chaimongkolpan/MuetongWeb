@@ -8,6 +8,7 @@ using MuetongWeb.Helpers;
 using MuetongWeb.Models.Requests;
 using MuetongWeb.Services;
 using MuetongWeb.Services.Interfaces;
+using Newtonsoft.Json;
 
 namespace MuetongWeb.Controllers
 {
@@ -29,16 +30,20 @@ namespace MuetongWeb.Controllers
         #region Pr
         [Route("Add")]
         [HttpPost]
-        public async Task<IActionResult> PrIndexAdd(PrIndexSearchRequest request)
+        public async Task<IActionResult> PrIndexAdd(PrIndexAddRequest? request)
         {
             try
             {
+                if (request == null)
+                    return BadRequest();
                 if (SessionHelpers.SessionAlive(HttpContext.Session))
                 {
                     var user = SessionHelpers.GetUserInfo(HttpContext.Session);
-                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_View, user.Permissions))
+                    if (user != null)
                     {
-                        var response = await _prServices.IndexSearchAsync(PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_Edit, user.Permissions), request);
+                        if(!string.IsNullOrWhiteSpace(request.JsonDetails))
+                        request.Details = JsonConvert.DeserializeObject<List<PrDetailRequest>>(request.JsonDetails);
+                        var response = await _prServices.IndexAddAsync(user.Id, request);
                         return Ok(response);
                     }
                 }
@@ -47,7 +52,33 @@ namespace MuetongWeb.Controllers
             {
                 _logger.LogError("ApiPrController => PrIndexAdd: " + ex.Message);
             }
-            return Redirect(ViewConstants.DefaultHomePage);
+            return BadRequest();
+        }
+        [Route("Update/{id}")]
+        [HttpPost]
+        public async Task<IActionResult> PrIndexUpdate(long id, PrIndexUpdateRequest? request)
+        {
+            try
+            {
+                if (request == null)
+                    return BadRequest();
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(request.JsonDetails))
+                            request.Details = JsonConvert.DeserializeObject<List<PrDetailUpdateRequest>>(request.JsonDetails);
+                        var response = await _prServices.IndexUpdateAsync(id, user.Id, request);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrIndexUpdate: " + ex.Message);
+            }
+            return BadRequest();
         }
         [Route("Search")]
         [HttpPost]
@@ -58,9 +89,10 @@ namespace MuetongWeb.Controllers
                 if (SessionHelpers.SessionAlive(HttpContext.Session))
                 {
                     var user = SessionHelpers.GetUserInfo(HttpContext.Session);
-                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_View, user.Permissions))
+                    if (user != null)
                     {
-                        var response = await _prServices.IndexSearchAsync(PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_Edit, user.Permissions), request);
+                        request.User = user;
+                        var response = await _prServices.IndexSearchAsync(request);
                         return Ok(response);
                     }
                 }
@@ -69,7 +101,74 @@ namespace MuetongWeb.Controllers
             {
                 _logger.LogError("ApiPrController => PrIndexSearch: " + ex.Message);
             }
-            return Redirect(ViewConstants.DefaultHomePage);
+            return BadRequest();
+        }
+        [Route("{id}")]
+        [HttpGet]
+        public async Task<IActionResult> PrById(long id)
+        {
+            try
+            {
+                var response = await _prServices.Get(id);
+                if (response == null)
+                    return BadRequest();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrById: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [Route("Approve/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> PrApprove(long id)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        var response = await _prServices.Approve(id, user.Id);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrApprove: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [Route("Cancel/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> PrCancel(long id)
+        {
+            try
+            {
+                return Ok(await _prServices.Cancel(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrCancel: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [Route("Read/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> PrRead(long id)
+        {
+            try
+            {
+                return Ok(await _prServices.Read(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrRead: " + ex.Message);
+            }
+            return BadRequest();
         }
         [Route("Requester/{projectId}")]
         [HttpGet]

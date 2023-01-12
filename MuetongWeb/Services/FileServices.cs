@@ -3,18 +3,63 @@ using MuetongWeb.Models.Requests;
 using MuetongWeb.Services.Interfaces;
 using OfficeOpenXml;
 using Newtonsoft.Json;
+using MuetongWeb.Repositories.Interfaces;
+using MuetongWeb.Helpers;
 
 namespace MuetongWeb.Services
 {
     public class FileServices : IFileServices
     {
         private readonly ILogger<FileServices> _logger;
+        private readonly IFileRepositories _fileRepositories;
         public FileServices
         (
-            ILogger<FileServices> logger
+            ILogger<FileServices> logger,
+            IFileRepositories fileRepositories
         )
         {
             _logger = logger;
+            _fileRepositories = fileRepositories;
+        }
+        public async Task<bool> ImportFileList(long id, string type,List<IFormFile> files)
+        {
+            try
+            {
+                List<Models.Entities.File> saveFiles = new List<Models.Entities.File>();
+                var path = Path.Combine(FileConstants.UploadPath, type);
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                var fullpath = Path.Combine(path, id.ToString());
+                if (!Directory.Exists(fullpath))
+                    Directory.CreateDirectory(fullpath);
+                foreach (var file in files)
+                {
+                    string filePath = Path.Combine(fullpath, file.FileName);
+                    using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+                    var ext = FileHelpers.GetExtention(file.FileName);
+                    Models.Entities.File tmp = new Models.Entities.File()
+                    {
+                        EntityId = id,
+                        Type = type,
+                        Extention = ext,
+                        Path = ""
+                    };
+                    saveFiles.Add(tmp);
+                }
+                if (saveFiles.Any())
+                {
+                    await _fileRepositories.AddRangeAsync(saveFiles);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("FileServices => ImportFileList: " + ex.Message);
+                return false;
+            }
         }
         public async Task<SettingImportCustomerDataModel?> ReadExcel(SettingImportCustomerRequest request, List<ExcelDataSchema> schemas)
         {
