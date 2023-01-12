@@ -10,7 +10,7 @@ using MuetongWeb.Services;
 using MuetongWeb.Services.Interfaces;
 using Newtonsoft.Json;
 
-namespace MuetongWeb.Controllers
+namespace MuetongWeb.Controllers.Api
 {
     [Route("api/pr")]
     public class ApiPrController : ControllerBase

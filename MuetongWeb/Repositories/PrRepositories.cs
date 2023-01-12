@@ -4,6 +4,8 @@ using MuetongWeb.Models.Entities;
 using MuetongWeb.Models.Requests;
 using MuetongWeb.Constants;
 using MuetongWeb.Helpers;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MuetongWeb.Repositories
 {
@@ -23,6 +25,25 @@ namespace MuetongWeb.Repositories
                             && (string.IsNullOrWhiteSpace(request.PrNo) || request.PrNo == RequestConstants.AllString || pr.PrNo == request.PrNo)
                             && (!request.RequesterId.HasValue || request.RequesterId.Value == RequestConstants.AllValue || pr.UserId == request.RequesterId.Value)
                             && (string.IsNullOrWhiteSpace(request.Status) || request.Status == RequestConstants.AllString || pr.Status == request.Status)
+                        )
+                        .OrderBy(pr => pr.CreateDate)
+                        .Include(pr => pr.Project)
+                        .Include(pr => pr.Contractor)
+                        .Include(pr => pr.User)
+                        .Include(pr => pr.Approver)
+                        .Include(pr => pr.PrDetails).ThenInclude(detail => detail.Product)
+                        .Include(pr => pr.PrDetails).ThenInclude(detail => detail.PoDetail).ThenInclude(prDetail => prDetail.Po)
+                        .Include(pr => pr.PrDetails).ThenInclude(detail => detail.ProjectCode)
+                        .ToListAsync();
+        }
+        public async Task<IEnumerable<Pr>> SearchAsync(PoIndexSearchRequest request)
+        {
+            return await _dbContext.Prs.Where(pr => pr.Project != null && request.User != null
+                            && (pr.Project.ProjectUsers.Any(pUser => pUser.UserId == request.User.Id) || RoleHelpers.CanSeeAllProject(request.User.Role))
+                            && (!request.ProjectId.HasValue || request.ProjectId.Value == RequestConstants.AllValue || pr.ProjectId == request.ProjectId.Value)
+                            && (string.IsNullOrWhiteSpace(request.PrNo) || request.PrNo == RequestConstants.AllString || pr.PrNo == request.PrNo)
+                            && (!request.RequesterId.HasValue || request.RequesterId.Value == RequestConstants.AllValue || pr.UserId == request.RequesterId.Value)
+                            && pr.Status == StatusConstants.PrRequested
                         )
                         .OrderBy(pr => pr.CreateDate)
                         .Include(pr => pr.Project)
