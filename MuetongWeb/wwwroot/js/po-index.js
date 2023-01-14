@@ -97,7 +97,10 @@ function check_insert(i) {
     return insertDetailList.findIndex(item => item.id == prDetails.details[i].id) < 0;
 }
 function get_detail_check_id(id) {
-    return parseInt(id.substring(14));
+    var arr = id.split('__');
+    if (arr.length > 1)
+        return parseInt(arr[1]);
+    return -1;
 }
 function insertDetail(i) {
     var tmp = Object.assign({}, prDetails.details[i]);
@@ -148,45 +151,98 @@ function createDetailList() {
     // check add other
     $('#po_detail_table').append(html);
     $('input[id^="po_detail_price__"]').focusout(function () {
-        var i = get_detail_check_id($(this).id);
+        var i = get_detail_check_id($(this)[0].id);
         insertDetailList[i].pricePerUnit = floatValue($(this).val());
         calRecord(i);
     });
     $('input[id^="po_detail_price__"]').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
-            var i = get_detail_check_id($(this).id);
+            var i = get_detail_check_id($(this)[0].id);
             insertDetailList[i].pricePerUnit = floatValue($(this).val());
             calRecord(i);
         }
     });
     $('input[id^="po_detail_discount__"]').focusout(function () {
-        var i = get_detail_check_id($(this).id);
+        var i = get_detail_check_id($(this)[0].id);
         insertDetailList[i].discount = floatValue($(this).val());
         calRecord(i);
     });
     $('input[id^="po_detail_discount__"]').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
-            var i = get_detail_check_id($(this).id);
+            var i = get_detail_check_id($(this)[0].id);
             insertDetailList[i].discount = floatValue($(this).val());
             calRecord(i);
         }
     });
     $('input[id^="po_detail_vat_check__"]').change(function () {
-
-        console.log($(this).val());
+        var i = get_detail_check_id($(this)[0].id);
+        insertDetailList[i].isVat = $(this).prop('checked');
+        calRecord(i);
     });
-    $('input[id^="pr_detail_wht_check__"]').change(function () {
-
-        console.log($(this).val());
+    $('input[id^="po_detail_wht_check__"]').change(function () {
+        var i = get_detail_check_id($(this)[0].id);
+        insertDetailList[i].isWht = $(this).prop('checked');
+        console.log(i, insertDetailList[i]);
+        calRecord(i);
     });
 }
+$('#po_vat').change(function () {
+    $('input[id^="po_detail_vat_check__"]').each(function (i, obj) {
+        $(obj).prop('checked', $('#po_vat').prop('checked'));
+        var j = get_detail_check_id($(obj)[0].id);
+        insertDetailList[j].isVat = $(obj).prop('checked');
+        calRecord(j);
+    });
+});
+$('#po_wht').change(function () {
+    $('input[id^="po_detail_wht_check__"]').each(function (i, obj) {
+        $(obj).prop('checked', $('#po_wht').prop('checked'));
+        var j = get_detail_check_id($(obj)[0].id);
+        insertDetailList[j].isWht = $(obj).prop('checked');
+        calRecord(j);
+    });
+});
 function calRecord(i) {
-
+    var vat = 0;
+    var wht = 0;
+    var subTotal = insertDetailList[i].pricePerUnit * insertDetailList[i].quantity;
+    var total = subTotal - insertDetailList[i].discount;
+    if (insertDetailList[i].isVat) vat = 0.07;
+    $('#po_detail_vat_text__' + i).html(floatFormat(total * vat));
+    insertDetailList[i].vat = floatValue(total * vat);
+    var tmp = floatValue($('#po_wht_value').val());
+    if (insertDetailList[i].isWht) wht = tmp / 100;
+    $('#po_detail_wht_text__' + i).html(floatFormat(total * wht));
+    insertDetailList[i].wht = floatValue(total * wht);
+    var grandtotal = total + insertDetailList[i].vat - insertDetailList[i].wht;
+    $('#po_detail_total__' + i).html(floatFormat(grandtotal));
+    insertDetailList[i].total = grandtotal;
+    calAll();
 }
 function calAll() {
-
+    var subtotal = 0;
+    var discount = 0;
+    var vat = 0;
+    var total = 0;
+    var wht = 0;
+    var grandtotal = 0;
+    for (var i in insertDetailList) {
+        var tmp = insertDetailList[i];
+        subtotal += tmp.total;
+        discount += tmp.discount;
+        vat += tmp.vat;
+        wht += tmp.wht;
+        total += tmp.total - tmp.discount;
+        grandtotal += (tmp.total - tmp.discount) + tmp.vat - tmp.wht;
+    }
+    $('#po_foot_subtotal').html(floatFormat(subtotal));
+    $('#po_foot_discount').html(floatFormat(discount));
+    $('#po_foot_vat').html(floatFormat(vat));
+    $('#po_foot_total').html(floatFormat(total));
+    $('#po_foot_wht').html(floatFormat(wht));
+    $('#po_foot_grandtotal').html(floatFormat(grandtotal));
 }
 function createTable() {
     console.log(poColl);
@@ -237,7 +293,7 @@ function createTable() {
                     html += '</tr>';
                 }
             } else {
-                html += '<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>';
+                html += '<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>';
                 html += '</tr>';
             }
         }
@@ -327,6 +383,77 @@ function searchPr() {
 }
 $('#add_search').click(function () {
     searchPr()
+});
+$('#add_purchase').click(function () {
+    console.log(insertDetailList);
+    // make data
+});
+$('#add_store').change(function () {
+    console.log(insertDetailList);
+    // get payment type
+});
+function hide_credit_type() {
+    $('#add_non_credit_day_pane').hide();
+    $('#add_bg_contract_no_pane').hide();
+    $('#add_bg_date_pane').hide();
+    $('#add_port_check_no_pane').hide();
+    $('#add_port_check_date_pane').hide();
+    $('#add_after_transfer_day_pane').hide();
+    $('#add_after_billing_day_pane').hide();
+    $('#add_blank_pane').hide();
+}
+$('#add_credit_type').change(function () {
+    if ($(this).val() == 'NonCredit') {
+        hide_credit_type();
+        $('#add_non_credit_day_pane').show();
+    } else if ($(this).val() == 'BG') {
+        hide_credit_type();
+        $('#add_bg_contract_no_pane').show();
+        $('#add_bg_date_pane').show();
+        $('#add_blank_pane').show();
+    } else if ($(this).val() == 'PortCheck') {
+        hide_credit_type();
+        $('#add_port_check_no_pane').show();
+        $('#add_port_check_date_pane').show();
+        $('#add_blank_pane').show();
+    } else if ($(this).val() == 'AfterTransfer') {
+        hide_credit_type();
+        $('#add_after_transfer_day_pane').show();
+    } else if ($(this).val() == 'AfterBilling') {
+        hide_credit_type();
+        $('#add_after_billing_day_pane').show();
+    } else {
+        hide_credit_type();
+    }
+});
+$('#add_payment_type').change(function () {
+    if ($(this).val() == 'โอนเงิน') {
+        $('#add_payment_account').prop('disabled', false);
+    } else {
+        $('#add_payment_account').prop('disabled', 'disabled');
+    }
+});
+$('#add_addition_check').change(function () {
+    if ($('#add_addition_check').prop('checked')) {
+        $('#add_addition').prop('disabled', false);
+        $('#add_addition').val('ค่าขนส่ง');
+        $('#add_addition_other').prop('disabled', 'disabled');
+        $('#add_addition_other').val('');
+    } else {
+        $('#add_addition').prop('disabled', 'disabled');
+        $('#add_addition').val('ค่าขนส่ง');
+        $('#add_addition_other').prop('disabled', 'disabled');
+        $('#add_addition_other').val('');
+    }
+});
+$('#add_addition').change(function () {
+    $('#add_addition_other').val('');
+    if ($(this).val() == 'อื่นๆ') {
+        $('#add_addition_other').prop('disabled', false);
+    } else {
+        $('#add_addition_other').prop('disabled', 'disabled');
+    }
+
 });
 $(document).ready(function () {
     console.log('ready', model);
