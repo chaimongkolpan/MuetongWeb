@@ -229,7 +229,6 @@ function createTable() {
             } else {
                 html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
             }
-            html += '</td>';
             html += '<td ' + rowspan + '>' + pr.requesterName + '</td>';
             html += '<td ' + rowspan + '>' + pr.approverName + '</td>';
             if (len > 0) {

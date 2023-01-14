@@ -10,6 +10,7 @@ namespace MuetongWeb.Services.Interfaces
         Task<PoModel> ApproverAsync(bool canEdit, UserInfoModel user);
 
         Task<PoIndexResponse> IndexSearchAsync(PoIndexSearchRequest request);
+        Task<PoIndexPrResponse> IndexSearchPrAsync(PoIndexPrSearch request);
         Task<List<UserResponse>> GetRequesterByProject(long projectId);
         Task<List<string>> GetPrNoByProject(long projectId);
         Task<List<string>> GetPoNoByProject(long projectId);

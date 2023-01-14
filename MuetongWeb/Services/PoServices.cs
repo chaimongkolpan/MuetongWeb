@@ -98,6 +98,20 @@ namespace MuetongWeb.Services
                 return new PoIndexResponse();
             }
         }
+        public async Task<PoIndexPrResponse> IndexSearchPrAsync(PoIndexPrSearch request)
+        {
+            try
+            {
+                var details = await _prRepositories.SearchAsync(request);
+                var response = new PoIndexPrResponse(details);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PoServices => IndexSearchPrAsync: " + ex.Message);
+                return new PoIndexPrResponse();
+            }
+        }
         public async Task<List<UserResponse>> GetRequesterByProject(long projectId)
         {
             IEnumerable<Pr> prs;
