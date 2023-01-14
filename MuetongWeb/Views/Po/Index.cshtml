@@ -649,8 +649,8 @@
                                             <div class="row row-cols-1 row-cols-lg-2">
                                                 <div class="col">
                                                     <div class="input-group mb-3">
-                                                        <label class="input-group-text" for="ProjectName">ผู้จำหน่าย</label>
-                                                        <select class="form-select" id="ProjectName" required>
+                                                        <label class="input-group-text" for="add_store">ผู้จำหน่าย</label>
+                                                        <select class="form-select" id="add_store" required>
                                                             <option selected>ทั้งหมด</option>
                                                         </select>
                                                     </div>
@@ -658,87 +658,88 @@
                                                 <div class="col">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">ที่อยู่</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" disabled>
+                                                        <input type="text" class="form-control" id="add_address" aria-describedby="basic-addon1" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">เบอร์ติดต่อ</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" disabled>
+                                                        <input type="text" class="form-control" id="add_mobile_no" aria-describedby="basic-addon1" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">เลขประจำตัวผู้เสียภาษี</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" disabled>
+                                                        <input type="text" class="form-control" id="add_tax_no" aria-describedby="basic-addon1" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="input-group mb-3">
                                                         <label class="input-group-text" for="ProjectName">หลักประกันร้านค้า</label>
-                                                        <select class="form-select" id="ProjectName" required>
-                                                            <option selected>Non credit (ไม่มีหลักประกัน)</option>
-                                                            <option>BG (หนังสือค้ำประกันธนาคาร)</option>
-                                                            <option>Port Check</option>
-                                                            <option>หลังรับสินค้า</option>
-                                                            <option>หลังรับวางบิล</option>
+                                                        <select class="form-select" id="add_credit_type" required>
+                                                            <option value="NonCredit" selected>Non credit (ไม่มีหลักประกัน)</option>
+                                                            <option value="BG">BG (หนังสือค้ำประกันธนาคาร)</option>
+                                                            <option value="PortCheck">Port Check</option>
+                                                            <option value="AfterTransfer">หลังรับสินค้า</option>
+                                                            <option value="AfterBilling">หลังรับวางบิล</option>
                                                         </select>
                                                     </div>
                                                 </div>
+                                                <div class="col" id="add_blank_pane" style="display: none;"></div>
                                                 <!-- ////////////////Non credit (ไม่มีหลักประกัน)/////////////////// -->
-                                                <div class="col">
+                                                <div class="col" id="add_non_credit_day_pane">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">ชำระล่วงหน้า</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" required>
+                                                        <input type="text" class="form-control" id="add_non_credit_day" aria-describedby="basic-addon1" required>
                                                         <span class="input-group-text" id="basic-addon1">วัน</span>
                                                     </div>
                                                 </div>
                                                 <!-- ////////////////BG (หนังสือค้ำประกันธนาคาร)/////////////////// -->
-                                                <div class="col">
+                                                <div class="col" id="add_bg_contract_no_pane" style="display: none;">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">เลขที่สัญญา</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" required>
+                                                        <input type="text" class="form-control" id="add_bg_contract_no" aria-describedby="basic-addon1" required>
                                                     </div>
                                                 </div>
-                                                <div class="col">
+                                                <div class="col" id="add_bg_date_pane" style="display: none;">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">วันที่ชำระเงิน</span>
-                                                        <input type="date" class="form-control" id="PrNo1" aria-describedby="basic-addon1" required>
+                                                        <input type="date" class="form-control" id="add_bg_date" aria-describedby="basic-addon1" required>
                                                     </div>
                                                 </div>
                                                 <!-- ////////////////Port Check////////////////// -->
-                                                <div class="col">
+                                                <div class="col" id="add_port_check_no_pane" style="display: none;">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">เลขที่เช็ค</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" required>
+                                                        <input type="text" class="form-control" id="add_port_check_no" aria-describedby="basic-addon1" required>
                                                     </div>
                                                 </div>
-                                                <div class="col">
+                                                <div class="col" id="add_port_check_date_pane" style="display: none;">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">วันที่ชำระเงิน</span>
-                                                        <input type="date" class="form-control" id="PrNo1" aria-describedby="basic-addon1" required>
+                                                        <input type="date" class="form-control" id="add_port_check_date" aria-describedby="basic-addon1" required>
                                                     </div>
                                                 </div>
                                                 <!-- ////////////////หลังรับสินค้า/////////////////// -->
-                                                <div class="col">
+                                                <div class="col" id="add_after_transfer_day_pane" style="display: none;">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">จำนวนวัน</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" required>
+                                                        <input type="text" class="form-control" id="add_after_transfer_day" aria-describedby="basic-addon1" required>
                                                         <span class="input-group-text" id="basic-addon1">วัน</span>
                                                     </div>
                                                 </div>
                                                 <!-- ////////////////หลังรับวางบิล/////////////////// -->
-                                                <div class="col">
+                                                <div class="col" id="add_after_billing_day_pane" style="display: none;">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">จำนวนวัน</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" required>
+                                                        <input type="text" class="form-control" id="add_after_billing_day" aria-describedby="basic-addon1" required>
                                                         <span class="input-group-text" id="basic-addon1">วัน</span>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="input-group mb-3">
-                                                        <label class="input-group-text" for="ProjectName">ช่องทางการชำระเงิน</label>
-                                                        <select class="form-select" id="ProjectName" required>
+                                                        <label class="input-group-text" for="add_payment_type">ช่องทางการชำระเงิน</label>
+                                                        <select class="form-select" id="add_payment_type" required>
                                                             <option selected>เงินสด</option>
                                                             <option>โอนเงิน</option>
                                                             <option>บัตรเครดิต</option>
@@ -747,8 +748,8 @@
                                                 </div>
                                                 <div class="col">
                                                     <div class="input-group mb-3">
-                                                        <label class="input-group-text" for="ProjectName">บัญชีโอนเงิน</label>
-                                                        <select class="form-select" id="ProjectName" required>
+                                                        <label class="input-group-text" for="add_payment_account">บัญชีโอนเงิน</label>
+                                                        <select class="form-select" id="add_payment_account" disabled="disabled" required>
                                                             <option selected>ธนาคารกสิกร 1234xxxxx</option>
                                                         </select>
                                                     </div>
@@ -756,44 +757,44 @@
                                                 <div class="col">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">วันที่ต้องชำระ</span>
-                                                        <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1" required>
+                                                        <input type="date" class="form-control" id="add_payment_date" aria-describedby="basic-addon1" required>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">ช่องทางรับใบวางบิล</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" required>
+                                                        <input type="text" class="form-control" id="add_billing_receive" aria-describedby="basic-addon1" required>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</span>
-                                                        <input type="text" class="form-control" id="PrNo1" aria-describedby="basic-addon1" required>
+                                                        <input type="text" class="form-control" id="add_receipt_receive" aria-describedby="basic-addon1" required>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="input-group mb-3">
                                                         <span class="input-group-text" id="basic-addon1">แพลนของเข้า</span>
-                                                        <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1" required>
+                                                        <input type="date" class="form-control" id="add_plan_transfer_date" aria-describedby="basic-addon1" required>
                                                     </div>
                                                 </div>
                                                 <div class="input-group mb-3">
                                                     <div class="input-group-text">
-                                                        <input type="checkbox" checked>
+                                                        <input type="checkbox" id="add_addition_check" checked>
                                                     </div>
                                                     <span class="input-group-text" for="ProjectName">ค่าใช้จ่ายเพิ่มเติม</span>
-                                                    <select class="form-select" id="ProjectName" required>
+                                                    <select class="form-select" id="add_addition" required>
                                                         <option selected>ค่าขนส่ง</option>
                                                         <option>อื่นๆ</option>
                                                     </select>
 
-                                                    <input type="text" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1" disabled required>
+                                                    <input type="text" class="form-control" id="add_addition_other" aria-describedby="basic-addon1" disabled required>
 
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <div class="file-loading">
-                                                            <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                                                            <input id="add_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -806,9 +807,9 @@
                                                                 <th scope="col">โครงการ</th>
                                                                 <th scope="col">เลขที่ PR</th>
                                                                 <!--
-                                                                <th scope="col">หักผู้รับเหมา</th>
-                                                                <th scope="col">ผู้รับเหมา</th>
-                                                                -->
+                    <th scope="col">หักผู้รับเหมา</th>
+                    <th scope="col">ผู้รับเหมา</th>
+                    -->
                                                                 <th scope="col">ผู้สั่งสินค้า</th>
                                                                 <th scope="col">รายการสินค้า</th>
                                                                 <th scope="col">วันที่ต้องการส่งมอบ</th>
@@ -822,103 +823,50 @@
                                                                 <th scope="col">
                                                                     <div class="custom-control custom-checkbox">
                                                                         <label class="custom-control-label" for="customCheck1">ภาษีมูลค่าเพิ่ม 7%</label>
-                                                                        <input type="checkbox" class="custom-control-input" id="customCheck1" checked>
+                                                                        <input type="checkbox" class="custom-control-input" id="po_vat">
                                                                     </div>
                                                                 </th>
                                                                 <th scope="col">
                                                                     <div class="custom-control custom-checkbox">
-                                                                        <label class="custom-control-label" for="customCheck1">หัก ณ ที่จ่าย <input type="text" class="form-control" value="3" id="PrNo1" aria-describedby="basic-addon1" style="width: 50px;"> %</label>
-                                                                        <input type="checkbox" class="custom-control-input" value="3" id="customCheck1" checked>
+                                                                        <label class="custom-control-label" for="customCheck1">หัก ณ ที่จ่าย <input type="text" class="form-control" value="3" id="po_wht_value" aria-describedby="basic-addon1" style="width: 50px;"> %</label>
+                                                                        <input type="checkbox" class="custom-control-input" value="3" id="po_wht">
                                                                     </div>
                                                                 </th>
                                                                 <th scope="col">รวมเงินทั้งสิ้น</th>
-
                                                             </tr>
                                                         </thead>
                                                         <tbody id="po_detail_table">
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td><span class="material-symbols-outlined" style="color:#A42206;">playlist_remove</span></td>
-                                                                <td>สฟ.ท่าลาน 3</td>
-                                                                <td>005/0218</td>
-                                                                <td><span class="material-symbols-outlined" style="color:#000;">done</span></td>
-                                                                <td>ชื่อผู้รับเหมา</td>
-                                                                <td>นายทดลอง</td>
-                                                                <td>ทรายหยาบ</td>
-                                                                <td>30/12/65</td>
-                                                                <td>3.3.4</td>
-                                                                <td>ด่วน</td>
-                                                                <td>รอสินค้าจัดส่ง</td>
-                                                                <td>3.00</td>
-                                                                <td>คิว</td>
-                                                                <td><input type="text" class="form-control" value="200.00" id="PrNo1" aria-describedby="basic-addon1" style="width: 120px;"></td>
-                                                                <td><input type="text" class="form-control" value="10.00" id="PrNo1" aria-describedby="basic-addon1" style="width: 120px;"></td>
-                                                                <td><label class="custom-control-label" for="customCheck1">14.00</label><input type="checkbox" class="custom-control-input" id="customCheck1"></td>
-                                                                <td><label class="custom-control-label" for="customCheck1">6.00</label><input type="checkbox" class="custom-control-input" id="customCheck1"></td>
-                                                                <td>210.00</td>
-                                                            </tr>
-                                                            <!-- ////////////////ค่าใช้จ่ายเพิ่มเติม/////////////////// -->
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td>
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td>ค่าขนส่ง</td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td><input type="text" class="form-control" value="500.00" id="PrNo1" aria-describedby="basic-addon1" style="width: 120px;"></td>
-                                                                <td><input type="text" class="form-control" value="0.00" id="PrNo1" aria-describedby="basic-addon1" style="width: 120px;"></td>
-                                                                <td>
-                                                                    <div class="custom-control custom-checkbox">
-                                                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                                                    </div> 0.00
-                                                                </td>
-                                                                <td>
-                                                                    <div class="custom-control custom-checkbox">
-                                                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                                                    </div> 0.00
-                                                                </td>
-                                                                <td>500.00</td>
-                                                            </tr>
                                                         </tbody>
                                                         <tfoot>
                                                             <tr>
                                                                 <td colspan="10" style="text-align: end"><b>รวมเงิน</b></td>
                                                                 <td colspan="1"></td>
-                                                                <td colspan="9" style="text-align: start"><b>4,300.00</b></td>
+                                                                <td colspan="9" style="text-align: start"><b id="po_foot_subtotal">0.00</b></td>
                                                             </tr>
                                                             <tr>
                                                                 <td colspan="10" style="text-align: end"><b>ส่วนลด</b></td>
                                                                 <td colspan="1"></td>
-                                                                <td colspan="9" style="text-align: start"><b>0.00</b></td>
+                                                                <td colspan="9" style="text-align: start"><b id="po_foot_discount">0.00</b></td>
                                                             </tr>
                                                             <tr>
                                                                 <td colspan="10" style="text-align: end"><b>ภาษีมูลค่าเพิ่ม 7%</b></td>
                                                                 <td colspan="1"></td>
-                                                                <td colspan="9" style="text-align: start"><b>301.00</b></td>
+                                                                <td colspan="9" style="text-align: start"><b id="po_foot_vat">0.00</b></td>
                                                             </tr>
                                                             <tr>
                                                                 <td colspan="10" style="text-align: end"><b>รวมเงินทั้งสิ้น</b></td>
                                                                 <td colspan="1"></td>
-                                                                <td colspan="9" style="text-align: start"><b>4,701.00</b></td>
+                                                                <td colspan="9" style="text-align: start"><b id="po_foot_total">0.00</b></td>
                                                             </tr>
                                                             <tr>
                                                                 <td colspan="10" style="text-align: end"><b>หัก ณ ที่จ่าย 3%</b></td>
                                                                 <td colspan="1"></td>
-                                                                <td colspan="9" style="text-align: start"><b>0.00</b></td>
+                                                                <td colspan="9" style="text-align: start"><b id="po_foot_wht">0.00</b></td>
                                                             </tr>
                                                             <tr>
                                                                 <td colspan="10" style="text-align: end"><b>จำนวนเงินทั้งสิ้น</b></td>
                                                                 <td colspan="1"></td>
-                                                                <td colspan="9" style="text-align: start"><b>4,701.00</b></td>
+                                                                <td colspan="9" style="text-align: start"><b id="po_foot_grandtotal">0.00</b></td>
                                                             </tr>
                                                         </tfoot>
                                                     </table>
@@ -937,7 +885,7 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                    <button type="button" class="btn btn-success">สั่งซื้อ</button>
+                    <button type="button" id="add_purchase" class="btn btn-success">สั่งซื้อ</button>
                 </div>
             </div>
         </div>
