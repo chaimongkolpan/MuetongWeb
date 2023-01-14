@@ -17,10 +17,12 @@ namespace MuetongWeb.Controllers.Api
     {
         private readonly ILogger<ApiPoController> _logger;
         private readonly IPoServices _poServices;
-        public ApiPoController(ILogger<ApiPoController> logger, IPoServices poServices)
+        private readonly IPrServices _prServices;
+        public ApiPoController(ILogger<ApiPoController> logger, IPoServices poServices, IPrServices prServices)
         {
             _logger = logger;
             _poServices = poServices;
+            _prServices = prServices;
         }
 
         public IActionResult Index()
@@ -48,6 +50,29 @@ namespace MuetongWeb.Controllers.Api
             catch (Exception ex)
             {
                 _logger.LogError("ApiPoController => PoIndexSearch: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [Route("SearchPr")]
+        [HttpPost]
+        public async Task<IActionResult> PoIndexPrSearch(PoIndexPrSearch request)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        request.User = user;
+                        var response = await _poServices.IndexSearchPrAsync(request);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPoController => PoIndexPrSearch: " + ex.Message);
             }
             return BadRequest();
         }
@@ -93,6 +118,21 @@ namespace MuetongWeb.Controllers.Api
             catch (Exception ex)
             {
                 _logger.LogError("ApiPrController => GetPoNo: " + ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+        [Route("Product")]
+        [HttpGet]
+        public async Task<IActionResult> GetProduct()
+        {
+            try
+            {
+                var response = await _prServices.GetProduct();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => GetProduct: " + ex.Message);
                 return BadRequest(ex.Message);
             }
         }

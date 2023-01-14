@@ -181,5 +181,25 @@ namespace MuetongWeb.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<IEnumerable<PrDetail>> SearchAsync(PoIndexPrSearch request)
+        {
+            var details = await _dbContext.PrDetails.Where(detail => detail.Pr.Project != null && request.User != null
+                            && detail.Status == StatusConstants.PrDetailRequested
+                            && (detail.Pr.Project.ProjectUsers.Any(pUser => pUser.UserId == request.User.Id) || RoleHelpers.CanSeeAllProject(request.User.Role))
+                            && (!request.ProjectId.HasValue || request.ProjectId.Value == RequestConstants.AllValue || detail.Pr.ProjectId == request.ProjectId)
+                            && (string.IsNullOrWhiteSpace(request.PrNo) || request.PrNo == RequestConstants.AllString || detail.Pr.PrNo == request.PrNo)
+                            && (!request.ProductId.HasValue || request.ProductId.Value == RequestConstants.AllValue || detail.ProductId == request.ProductId)
+                                                    )
+                                                    .OrderBy(detail => detail.Pr.CreateDate)
+                                                    .Include(detail => detail.Pr)
+                                                    .ThenInclude(pr => pr.Project)
+                                                    .Include(detail => detail.Pr)
+                                                    .ThenInclude(pr => pr.User)
+                                                    .Include(detail => detail.Product)
+                                                    .Include(detail => detail.ProjectCode)
+                                                    .ToListAsync();
+            return details;
+        }
     }
 }

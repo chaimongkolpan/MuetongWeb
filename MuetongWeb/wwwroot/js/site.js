@@ -71,3 +71,15 @@ function dateFormat(date) {
     var d = dateTime.getDate();
     return d + '/' + m + '/' + y;
 }
+function floatValue(num) {
+    var tmp = parseFloat(num);
+    if (isNaN(tmp))
+        return 0;
+    return tmp;
+}
+function floatFormat(num) {
+    var tmp = parseFloat(num);
+    if (isNaN(tmp))
+        return '0.00';
+    return tmp.toFixed(2);
+}

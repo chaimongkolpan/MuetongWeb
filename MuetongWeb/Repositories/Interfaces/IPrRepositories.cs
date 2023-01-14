@@ -24,5 +24,6 @@ namespace MuetongWeb.Repositories.Interfaces
 
         Task<bool> UpdateAllDetailStatus(long prId, string status);
         Task<bool> UpdateDetailStatus(long id, string status);
+        Task<IEnumerable<PrDetail>> SearchAsync(PoIndexPrSearch request);
     }
 }

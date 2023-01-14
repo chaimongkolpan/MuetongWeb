@@ -583,8 +583,8 @@
                         </div>
                         <div class="col">
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="ProductId">รายการสินค้า</label>
-                                <select class="form-select" id="ProductId">
+                                <label class="input-group-text" for="AddProductId">รายการสินค้า</label>
+                                <select class="form-select" id="AddProductId">
                                     <option selected>ทั้งหมด</option>
                                 </select>
                             </div>
@@ -593,7 +593,7 @@
                         <div class="col-12 d-flex justify-content-center ">
                             <button type="button" id="add_search" class="btn btn-outline-success"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
                         </div>
-                        <p></p>
+                        <p></p><br />
                         <div class="col-12">
                             <div class="accordion" id="accordionExample">
                                 <!-- /////////////////ค้นหา////////////////// -->
@@ -610,9 +610,8 @@
                                                     <table class="table table-hover">
                                                         <thead>
                                                             <tr>
-                                                                <th scope="col"><input type="checkbox" class="custom-control-input" id="customCheck1" checked>#</th>
+                                                                <th scope="col"><input type="checkbox" class="custom-control-input" id="detail_check_all">#</th>
                                                                 <th scope="col">ลำดับ</th>
-                                                                <th scope="col">ดำเนินการ</th>
                                                                 <th scope="col">โครงการ</th>
                                                                 <th scope="col">เลขที่ PR</th>
                                                                 <th scope="col">ผู้สั่งสินค้า</th>
@@ -627,44 +626,13 @@
                                                                 <th scope="col">เอกสารอ้างอิงตรวจสอบสั่งสินค้า</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="custom-control custom-checkbox">
-                                                                        <input type="checkbox" class="custom-control-input" id="customCheck1" checked>
-                                                                        <label class="custom-control-label" for="customCheck1">1</label>
-                                                                    </div>
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td>
-                                                                    <span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefOrder">
-                                                                        description
-                                                                    </span>
-                                                                </td>
-                                                                <td>
-                                                                    <span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefApproverOrder">
-                                                                        description
-                                                                    </span>
-                                                                </td>
-                                                            </tr>
+                                                        <tbody id="add_pr_table">
                                                         </tbody>
                                                     </table>
                                                 </div>
                                                 <div class=" d-flex justify-content-center p-3">
-                                                    <button type="button" class="btn btn-warning"><i class="fa fa-plus"> &nbsp;เพิ่มรายการสินค้า</i></button> &nbsp; &nbsp;
+                                                    <button id="add_detail_add_btn" type="button" class="btn btn-warning"><i class="fa fa-plus"> &nbsp;เพิ่มรายการสินค้า</i></button> &nbsp; &nbsp;
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -837,8 +805,10 @@
                                                                 <th scope="col">ลบออกจากรายการ</th>
                                                                 <th scope="col">โครงการ</th>
                                                                 <th scope="col">เลขที่ PR</th>
+                                                                <!--
                                                                 <th scope="col">หักผู้รับเหมา</th>
                                                                 <th scope="col">ผู้รับเหมา</th>
+                                                                -->
                                                                 <th scope="col">ผู้สั่งสินค้า</th>
                                                                 <th scope="col">รายการสินค้า</th>
                                                                 <th scope="col">วันที่ต้องการส่งมอบ</th>
@@ -865,20 +835,13 @@
 
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
+                                                        <tbody id="po_detail_table">
                                                             <tr>
                                                                 <td>1</td>
-                                                                <td>
-                                                                    <span class="material-symbols-outlined" style="color:#A42206;">
-                                                                        playlist_remove
-                                                                    </span>
-                                                                </td>
+                                                                <td><span class="material-symbols-outlined" style="color:#A42206;">playlist_remove</span></td>
                                                                 <td>สฟ.ท่าลาน 3</td>
                                                                 <td>005/0218</td>
-                                                                <td>
-                                                                    <span class="material-symbols-outlined"
-                                                                          style="color:#000;">done</span>
-                                                                </td>
+                                                                <td><span class="material-symbols-outlined" style="color:#000;">done</span></td>
                                                                 <td>ชื่อผู้รับเหมา</td>
                                                                 <td>นายทดลอง</td>
                                                                 <td>ทรายหยาบ</td>
@@ -890,16 +853,8 @@
                                                                 <td>คิว</td>
                                                                 <td><input type="text" class="form-control" value="200.00" id="PrNo1" aria-describedby="basic-addon1" style="width: 120px;"></td>
                                                                 <td><input type="text" class="form-control" value="10.00" id="PrNo1" aria-describedby="basic-addon1" style="width: 120px;"></td>
-                                                                <td>
-                                                                    <div class="custom-control custom-checkbox">
-                                                                        <input type="checkbox" class="custom-control-input" id="customCheck1" checked>
-                                                                    </div> 14.00
-                                                                </td>
-                                                                <td>
-                                                                    <div class="custom-control custom-checkbox">
-                                                                        <input type="checkbox" class="custom-control-input" id="customCheck1" checked>
-                                                                    </div> 6.00
-                                                                </td>
+                                                                <td><label class="custom-control-label" for="customCheck1">14.00</label><input type="checkbox" class="custom-control-input" id="customCheck1"></td>
+                                                                <td><label class="custom-control-label" for="customCheck1">6.00</label><input type="checkbox" class="custom-control-input" id="customCheck1"></td>
                                                                 <td>210.00</td>
                                                             </tr>
                                                             <!-- ////////////////ค่าใช้จ่ายเพิ่มเติม/////////////////// -->
