@@ -7,10 +7,12 @@ namespace MuetongWeb.Repositories.Interfaces
     {
         Task<IEnumerable<Pr>> SearchAsync(PrIndexSearchRequest request);
         Task<IEnumerable<Pr>> SearchAsync(PoIndexSearchRequest request);
+        Task<IEnumerable<PrDetail>> SearchDetailAsync(PoIndexSearchRequest request);
         Task<Pr?> GetAsync(long id);
         Task<IEnumerable<Pr>> GetAsync();
         Task<IEnumerable<Pr>> GetByProjectAsync(long projectId);
         Task<IEnumerable<PrDetail>> GetByPrAsync(long prId);
+        Task<IEnumerable<PrDetail>> GetByIdsAsync(List<long> detailId);
         Task<bool> AddAsync(Pr pr);
         Task<bool> AddDetailAsync(PrDetail detail);
         Task<bool> AddDetailRangeAsync(List<PrDetail> details);
@@ -23,6 +25,7 @@ namespace MuetongWeb.Repositories.Interfaces
         Task<bool> Approve(long id, long userId);
 
         Task<bool> UpdateAllDetailStatus(long prId, string status);
+        Task<bool> UpdateAllDetailStatus(List<long> ids, string status);
         Task<bool> UpdateDetailStatus(long id, string status);
         Task<IEnumerable<PrDetail>> SearchAsync(PoIndexPrSearch request);
     }
