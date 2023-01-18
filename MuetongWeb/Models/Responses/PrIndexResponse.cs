@@ -20,8 +20,15 @@ namespace MuetongWeb.Models.Responses
                 var tmp = new PrResponse(pr);
                 if (status == StatusConstants.PrCancel)
                 {
-                    if (!tmp.IsReadCancel) UnreadCancelCount++;
-                    Cancel.Add(tmp);
+                    if (!tmp.IsReadCancel)
+                    {
+                        UnreadCancelCount++;
+                        Cancel.Add(tmp);
+                    }
+                    else
+                    {
+                        All.Add(tmp);
+                    }
                 }
                 else if (status == StatusConstants.PrWaitingApprove)
                 {

@@ -29,9 +29,9 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
-    <Folder Include="Controllers\Api\" />
     <Folder Include="wwwroot\img\" />
-    <Folder Include="wwwroot\uploads\Pr\" />
+    <Folder Include="wwwroot\uploads\po\" />
+    <Folder Include="wwwroot\uploads\pr\" />
   </ItemGroup>
 
   <ItemGroup>

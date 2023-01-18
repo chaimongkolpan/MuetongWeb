@@ -15,6 +15,11 @@ namespace MuetongWeb.Constants
         public static string PrDetailWaitingOrder = "รอสั่งซื้อ";
         public static string PrDetailWaitingTransfer = "รอสินค้าจัดส่ง";
         public static string PrDetailComplete = "จัดส่งสำเร็จ";
+
+        public static string PoWaitingApprove = "รอตรวจสอบสั่งซื้อ";
+        public static string PoRequested = "รอสินค้าจัดส่ง";
+        public static string PoComplete = "จัดส่งสำเร็จ";
+        public static string PoCancel = "ยกเลิก";
     }
 }
 

@@ -10,5 +10,11 @@ namespace MuetongWeb.Repositories
         {
             _dbContext = dbContext;
         }
+        public async Task<IEnumerable<SettingConstant>> GetAsync(string type)
+        {
+            return await _dbContext.SettingConstants.Where(setting => setting.Type == type)
+                                                    .OrderBy(setting => setting.OrderNumber)
+                                                    .ToListAsync();
+        }
     }
 }

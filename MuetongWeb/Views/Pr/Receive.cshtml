@@ -2,539 +2,543 @@
 @{
     ViewData["Title"] = "ตรวจสอบสินค้า";
 }
-@if (Model != null)
-{
-    <div class="container-fluid" style="background-color:#fcfcfc">
-        <div class="row row-cols-1 row-cols-md-2">
-            <div class="col">
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="ProjectName"><b>ชื่อโครงการ</b></label>
-                    <select class="form-select" id="ProjectName">
-                        <option selected>ทั้งหมด</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col">
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
-                    <select class="form-select" id="PrNo">
-                        <option selected>ทั้งหมด</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col">
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
-                    <select class="form-select" id="RequesterId">
-                        <option selected>ทั้งหมด</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col">
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="Status"><b>สถานะสินค้า</b></label>
-                    <select class="form-select" id="PrNo">
-                        <option selected>ทั้งหมด</option>
-                    </select>
-                </div>
+<div class="container-fluid" style="background-color:#fcfcfc">
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="ProjectName"><b>ชื่อโครงการ</b></label>
+                <select class="form-select" id="ProjectName">
+                    <option selected>ทั้งหมด</option>
+                </select>
             </div>
         </div>
-        <div class="d-flex justify-content-center ">
-            <button type="button" class="btn btn-outline-success"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
+                <select class="form-select" id="PrNo">
+                    <option selected>ทั้งหมด</option>
+                </select>
+            </div>
         </div>
-        <!-- The Modal add Order -->
-        <div class="modal" id="AddOrder">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
+                <select class="form-select" id="RequesterId">
+                    <option selected>ทั้งหมด</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="Status"><b>สถานะสินค้า</b></label>
+                <select class="form-select" id="PrNo">
+                    <option selected>ทั้งหมด</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center ">
+        <button type="button" class="btn btn-outline-success"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
+    </div>
+    <!-- The Modal add Order -->
+    <div class="modal" id="AddOrder">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
 
-                    <!-- Modal Header -->
-                    <div class="modal-header" style="background-color:#ae6378;color:white;">
-                        <h4 class="modal-title"><b>เพิ่มการสั่งของ</b></h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <!-- Modal Header -->
+                <div class="modal-header" style="background-color:#ae6378;color:white;">
+                    <h4 class="modal-title"><b>เพิ่มการสั่งของ</b></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row row-cols-1 row-cols-lg-2">
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="ProjectName">ชื่อโครงการ</label>
+                                <select class="form-select" id="ProjectName">
+                                    <option selected>ทั้งหมด</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="ProjectName">แผนก</label>
+                                <select class="form-select" id="ProjectName">
+                                    <option selected>ทั้งหมด</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
+                                <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" for="ProjectName">ผู้รับเหมา</span>
+                                <select class="form-select" id="ProjectName">
+                                    <option selected>ชื่อผู้รับเหมา</option>
+                                </select>
+                                <div class="input-group-text">
+                                    <input type="checkbox" checked>
+                                </div>
+                                <span class="input-group-text" id="basic-addon1">หักผู้รับเหมา</span>
+
+
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <div class="file-loading">
+                                    <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 p-3" style="overflow-x:auto;">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ลำดับ</th>
+                                        <th scope="col" colspan="2">ดำเนินการ</th>
+                                        <th scope="col">รายการ</th>
+                                        <th scope="col">จำนวน</th>
+                                        <th scope="col">หน่วย</th>
+                                        <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                        <th scope="col">จุดประสงค์</th>
+                                        <th scope="col">หมายเหตุสินค้า</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>
+                                            <span class="material-symbols-outlined" style="color:#0752AE;">
+                                                edit
+                                            </span>
+
+                                        </td>
+                                        <td>
+                                            <span class="material-symbols-outlined" style="color:#A42206;">
+                                                delete
+                                            </span>
+                                        </td>
+                                        <td>ทรายหยาบ</td>
+                                        <td>3</td>
+                                        <td>คิว</td>
+                                        <td>30/12/65</td>
+                                        <td>3.3.4</td>
+                                        <td>ด่วน</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-12 d-flex justify-content-center ">
+                            <button type="button" class="btn btn-warning"><i class="fa fa-plus"></i></button>
+                        </div>
+                        <p></p>
+                        <!-- ///////////เพิ่มรายการ//////////// -->
+                        <div class="col-12">
+                            <div class="card border">
+                                <div class="card-body">
+                                    <h4 class="text-center" style="color:black;">เพิ่มรายการ</h4>
+                                    <div class="row row-cols-1 row-cols-lg-2">
+                                        <div class="col">
+                                            <div class="input-group mb-3">
+                                                <label class="input-group-text" for="ProjectName">รายการ</label>
+                                                <select class="form-select" id="ProjectName">
+                                                    <option selected>ทั้งหมด</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text" id="basic-addon1">จำนวน</span>
+                                                <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
+                                                <span class="input-group-text" id="basic-addon1">หน่วย</span>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text" id="basic-addon1">วันที่ต้องการส่งมอบ</span>
+                                                <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text" id="basic-addon1">หมายเหตุสินค้า</span>
+                                                <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 d-flex justify-content-center ">
+                                            <button type="button" class="btn btn-warning">เพิ่มรายการ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        <div class="row row-cols-1 row-cols-lg-2">
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text" for="ProjectName">ชื่อโครงการ</label>
-                                    <select class="form-select" id="ProjectName">
-                                        <option selected>ทั้งหมด</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text" for="ProjectName">แผนก</label>
-                                    <select class="form-select" id="ProjectName">
-                                        <option selected>ทั้งหมด</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
-                                    <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1">
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" for="ProjectName">ผู้รับเหมา</span>
-                                    <select class="form-select" id="ProjectName">
-                                        <option selected>ชื่อผู้รับเหมา</option>
-                                    </select>
-                                    <div class="input-group-text">
-                                        <input type="checkbox" checked>
-                                    </div>
-                                    <span class="input-group-text" id="basic-addon1">หักผู้รับเหมา</span>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-success">บันทึก</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <br>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#All">ทั้งหมด</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Cancel">
+                จัดส่ง&nbsp;
+                <span class="badge bg-primary">1</span>
+            </a>
 
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <div class="file-loading">
-                                        <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 p-3" style="overflow-x:auto;">
-                                <table class="table table-hover">
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div id="All" class="container-fluid tab-pane active">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">ลำดับ</th>
+                            <th scope="col" colspan="2">ดำเนินการ</th>
+                            <th scope="col">โครงการ</th>
+                            <th scope="col">เลขที่ PR</th>
+                            <th scope="col">ผู้รับเหมา</th>
+                            <th scope="col">หักผู้รับเหมา</th>
+                            <th scope="col">สถานะ PR</th>
+                            <th scope="col">ผู้ขอจัดซื้อ</th>
+                            <th scope="col">ลำดับสินค้า</th>
+                            <th scope="col">รายการสินค้า</th>
+                            <th scope="col">จำนวน</th>
+                            <th scope="col">หน่วย</th>
+                            <th scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th scope="col">จุดประสงค์</th>
+                            <th scope="col">หมายเหตุสินค้า</th>
+                            <th scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="3">1</td>
+                            <td rowspan="3">
+                                <span class="material-symbols-outlined" style="color:#0752AE;"
+                                        data-bs-toggle="modal" data-bs-target="#ActionDetail"> edit</span>
+
+                            </td>
+                            <td rowspan="3">
+                                <span class="material-symbols-outlined"
+                                        style="color:#A42206;"> delete </span>
+                            </td>
+                            <td rowspan="3">สฟ.ท่าลาน 3</td>
+                            <td rowspan="3">005/0218</td>
+                            <td rowspan="3">ชื่อผู้รับเหมา</td>
+                            <td rowspan="3">
+                                <span class="material-symbols-outlined" style="color:#000;">
+                                    done
+                                </span>
+                            </td>
+                            <td rowspan="3">จัดส่งแล้ว</td>
+                            <td rowspan="3">นายทดลอง</td>
+                            <td>1</td>
+                            <td>ทรายหยาบ</td>
+                            <td>3.00</td>
+                            <td>คิว</td>
+                            <td>30/12/65</td>
+                            <td>3.3.4</td>
+                            <td>ด่วน</td>
+                            <td>จัดส่งแล้ว</td>
+                        </tr>
+                        <tr>
+                            <td colspan="8">
+                                <table class="table table-hover align-middle">
                                     <thead>
                                         <tr>
-                                            <th scope="col">ลำดับ</th>
-                                            <th scope="col" colspan="2">ดำเนินการ</th>
-                                            <th scope="col">รายการ</th>
-                                            <th scope="col">จำนวน</th>
-                                            <th scope="col">หน่วย</th>
-                                            <th scope="col">วันที่ต้องการส่งมอบ</th>
-                                            <th scope="col">จุดประสงค์</th>
-                                            <th scope="col">หมายเหตุสินค้า</th>
+                                            <th scope="col">ครั้งที่</th>
+                                            <th scope="col">จำนวนรับของ</th>
+                                            <th scope="col">วันที่รับของ</th>
+                                            <th scope="col">ผู้รับสินค้า</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>1</td>
-                                            <td>
-                                                <span class="material-symbols-outlined" style="color:#0752AE;">
-                                                    edit
-                                                </span>
 
-                                            </td>
-                                            <td>
-                                                <span class="material-symbols-outlined" style="color:#A42206;">
-                                                    delete
-                                                </span>
-                                            </td>
-                                            <td>ทรายหยาบ</td>
-                                            <td>3</td>
-                                            <td>คิว</td>
+                                            <td>1</td>
+                                            <td>1</td>
                                             <td>30/12/65</td>
-                                            <td>3.3.4</td>
-                                            <td>ด่วน</td>
+                                            <td>ชื่อผู้รับสินค้า</td>
+                                        </tr>
+                                        <tr>
+
+                                            <td>2</td>
+                                            <td>2</td>
+                                            <td>31/12/65</td>
+                                            <td>ชื่อผู้รับสินค้า2</td>
+
                                         </tr>
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td><b>คงเหลือ</b></td>
+                                            <td><b>0</b></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
-                            </div>
-                            <div class="col-12 d-flex justify-content-center ">
-                                <button type="button" class="btn btn-warning"><i class="fa fa-plus"></i></button>
-                            </div>
-                            <p></p>
-                            <!-- ///////////เพิ่มรายการ//////////// -->
-                            <div class="col-12">
-                                <div class="card border">
-                                    <div class="card-body">
-                                        <h4 class="text-center" style="color:black;">เพิ่มรายการ</h4>
-                                        <div class="row row-cols-1 row-cols-lg-2">
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <label class="input-group-text" for="ProjectName">รายการ</label>
-                                                    <select class="form-select" id="ProjectName">
-                                                        <option selected>ทั้งหมด</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">จำนวน</span>
-                                                    <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
-                                                    <span class="input-group-text" id="basic-addon1">หน่วย</span>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">วันที่ต้องการส่งมอบ</span>
-                                                    <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1">
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">หมายเหตุสินค้า</span>
-                                                    <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
-                                                </div>
-                                            </div>
-                                            <div class="col-12 d-flex justify-content-center ">
-                                                <button type="button" class="btn btn-warning">เพิ่มรายการ</button>
-                                            </div>
+                            </td>
+
+
+                        </tr>
+                        <tr>
+
+                            <td>2</td>
+                            <td>เครื่องกรีดถนน</td>
+                            <td>1.00</td>
+                            <td>วัน</td>
+                            <td>31/12/65</td>
+                            <td>3.3.5</td>
+                            <td></td>
+                            <td>จัดส่งแล้ว</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <!-- The Modal ActionDetail -->
+            <div class="modal" id="ActionDetail">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header" style="background-color:#ae6378;color:white;">
+                            <h4 class="modal-title"><b>รายละเอียดการสั่งของ</b></h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row row-cols-1 row-cols-lg-2">
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <label class="input-group-text" for="ProjectName">ชื่อโครงการ</label>
+                                        <select class="form-select" id="ProjectName">
+                                            <option selected>ทั้งหมด</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <label class="input-group-text" for="ProjectName">แผนก</label>
+                                        <select class="form-select" id="ProjectName">
+                                            <option selected>ทั้งหมด</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
+                                        <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" for="ProjectName">ผู้รับเหมา</span>
+                                        <select class="form-select" id="ProjectName">
+                                            <option selected>ชื่อผู้รับเหมา</option>
+                                        </select>
+                                        <div class="input-group-text">
+                                            <input type="checkbox" checked>
+                                        </div>
+                                        <span class="input-group-text" id="basic-addon1">หักผู้รับเหมา</span>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <div class="file-loading">
+                                            <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
-                        <button type="button" class="btn btn-success">บันทึก</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <br>
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs nav-justified" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#All">ทั้งหมด</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Cancel">
-                    จัดส่ง&nbsp;
-                    <span class="badge bg-primary">1</span>
-                </a>
-
-        </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div id="All" class="container-fluid tab-pane active">
-                <br>
-                <div class="col-12 p-3" style="overflow-x:auto;">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th scope="col">ลำดับ</th>
-                                <th scope="col" colspan="2">ดำเนินการ</th>
-                                <th scope="col">โครงการ</th>
-                                <th scope="col">เลขที่ PR</th>
-                                <th scope="col">ผู้รับเหมา</th>
-                                <th scope="col">หักผู้รับเหมา</th>
-                                <th scope="col">สถานะ PR</th>
-                                <th scope="col">ผู้ขอจัดซื้อ</th>
-                                <th scope="col">ลำดับสินค้า</th>
-                                <th scope="col">รายการสินค้า</th>
-                                <th scope="col">จำนวน</th>
-                                <th scope="col">หน่วย</th>
-                                <th scope="col">วันที่ต้องการส่งมอบ</th>
-                                <th scope="col">จุดประสงค์</th>
-                                <th scope="col">หมายเหตุสินค้า</th>
-                                <th scope="col">สถานะสินค้า</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td rowspan="3">1</td>
-                                <td rowspan="3">
-                                    <span class="material-symbols-outlined" style="color:#0752AE;"
-                                          data-bs-toggle="modal" data-bs-target="#ActionDetail"> edit</span>
-
-                                </td>
-                                <td rowspan="3">
-                                    <span class="material-symbols-outlined"
-                                          style="color:#A42206;"> delete </span>
-                                </td>
-                                <td rowspan="3">สฟ.ท่าลาน 3</td>
-                                <td rowspan="3">005/0218</td>
-                                <td rowspan="3">ชื่อผู้รับเหมา</td>
-                                <td rowspan="3">
-                                    <span class="material-symbols-outlined" style="color:#000;">
-                                        done
-                                    </span>
-                                </td>
-                                <td rowspan="3">จัดส่งแล้ว</td>
-                                <td rowspan="3">นายทดลอง</td>
-                                <td>1</td>
-                                <td>ทรายหยาบ</td>
-                                <td>3.00</td>
-                                <td>คิว</td>
-                                <td>30/12/65</td>
-                                <td>3.3.4</td>
-                                <td>ด่วน</td>
-                                <td>จัดส่งแล้ว</td>
-                            </tr>
-                            <tr>
-                                <td colspan="8">
-                                    <table class="table table-hover align-middle">
+                                <div class="col-12 p-3" style="overflow-x:auto;">
+                                    <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th scope="col">ครั้งที่</th>
-                                                <th scope="col">จำนวนรับของ</th>
-                                                <th scope="col">วันที่รับของ</th>
-                                                <th scope="col">ผู้รับสินค้า</th>
+                                                <th scope="col">ลำดับ</th>
+                                                <th scope="col" colspan="2">ดำเนินการ</th>
+                                                <th scope="col">รายการ</th>
+                                                <th scope="col">จำนวน</th>
+                                                <th scope="col">หน่วย</th>
+                                                <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                                <th scope="col">จุดประสงค์</th>
+                                                <th scope="col">หมายเหตุสินค้า</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
+                                                <td>1</td>
+                                                <td>
+                                                    <span class="material-symbols-outlined" style="color:#0752AE;">
+                                                        edit
+                                                    </span>
 
-                                                <td>1</td>
-                                                <td>1</td>
+                                                </td>
+                                                <td>
+                                                    <span class="material-symbols-outlined" style="color:#A42206;">
+                                                        delete
+                                                    </span>
+                                                </td>
+                                                <td>ทรายหยาบ</td>
+                                                <td>3</td>
+                                                <td>คิว</td>
                                                 <td>30/12/65</td>
-                                                <td>ชื่อผู้รับสินค้า</td>
-                                            </tr>
-                                            <tr>
-
-                                                <td>2</td>
-                                                <td>2</td>
-                                                <td>31/12/65</td>
-                                                <td>ชื่อผู้รับสินค้า2</td>
-
+                                                <td>3.3.4</td>
+                                                <td>ด่วน</td>
                                             </tr>
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td><b>คงเหลือ</b></td>
-                                                <td><b>0</b></td>
-                                            </tr>
-                                        </tfoot>
                                     </table>
-                                </td>
-
-
-                            </tr>
-                            <tr>
-
-                                <td>2</td>
-                                <td>เครื่องกรีดถนน</td>
-                                <td>1.00</td>
-                                <td>วัน</td>
-                                <td>31/12/65</td>
-                                <td>3.3.5</td>
-                                <td></td>
-                                <td>จัดส่งแล้ว</td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-                <!-- The Modal ActionDetail -->
-                <div class="modal" id="ActionDetail">
-                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                        <div class="modal-content">
-
-                            <!-- Modal Header -->
-                            <div class="modal-header" style="background-color:#ae6378;color:white;">
-                                <h4 class="modal-title"><b>รายละเอียดการสั่งของ</b></h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-
-                            <!-- Modal body -->
-                            <div class="modal-body">
-                                <div class="row row-cols-1 row-cols-lg-2">
-                                    <div class="col">
-                                        <div class="input-group mb-3">
-                                            <label class="input-group-text" for="ProjectName">ชื่อโครงการ</label>
-                                            <select class="form-select" id="ProjectName">
-                                                <option selected>ทั้งหมด</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="input-group mb-3">
-                                            <label class="input-group-text" for="ProjectName">แผนก</label>
-                                            <select class="form-select" id="ProjectName">
-                                                <option selected>ทั้งหมด</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
-                                            <input type="text" class="form-control" id="PrNo" aria-describedby="basic-addon1">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text" for="ProjectName">ผู้รับเหมา</span>
-                                            <select class="form-select" id="ProjectName">
-                                                <option selected>ชื่อผู้รับเหมา</option>
-                                            </select>
-                                            <div class="input-group-text">
-                                                <input type="checkbox" checked>
-                                            </div>
-                                            <span class="input-group-text" id="basic-addon1">หักผู้รับเหมา</span>
-
-
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <div class="file-loading">
-                                                <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 p-3" style="overflow-x:auto;">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">ลำดับ</th>
-                                                    <th scope="col" colspan="2">ดำเนินการ</th>
-                                                    <th scope="col">รายการ</th>
-                                                    <th scope="col">จำนวน</th>
-                                                    <th scope="col">หน่วย</th>
-                                                    <th scope="col">วันที่ต้องการส่งมอบ</th>
-                                                    <th scope="col">จุดประสงค์</th>
-                                                    <th scope="col">หมายเหตุสินค้า</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>
-                                                        <span class="material-symbols-outlined" style="color:#0752AE;">
-                                                            edit
-                                                        </span>
-
-                                                    </td>
-                                                    <td>
-                                                        <span class="material-symbols-outlined" style="color:#A42206;">
-                                                            delete
-                                                        </span>
-                                                    </td>
-                                                    <td>ทรายหยาบ</td>
-                                                    <td>3</td>
-                                                    <td>คิว</td>
-                                                    <td>30/12/65</td>
-                                                    <td>3.3.4</td>
-                                                    <td>ด่วน</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-12 d-flex justify-content-center ">
-                                        <button type="button" class="btn btn-warning"><i class="fa fa-plus"></i></button>
-                                    </div>
-                                    <p></p>
-                                    <!-- ///////////เพิ่มรายการ//////////// -->
-                                    <div class="col-12">
-                                        <div class="card border">
-                                            <div class="card-body">
-                                                <h4 class="text-center" style="color:black;">เพิ่มรายการ</h4>
-                                                <div class="row row-cols-1 row-cols-lg-2">
-                                                    <div class="col">
-                                                        <div class="input-group mb-3">
-                                                            <label class="input-group-text" for="ProjectName">รายการ</label>
-                                                            <select class="form-select" id="ProjectName">
-                                                                <option selected>ทั้งหมด</option>
-                                                            </select>
-                                                        </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-center ">
+                                    <button type="button" class="btn btn-warning"><i class="fa fa-plus"></i></button>
+                                </div>
+                                <p></p>
+                                <!-- ///////////เพิ่มรายการ//////////// -->
+                                <div class="col-12">
+                                    <div class="card border">
+                                        <div class="card-body">
+                                            <h4 class="text-center" style="color:black;">เพิ่มรายการ</h4>
+                                            <div class="row row-cols-1 row-cols-lg-2">
+                                                <div class="col">
+                                                    <div class="input-group mb-3">
+                                                        <label class="input-group-text" for="ProjectName">รายการ</label>
+                                                        <select class="form-select" id="ProjectName">
+                                                            <option selected>ทั้งหมด</option>
+                                                        </select>
                                                     </div>
-                                                    <div class="col">
-                                                        <div class="input-group mb-3">
-                                                            <span class="input-group-text" id="basic-addon1">จำนวน</span>
-                                                            <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
-                                                            <span class="input-group-text" id="basic-addon1">หน่วย</span>
-                                                        </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text" id="basic-addon1">จำนวน</span>
+                                                        <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
+                                                        <span class="input-group-text" id="basic-addon1">หน่วย</span>
                                                     </div>
-                                                    <div class="col">
-                                                        <div class="input-group mb-3">
-                                                            <span class="input-group-text" id="basic-addon1">วันที่ต้องการส่งมอบ</span>
-                                                            <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1">
-                                                        </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text" id="basic-addon1">วันที่ต้องการส่งมอบ</span>
+                                                        <input type="date" class="form-control" id="regisdate_organization" aria-describedby="basic-addon1">
                                                     </div>
-                                                    <div class="col">
-                                                        <div class="input-group mb-3">
-                                                            <span class="input-group-text" id="basic-addon1">หมายเหตุสินค้า</span>
-                                                            <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
-                                                        </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text" id="basic-addon1">หมายเหตุสินค้า</span>
+                                                        <input type="text" class="form-control" id="namecustomer_manage_replace" aria-describedby="basic-addon1">
                                                     </div>
-                                                    <div class="col-12 d-flex justify-content-center ">
-                                                        <button type="button" class="btn btn-warning">เพิ่มรายการ</button>
-                                                    </div>
+                                                </div>
+                                                <div class="col-12 d-flex justify-content-center ">
+                                                    <button type="button" class="btn btn-warning">เพิ่มรายการ</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Modal footer -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
-                                <button type="button" class="btn btn-success">บันทึก</button>
-                            </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                            <button type="button" class="btn btn-success">บันทึก</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="Cancel" class="container-fluid tab-pane fade">
-                <br>
-                <div class="col-12 p-3" style="overflow-x:auto;">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th scope="col"></th>
-                                <th scope="col">ลำดับ</th>
-                                <th scope="col">โครงการ</th>
-                                <th scope="col">เลขที่ PR</th>
-                                <th scope="col">ผู้รับเหมา</th>
-                                <th scope="col">หักผู้รับเหมา</th>
-                                <th scope="col">สถานะ PR</th>
-                                <th scope="col">ผู้ขอจัดซื้อ</th>
-                                <th scope="col">ลำดับสินค้า</th>
-                                <th scope="col">รายการสินค้า</th>
-                                <th scope="col">จำนวน</th>
-                                <th scope="col">หน่วย</th>
-                                <th scope="col">วันที่ต้องการส่งมอบ</th>
-                                <th scope="col">จุดประสงค์</th>
-                                <th scope="col">หมายเหตุสินค้า</th>
-                                <th scope="col">สถานะสินค้า</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td rowspan="2">
-                                    <span class="material-symbols-outlined" style="color:#A42206;">
-                                        assignment_late
-                                    </span>
-                                </td>
-                                <td rowspan="2">1</td>
-                                <td rowspan="2">สฟ.ท่าลาน 3</td>
-                                <td rowspan="2">005/0218</td>
-                                <td rowspan="2">ชื่อผู้รับเหมา</td>
-                                <td rowspan="2">
-                                    <span class="material-symbols-outlined" style="color:#000;">
-                                        done
-                                    </span>
-                                </td>
-                                <td rowspan="2">สั่งของ</td>
-                                <td rowspan="2">นายทดลอง</td>
-                                <td>1</td>
-                                <td>ทรายหยาบ</td>
-                                <td>3.00</td>
-                                <td>คิว</td>
-                                <td>30/12/65</td>
-                                <td>3.3.4</td>
-                                <td>ด่วน</td>
-                                <td>สั่งของ</td>
-                            </tr>
-                            <tr>
-
-                                <td>2</td>
-                                <td>เครื่องกรีดถนน</td>
-                                <td>1.00</td>
-                                <td>วัน</td>
-                                <td>31/12/65</td>
-                                <td>3.3.5</td>
-                                <td></td>
-                                <td>สั่งของ</td>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div><br>
         </div>
+        <div id="Cancel" class="container-fluid tab-pane fade">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">ลำดับ</th>
+                            <th scope="col">โครงการ</th>
+                            <th scope="col">เลขที่ PR</th>
+                            <th scope="col">ผู้รับเหมา</th>
+                            <th scope="col">หักผู้รับเหมา</th>
+                            <th scope="col">สถานะ PR</th>
+                            <th scope="col">ผู้ขอจัดซื้อ</th>
+                            <th scope="col">ลำดับสินค้า</th>
+                            <th scope="col">รายการสินค้า</th>
+                            <th scope="col">จำนวน</th>
+                            <th scope="col">หน่วย</th>
+                            <th scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th scope="col">จุดประสงค์</th>
+                            <th scope="col">หมายเหตุสินค้า</th>
+                            <th scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2">
+                                <span class="material-symbols-outlined" style="color:#A42206;">
+                                    assignment_late
+                                </span>
+                            </td>
+                            <td rowspan="2">1</td>
+                            <td rowspan="2">สฟ.ท่าลาน 3</td>
+                            <td rowspan="2">005/0218</td>
+                            <td rowspan="2">ชื่อผู้รับเหมา</td>
+                            <td rowspan="2">
+                                <span class="material-symbols-outlined" style="color:#000;">
+                                    done
+                                </span>
+                            </td>
+                            <td rowspan="2">สั่งของ</td>
+                            <td rowspan="2">นายทดลอง</td>
+                            <td>1</td>
+                            <td>ทรายหยาบ</td>
+                            <td>3.00</td>
+                            <td>คิว</td>
+                            <td>30/12/65</td>
+                            <td>3.3.4</td>
+                            <td>ด่วน</td>
+                            <td>สั่งของ</td>
+                        </tr>
+                        <tr>
+
+                            <td>2</td>
+                            <td>เครื่องกรีดถนน</td>
+                            <td>1.00</td>
+                            <td>วัน</td>
+                            <td>31/12/65</td>
+                            <td>3.3.5</td>
+                            <td></td>
+                            <td>สั่งของ</td>
+
+                    </tbody>
+                </table>
+            </div>
+        </div><br>
     </div>
-}
+</div>
+
+<script>
+    var model = @Html.Raw(JsonConvert.SerializeObject(Model));
+    var baseUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
+    baseUrl = baseUrl + (baseUrl == '/' ? 'api/pr/' : '/api/pr/');
+</script>
+<script type="text/javascript" src="~/js/pr-receive.js"></script>

@@ -43,7 +43,7 @@ namespace MuetongWeb.Repositories
                             && (!request.ProjectId.HasValue || request.ProjectId.Value == RequestConstants.AllValue || pr.ProjectId == request.ProjectId.Value)
                             && (string.IsNullOrWhiteSpace(request.PrNo) || request.PrNo == RequestConstants.AllString || pr.PrNo == request.PrNo)
                             && (!request.RequesterId.HasValue || request.RequesterId.Value == RequestConstants.AllValue || pr.UserId == request.RequesterId.Value)
-                            && pr.Status == StatusConstants.PrRequested
+                            && pr.PrDetails.Any(detail => detail.Status == StatusConstants.PrRequested)
                         )
                         .OrderBy(pr => pr.CreateDate)
                         .Include(pr => pr.Project)
@@ -53,6 +53,16 @@ namespace MuetongWeb.Repositories
                         .Include(pr => pr.PrDetails).ThenInclude(detail => detail.Product)
                         .Include(pr => pr.PrDetails).ThenInclude(detail => detail.PoDetail).ThenInclude(prDetail => prDetail.Po)
                         .Include(pr => pr.PrDetails).ThenInclude(detail => detail.ProjectCode)
+                        .ToListAsync();
+        }
+        public async Task<IEnumerable<PrDetail>> SearchDetailAsync(PoIndexSearchRequest request)
+        {
+            return await _dbContext.PrDetails.Where(detail => detail.Pr.Project != null && request.User != null
+                            && (detail.Pr.Project.ProjectUsers.Any(pUser => pUser.UserId == request.User.Id) || RoleHelpers.CanSeeAllProject(request.User.Role))
+                            && (!request.ProjectId.HasValue || request.ProjectId.Value == RequestConstants.AllValue || detail.Pr.ProjectId == request.ProjectId.Value)
+                            && (string.IsNullOrWhiteSpace(request.PrNo) || request.PrNo == RequestConstants.AllString || detail.Pr.PrNo == request.PrNo)
+                            && (!request.RequesterId.HasValue || request.RequesterId.Value == RequestConstants.AllValue || detail.Pr.UserId == request.RequesterId.Value)
+                        )
                         .ToListAsync();
         }
         public async Task<Pr?> GetAsync(long id)
@@ -85,6 +95,11 @@ namespace MuetongWeb.Repositories
         public async Task<IEnumerable<PrDetail>> GetByPrAsync(long prId)
         {
             return await _dbContext.PrDetails.Where(detail => detail.PrId == prId)
+                                       .ToListAsync();
+        }
+        public async Task<IEnumerable<PrDetail>> GetByIdsAsync(List<long> detailId)
+        {
+            return await _dbContext.PrDetails.Where(detail => detailId.Contains(detail.Id))
                                        .ToListAsync();
         }
         public async Task<bool> AddAsync(Pr pr)
@@ -172,6 +187,18 @@ namespace MuetongWeb.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> UpdateAllDetailStatus(List<long> ids, string status)
+        {
+            var details = await _dbContext.PrDetails.Where(detail => ids.Contains(detail.Id)).ToListAsync();
+            if (details.Any())
+            {
+                details.ForEach(detail => {
+                    detail.Status = status;
+                });
+            }
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
         public async Task<bool> UpdateDetailStatus(long id, string status)
         {
             var detail = await _dbContext.PrDetails.FindAsync(id);
@@ -181,7 +208,6 @@ namespace MuetongWeb.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
-
         public async Task<IEnumerable<PrDetail>> SearchAsync(PoIndexPrSearch request)
         {
             var details = await _dbContext.PrDetails.Where(detail => detail.Pr.Project != null && request.User != null

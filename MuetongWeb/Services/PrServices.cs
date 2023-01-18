@@ -126,7 +126,13 @@ namespace MuetongWeb.Services
         {
             try
             {
-                return await _prRepositories.Cancel(id);
+                // add remark
+                if (await _prRepositories.Cancel(id))
+                {
+                    await _prRepositories.UpdateAllDetailStatus(id, StatusConstants.PrCancel);
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {

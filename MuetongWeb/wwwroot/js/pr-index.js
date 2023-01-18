@@ -445,6 +445,7 @@ $('#add_btn').click(function () {
     bindContractor(projectId);
     projectCodes = [];
     bindCode(projectId);
+    add_detail = [];
 });
 $('#add_advance_pay').change(function () {
     if (this.checked) {
