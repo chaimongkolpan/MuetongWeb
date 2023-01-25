@@ -4,6 +4,7 @@ using MuetongWeb.Models.Entities;
 using MuetongWeb.Models.Requests;
 using MuetongWeb.Helpers;
 using MuetongWeb.Constants;
+using Microsoft.Data.SqlClient;
 
 namespace MuetongWeb.Repositories
 {
@@ -279,6 +280,23 @@ namespace MuetongWeb.Repositories
                                         detail.Status = StatusConstants.PrDetailWaitingTransfer;
                                     });
             await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<short> GetPoNo(string sql)
+        {
+            var parameterReturn = new SqlParameter
+            {
+                ParameterName = "ReturnValue",
+                SqlDbType = System.Data.SqlDbType.SmallInt,
+                Direction = System.Data.ParameterDirection.Output,
+            };
+            var result = await _dbContext.Database.ExecuteSqlRawAsync(sql, parameterReturn);
+            short returnValue = (short)parameterReturn.Value;
+            return returnValue;
+        }
+        public async Task<bool> ExecuteSql(string sql)
+        {
+            var result = await _dbContext.Database.ExecuteSqlRawAsync(sql);
             return true;
         }
     }

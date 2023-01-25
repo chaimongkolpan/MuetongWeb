@@ -25,5 +25,7 @@ namespace MuetongWeb.Repositories.Interfaces
         Task<bool> Read(long id);
         Task<bool> Cancel(long id, string? remark);
         Task<bool> Approve(long id, long userId);
+        Task<short> GetPoNo(string sql);
+        Task<bool> ExecuteSql(string sql);
     }
 }
