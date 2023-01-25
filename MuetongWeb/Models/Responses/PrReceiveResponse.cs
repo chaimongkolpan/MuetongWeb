@@ -1,48 +1,29 @@
-﻿using System;
-using MuetongWeb.Constants;
+﻿using MuetongWeb.Constants;
 using MuetongWeb.Models.Entities;
 
 namespace MuetongWeb.Models.Responses
 {
-	public class PrIndexResponse
+    public class PrReceiveResponse
     {
         public int WaitingCount { get; set; } = 0;
-        public int UnreadCancelCount { get; set; } = 0;
-        public List<PrResponse> All { get; set; } = new List<PrResponse>();
-        public List<PrResponse> Waiting { get; set; } = new List<PrResponse>();
-        public List<PrResponse> Cancel { get; set; } = new List<PrResponse>();
-        public PrIndexResponse() { }
-        public PrIndexResponse(IEnumerable<Pr> prs)
+        public List<ReceivePrResponse> All { get; set; } = new List<ReceivePrResponse>();
+        public List<ReceivePrResponse> Waiting { get; set; } = new List<ReceivePrResponse>();
+        public PrReceiveResponse() { }
+        public PrReceiveResponse(IEnumerable<Pr> prs)
         {
-            foreach(var pr in prs)
+            foreach (var pr in prs)
             {
-                var status = pr.Status;
-                var tmp = new PrResponse(pr);
-                if (status == StatusConstants.PrCancel)
-                {
-                    if (!tmp.IsReadCancel)
-                    {
-                        UnreadCancelCount++;
-                        Cancel.Add(tmp);
-                    }
-                    else
-                    {
-                        All.Add(tmp);
-                    }
-                }
-                else if (status == StatusConstants.PrWaitingApprove)
+                var tmp = new ReceivePrResponse(pr);
+                if (pr.PrDetails.Any(detail => detail.Status == StatusConstants.PrWaitingTransfer))
                 {
                     WaitingCount++;
                     Waiting.Add(tmp);
                 }
-                else
-                {
-                    All.Add(tmp);
-                }
+                All.Add(tmp);
             }
         }
     }
-	public class PrResponse
+    public class ReceivePrResponse 
     {
         public long Id { get; set; }
         public long? ProjectId { get; set; }
@@ -53,11 +34,12 @@ namespace MuetongWeb.Models.Responses
         public string ContractorName { get; set; } = string.Empty;
         public string RequesterName { get; set; } = string.Empty;
         public string ApproverName { get; set; } = string.Empty;
-        public DateTime? CreateDate { get; set; }
         public bool IsReadCancel { get; set; } = false;
-        public List<PrDetailResponse> Details { get; set; } = new List<PrDetailResponse>();
-        public PrResponse() { }
-        public PrResponse(Pr pr)
+        public List<ReceivePrDetailResponse> Details { get; set; } = new List<ReceivePrDetailResponse>();
+        public int ReceiveCount { get; set; } = 0;
+        public DateTime CreateDate { get; set; }
+        public ReceivePrResponse() { }
+        public ReceivePrResponse(Pr pr)
         {
             Id = pr.Id;
             ProjectId = pr.ProjectId;
@@ -76,16 +58,18 @@ namespace MuetongWeb.Models.Responses
                 ApproverName = string.Format("{0} {1}", pr.Approver.Firstname, pr.Approver.Lastname);
             if (pr.PrDetails.Any())
             {
-                foreach(var detail in pr.PrDetails)
+                foreach (var detail in pr.PrDetails)
                 {
-                    Details.Add(new PrDetailResponse(detail));
+                    if(detail.Status == StatusConstants.PrDetailComplete || detail.Status == StatusConstants.PrDetailWaitingTransfer)
+                    Details.Add(new ReceivePrDetailResponse(detail));
                 }
+                ReceiveCount = Details.Count(detail => detail.HasReceive);
             }
-            CreateDate = pr.CreateDate;
             IsReadCancel = pr.IsReadCancel.HasValue ? pr.IsReadCancel.Value : false;
+            CreateDate = pr.CreateDate;
         }
     }
-    public class PrDetailResponse
+    public class ReceivePrDetailResponse
     {
         public long Id { get; set; }
         public long? ProductId { get; set; }
@@ -98,26 +82,52 @@ namespace MuetongWeb.Models.Responses
         public string Code { get; set; } = string.Empty;
         public string Remark { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
-        public PrDetailResponse() { }
-        public PrDetailResponse(PrDetail detail)
+        public List<ReceiveResponse> Receives { get; set; } = new List<ReceiveResponse>();
+        public decimal TotalReceive { get; set; } = 0;
+        public bool HasReceive { get; set; } = false;
+        public ReceivePrDetailResponse() { }
+        public ReceivePrDetailResponse(PrDetail detail)
         {
             Id = detail.Id;
             ProductId = detail.ProductId;
-            if(detail.Product != null)
+            if (detail.Product != null)
             {
                 Name = detail.Product.Name;
                 Unit = detail.Product.Unit;
             }
             Quantity = detail.Quantity;
             UseDate = detail.UseDate;
-            if(detail.PoDetail != null && detail.PoDetail.Po != null)
+            if (detail.PoDetail != null && detail.PoDetail.Po != null)
                 PlanTransferDate = detail.PoDetail.Po.PlanTransferDate;
             ProjectCodeId = detail.ProjectCodeId;
-            if(detail.ProjectCode != null)
+            if (detail.ProjectCode != null)
                 Code = detail.ProjectCode.Code;
             Remark = string.IsNullOrWhiteSpace(detail.Remark) ? string.Empty : detail.Remark;
             Status = string.IsNullOrWhiteSpace(detail.Status) ? string.Empty : detail.Status;
+            if (detail.PrReceives != null && detail.PrReceives.Any())
+            {
+                HasReceive = true;
+                foreach (var prReceive in detail.PrReceives)
+                {
+                    Receives.Add(new ReceiveResponse(prReceive));
+                }
+                TotalReceive = detail.PrReceives.Sum(receive => receive.Quantity);
+            }
+        }
+    }
+    public class ReceiveResponse
+    {
+        public decimal Quantity { get; set; } = 0;
+        public DateTime CreateDate { get; set; }
+        public string ReceiverName { get; set; } = string.Empty;
+        public string Remark { get; set; } = string.Empty;
+        public ReceiveResponse() { }
+        public ReceiveResponse(PrReceive receive) 
+        {
+            Quantity = receive.Quantity;
+            CreateDate = receive.CreateDate;
+            ReceiverName = string.Format("{0} {1}", receive.User.Firstname, receive.User.Lastname);
+            Remark = string.IsNullOrWhiteSpace(receive.Remark) ? string.Empty : receive.Remark;
         }
     }
 }
-

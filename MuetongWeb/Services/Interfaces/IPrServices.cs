@@ -8,6 +8,7 @@ namespace MuetongWeb.Services.Interfaces
     {
         Task<PrModel> IndexAsync(bool canEdit, UserInfoModel user);
         Task<PrModel> ApproverAsync(bool canEdit, UserInfoModel user);
+        Task<PrModel> ReceiveAsync(bool canEdit, UserInfoModel user);
 
         Task<PrIndexResponse> IndexSearchAsync(PrIndexSearchRequest request);
         Task<PrResponse?> Get(long id);
@@ -21,5 +22,9 @@ namespace MuetongWeb.Services.Interfaces
         Task<List<ContractorResponse>> GetContractorByProject(long projectId);
         Task<List<ProductResponse>> GetProduct();
         Task<List<ProjectCodeResponse>> GetProjectCode(long projectId);
+
+        Task<PrReceiveResponse> ReceiveSearchAsync(PrReceiveSearchRequest request);
+        Task<bool> ReceiveListAsync(PrReceiveAddRequest request);
+        Task<bool> ReceiveAsync(PrReceiveDetailRequest request);
     }
 }

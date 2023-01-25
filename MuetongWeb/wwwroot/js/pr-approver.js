@@ -165,6 +165,7 @@ function createTable() {
             html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
             html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
+            html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
             if (pr.isAdvancePay) {
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" style="color:#000;">done</span></td><td ' + rowspan + '>' + pr.contractorName + '</td>';
             } else {
@@ -222,6 +223,7 @@ function createTable() {
             html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
             html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
+            html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
             if (pr.isAdvancePay) {
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" style="color:#000;">done</span></td><td ' + rowspan + '>' + pr.contractorName + '</td>';
             } else {
@@ -286,6 +288,7 @@ function createTable() {
             html += '<td ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
             html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
+            html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
             if (pr.isAdvancePay) {
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" style="color:#000;">done</span></td><td ' + rowspan + '>' + pr.contractorName + '</td>';
             } else {

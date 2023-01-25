@@ -86,6 +86,16 @@ namespace MuetongWeb.Models.Entities
 
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
+                entity.Property(e => e.ExtraCost).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.ExtraOther)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceNo)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.ModifyDate).HasColumnType("datetime");
 
                 entity.Property(e => e.PaymentDate).HasColumnType("datetime");
@@ -99,6 +109,11 @@ namespace MuetongWeb.Models.Entities
                 entity.Property(e => e.Status)
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Approver)
+                    .WithMany(p => p.BillingApprovers)
+                    .HasForeignKey(d => d.ApproverId)
+                    .HasConstraintName("FK_Billing_Approver");
 
                 entity.HasOne(d => d.PaymentAccount)
                     .WithMany(p => p.Billings)
@@ -118,7 +133,7 @@ namespace MuetongWeb.Models.Entities
                     .HasConstraintName("FK_Billing_Store");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Billings)
+                    .WithMany(p => p.BillingUsers)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Billing_User");

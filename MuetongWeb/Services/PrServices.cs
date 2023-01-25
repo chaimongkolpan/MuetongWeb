@@ -79,6 +79,29 @@ namespace MuetongWeb.Services
                 return new PrModel();
             }
         }
+        public async Task<PrModel> ReceiveAsync(bool canEdit, UserInfoModel user)
+        {
+            try
+            {
+                IEnumerable<Project> projects;
+                if (RoleHelpers.CanSeeAllProject(user.Role))
+                    projects = await _projectRepositories.GetAsync();
+                else
+                    projects = await _projectRepositories.GetByUserIdAsync(user.Id);
+                var projectResponses = new List<ProjectResponse>();
+                foreach (var project in projects)
+                {
+                    projectResponses.Add(new ProjectResponse(project));
+                }
+                var response = new PrModel(projectResponses, canEdit);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrServices => ApproverAsync: " + ex.Message);
+                return new PrModel();
+            }
+        }
         #endregion
         #region Api Service
         public async Task<PrIndexResponse> IndexSearchAsync(PrIndexSearchRequest request)
@@ -267,7 +290,6 @@ namespace MuetongWeb.Services
                         if (deleteDetails.Any())
                             await _prRepositories.DeleteDetailAsync(deleteDetails);
                     }
-                    // check file import condition
                     if (request.Files != null && request.Files.Any())
                     {
                         await _fileServices.ImportFileList(pr.Id, FileConstants.PrPathType, request.Files);
@@ -289,7 +311,7 @@ namespace MuetongWeb.Services
                 prs = await _prRepositories.GetAsync();
             else
                 prs = await _prRepositories.GetByProjectAsync(projectId);
-            var users = prs.Select(pr => pr.User).DistinctBy(user => user.Id).ToList();
+            var users = prs.Select(pr => pr.User).DistinctBy(user => user.Id).OrderBy(user => string.Format("{0} {1}", user.Firstname, user.Lastname)).ToList();
             var response = new List<UserResponse>();
             foreach (var user in users)
             {
@@ -304,7 +326,7 @@ namespace MuetongWeb.Services
                 prs = await _prRepositories.GetAsync();
             else
                 prs = await _prRepositories.GetByProjectAsync(projectId);
-            var response = prs.Select(pr => pr.PrNo).Distinct().ToList();
+            var response = prs.Select(pr => pr.PrNo).Distinct().OrderBy(prno => prno).ToList();
             return response;
         }
         public async Task<List<ContractorResponse>> GetContractorByProject(long projectId)
@@ -334,9 +356,88 @@ namespace MuetongWeb.Services
             var response = new List<ProductResponse>();
             foreach (var product in products)
             {
-                response.Add(new ProductResponse(product));
+                if(product.Id != 0)
+                    response.Add(new ProductResponse(product));
             }
             return response;
+        }
+        #endregion
+        #region Receive
+        public async Task<PrReceiveResponse> ReceiveSearchAsync(PrReceiveSearchRequest request)
+        {
+            try
+            {
+                var prs = await _prRepositories.SearchAsync(request);
+                var response = new PrReceiveResponse(prs);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrServices => ReceiveSearchAsync: " + ex.Message);
+                return new PrReceiveResponse();
+            }
+        }
+        public async Task<bool> ReceiveListAsync(PrReceiveAddRequest request)
+        {
+            try
+            {
+                if (request == null)
+                    return false;
+                if (request.Details.Any())
+                {
+                    List<long> ids = new List<long>();
+                    List<PrReceive> prReceives = new List<PrReceive>();
+                    var now = DateTime.Now;
+                    foreach(var detail in request.Details)
+                    {
+                        var tmp = new PrReceive()
+                        {
+                            PrDetailId = detail.DetailId,
+                            Quantity = detail.Quantity,
+                            Remark = detail.Remark,
+                            UserId = request.User.Id,
+                            CreateDate = now
+                        };
+                        ids.Add(detail.DetailId);
+                        prReceives.Add(tmp);
+                    }
+                    await _prRepositories.AddReceiveRangeAsync(prReceives);
+                    // save file receive coll
+                    await _prRepositories.CheckReceive(ids);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrServices => ReceiveListAsync: " + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> ReceiveAsync(PrReceiveDetailRequest request)
+        {
+            try
+            {
+                if (request == null)
+                    return false;
+                var tmp = new PrReceive()
+                {
+                    PrDetailId = request.DetailId,
+                    Quantity = request.Quantity,
+                    Remark = request.Remark,
+                    UserId = request.User.Id,
+                    CreateDate = DateTime.Now
+                };
+                await _prRepositories.AddReceiveAsync(tmp);
+                // save file receive
+                await _prRepositories.CheckReceive(new List<long>() { request.DetailId });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrServices => ReceiveAsync: " + ex.Message);
+                return false;
+            }
         }
         #endregion
     }

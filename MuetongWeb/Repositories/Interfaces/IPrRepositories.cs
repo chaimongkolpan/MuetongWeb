@@ -6,7 +6,9 @@ namespace MuetongWeb.Repositories.Interfaces
     public interface IPrRepositories
     {
         Task<IEnumerable<Pr>> SearchAsync(PrIndexSearchRequest request);
+        Task<IEnumerable<Pr>> SearchAsync(PrReceiveSearchRequest request);
         Task<IEnumerable<Pr>> SearchAsync(PoIndexSearchRequest request);
+        Task<List<long>> SearchBillAsync(BillingIndexSearch request);
         Task<IEnumerable<PrDetail>> SearchDetailAsync(PoIndexSearchRequest request);
         Task<Pr?> GetAsync(long id);
         Task<IEnumerable<Pr>> GetAsync();
@@ -26,7 +28,12 @@ namespace MuetongWeb.Repositories.Interfaces
 
         Task<bool> UpdateAllDetailStatus(long prId, string status);
         Task<bool> UpdateAllDetailStatus(List<long> ids, string status);
+        Task<bool> UpdateAllDetailStatusByPoDetail(List<long> ids, string status);
         Task<bool> UpdateDetailStatus(long id, string status);
         Task<IEnumerable<PrDetail>> SearchAsync(PoIndexPrSearch request);
+
+        Task<bool> AddReceiveAsync(PrReceive receive);
+        Task<bool> AddReceiveRangeAsync(List<PrReceive> receives);
+        Task<bool> CheckReceive(List<long> detailId);
     }
 }

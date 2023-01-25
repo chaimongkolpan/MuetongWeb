@@ -246,6 +246,107 @@ namespace MuetongWeb.Controllers.Api
             }
         }
         #endregion
+        #region Receive
+        [Route("SearchReceive")]
+        [HttpPost]
+        public async Task<IActionResult> PrReceiveSearch(PrReceiveSearchRequest request)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        request.User = user;
+                        var response = await _prServices.ReceiveSearchAsync(request);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrReceiveSearch: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [Route("RequesterComplete/{projectId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetPrRequesterComplete(long projectId)
+        {
+            try
+            {
+                var response = await _prServices.GetRequesterByProject(projectId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => GetPrRequesterComplete: " + ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+        [Route("PrNoComplete/{projectId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetPrNoComplete(long projectId)
+        {
+            try
+            {
+                var response = await _prServices.GetPrNoByProject(projectId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => GetPrNoComplete: " + ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+        [Route("Receive")]
+        [HttpPost]
+        public async Task<IActionResult> PrReceiveAsync(PrReceiveDetailRequest request)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        request.User = user;
+                        var response = await _prServices.ReceiveAsync(request);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrReceiveAsync: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [Route("ReceiveList")]
+        [HttpPost]
+        public async Task<IActionResult> PrReceiveListAsync(PrReceiveAddRequest request)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        request.User = user;
+                        var response = await _prServices.ReceiveListAsync(request);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrReceiveListAsync: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        #endregion
     }
 }
 

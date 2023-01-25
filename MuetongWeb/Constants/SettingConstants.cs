@@ -6,5 +6,6 @@
         public static string ReceiveReceiptType = "ReceiveReceipt";
         public static string CreditType = "CreditType";
         public static string PaymentType = "PaymentType";
+        public static string ExtraType = "ExtraType";
     }
 }

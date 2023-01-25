@@ -3,7 +3,7 @@ namespace MuetongWeb.Models.Requests
 {
     public class PrIndexUpdateRequest
     {
-        public long? Id { get; set; }
+        public long Id { get; set; }
         public long ProjectId { get; set; }
         public string? PrNo { get; set; }
         public bool AdvancePay { get; set; } = false;
@@ -14,7 +14,7 @@ namespace MuetongWeb.Models.Requests
     }
     public class PrDetailUpdateRequest
     {
-        public long? Id { get; set; }
+        public long Id { get; set; }
         public long ProductId { get; set; }
         public decimal? Quantity { get; set; }
         public long ProjectCodeId { get; set; }
