@@ -15,7 +15,7 @@ namespace MuetongWeb.Repositories
         public async Task<IEnumerable<Project>> GetAsync()
         {
             return await _dbContext.Projects
-                                   .OrderBy(project => project.CreateDate)
+                                   .OrderBy(project => project.Name)
                                    .Include(project => project.Customer)
                                    .Include(project => project.Province)
                                    .ToListAsync();
@@ -23,7 +23,7 @@ namespace MuetongWeb.Repositories
         public async Task<IEnumerable<Project>> GetByCustomerAsync(long customerId)
         {
             return await _dbContext.Projects.Where(project => project.CustomerId == customerId)
-                                   .OrderBy(project => project.CreateDate)
+                                   .OrderBy(project => project.Name)
                                    .Include(project => project.Customer)
                                    .Include(project => project.Province)
                                    .ToListAsync();
@@ -31,7 +31,7 @@ namespace MuetongWeb.Repositories
         public async Task<IEnumerable<Project>> GetByUserIdAsync(long userId)
         {
             return await _dbContext.Projects.Where(project => project.ProjectUsers != null && project.ProjectUsers.Any(pUser => pUser.UserId == userId))
-                                   .OrderBy(project => project.CreateDate)
+                                   .OrderBy(project => project.Name)
                                    .Include(project => project.Customer)
                                    .Include(project => project.Province)
                                    .ToListAsync();

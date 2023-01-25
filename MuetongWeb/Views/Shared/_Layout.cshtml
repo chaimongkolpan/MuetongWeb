@@ -174,12 +174,19 @@ else
     </footer>
 
     <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script -->
+    <!--script   src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script-->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="~/js/pagination.min.js"></script>
     <script src="~/js/fileinput.js"></script>
 
-    <script type="text/javascript">$(function () {
+    <script type="text/javascript">
+function prettyPrint() {
+    console.log('call pretty print')
+}
+function demo() {
+    console.log('call demo')
+}
+        $(function () {
             $('pre[data-source]').each(function () {
                 var $this = $(this),
                     $source = $($this.data('source'));
@@ -200,9 +207,10 @@ else
                 $this.text(text.join('\n\n').replace(/\t/g, '    '));
             });
 
-            // prettyPrint();
-            // demo();
-        });</script>
+            prettyPrint();
+            demo();
+        });
+    </script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

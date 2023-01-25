@@ -7,7 +7,8 @@ namespace MuetongWeb.Models.Entities
     {
         public User()
         {
-            Billings = new HashSet<Billing>();
+            BillingApprovers = new HashSet<Billing>();
+            BillingUsers = new HashSet<Billing>();
             Contractors = new HashSet<Contractor>();
             Customers = new HashSet<Customer>();
             Departments = new HashSet<Department>();
@@ -46,7 +47,8 @@ namespace MuetongWeb.Models.Entities
         public virtual Role Role { get; set; } = null!;
         public virtual SubDepartment SubDepartment { get; set; } = null!;
         public virtual User UserNavigation { get; set; } = null!;
-        public virtual ICollection<Billing> Billings { get; set; }
+        public virtual ICollection<Billing> BillingApprovers { get; set; }
+        public virtual ICollection<Billing> BillingUsers { get; set; }
         public virtual ICollection<Contractor> Contractors { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }
         public virtual ICollection<Department> Departments { get; set; }

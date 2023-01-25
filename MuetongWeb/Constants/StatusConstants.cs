@@ -20,6 +20,12 @@ namespace MuetongWeb.Constants
         public static string PoRequested = "รอสินค้าจัดส่ง";
         public static string PoComplete = "จัดส่งสำเร็จ";
         public static string PoCancel = "ยกเลิก";
+
+        public static string BillingWaitingPayment = "รอชำระเงิน";
+        public static string BillingWaitingReceipt = "รอรับใบเสร็จ/ใบกำกับภาษี";
+        public static string BillingWaitingApprove = "รอตรวจสอบวางบิล";
+        public static string BillingComplete = "วางบิลสำเร็จ";
+        public static string BillingCancel = "ยกเลิก";
     }
 }
 

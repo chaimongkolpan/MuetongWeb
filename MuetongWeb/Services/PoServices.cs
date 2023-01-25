@@ -164,6 +164,8 @@ namespace MuetongWeb.Services
                             long otherProductId = 0;
                             var tmp = new PoDetail()
                             {
+                                Code = request.AdditionalType,
+                                ProductCode = request.AdditionalOther,
                                 PoId = po.Id,
                                 ProductId = otherProductId,
                                 Quantity = 1,
@@ -227,6 +229,176 @@ namespace MuetongWeb.Services
         {
             try
             {
+                if (request == null)
+                    return false;
+                decimal? subtotal = 0;
+                decimal? discount = 0;
+                decimal? total = 0;
+                decimal? vat = 0;
+                decimal? wht = 0;
+                decimal? grandtotal = 0;
+                var po = await _poRepositories.FindAsync(id);
+                if (po == null)
+                    return false;
+                po.StoreId = request.StoreId;
+                po.CreditType = request.CreditType.Value;
+                po.DateSpecific = request.DateSpecific;
+                po.DateValue = request.DateValue;
+                po.BgContractNo = request.BgContractNo;
+                po.ChequeNo = request.ChequeNo;
+                po.PaymentType = request.PaymentType.Value;
+                po.PaymentAccountId = request.PaymentAccountId;
+                po.PaymentDate = request.PayDate;
+                po.BillingReceiveType = request.ReceiveBillingTypeId;
+                po.ReceiptReceiveType = request.ReceiveReceiptTypeId;
+                po.PlanTransferDate = request.PlanTransferDate;
+                po.Status = StatusConstants.PoWaitingApprove;
+                po.WhtRate = request.WhtRate;
+                po.VatRate = request.VatRate;
+                po.UserId = userId;
+                po.ModifyDate = DateTime.Now;
+                var details = await _poRepositories.GetDetailAsync(id);
+                var ids = new List<long>();
+                if(request.Details != null && request.Details.Any())
+                {
+                    var prDetailIds = request.Details.Select(detail => detail.PrDetailId.Value).ToList();
+                    var prDetails = await _prRepositories.GetByIdsAsync(prDetailIds);
+                    List<PoDetail> addDetails = new List<PoDetail>();
+                    List<long> addPrDetails = new List<long>();
+                    foreach (var detail in request.Details)
+                    {
+                        if (!detail.Id.HasValue || (detail.Id.HasValue && detail.Id.Value == 0))
+                        {
+                            var prDetail = prDetails.FirstOrDefault(d => d.Id == detail.PrDetailId);
+                            if (prDetail == null)
+                                continue;
+                            var addDetail = new PoDetail() 
+                            { 
+                                PoId = id,
+                                ProductId = prDetail.ProductId,
+                                Quantity = prDetail.Quantity,
+                                PricePerUnit = detail.PricePerUnit,
+                                Discount = detail.Discount,
+                                WhtRate = request.WhtRate,
+                                VatRate = request.VatRate,
+                                SubTotal = detail.PricePerUnit * prDetail.Quantity
+                            };
+                            addDetail.Total = addDetail.SubTotal - addDetail.Discount;
+                            addDetail.Vat = detail.IsVat.HasValue && detail.IsVat.Value ? addDetail.Total * addDetail.VatRate : 0;
+                            addDetail.Wht = detail.IsWht.HasValue && detail.IsWht.Value ? addDetail.Total * addDetail.WhtRate : 0;
+                            addDetail.GrandTotal = addDetail.Total + addDetail.Vat - addDetail.Wht;
+                            subtotal += addDetail.SubTotal;
+                            discount += addDetail.Discount;
+                            total += addDetail.Total;
+                            vat += addDetail.Vat;
+                            wht += addDetail.Wht;
+                            grandtotal += addDetail.GrandTotal;
+                            addDetails.Add(addDetail);
+                            addPrDetails.Add(detail.PrDetailId.Value);
+                        }
+                        else 
+                        {
+                            var tmp = details.FirstOrDefault(x => x.Id == detail.Id);
+                            tmp.PricePerUnit = detail.PricePerUnit;
+                            tmp.Discount = detail.Discount;
+                            tmp.WhtRate = request.WhtRate;
+                            tmp.VatRate = request.VatRate;
+                            tmp.SubTotal = detail.PricePerUnit * tmp.Quantity;
+                            tmp.Total = tmp.SubTotal - tmp.Discount;
+                            tmp.Vat = detail.IsVat.HasValue && detail.IsVat.Value ? tmp.Total * tmp.VatRate : 0;
+                            tmp.Wht = detail.IsWht.HasValue && detail.IsWht.Value ? tmp.Total * tmp.WhtRate : 0;
+                            tmp.GrandTotal = tmp.Total + tmp.Vat - tmp.Wht;
+                            subtotal += tmp.SubTotal;
+                            discount += tmp.Discount;
+                            total += tmp.Total;
+                            vat += tmp.Vat;
+                            wht += tmp.Wht;
+                            grandtotal += tmp.GrandTotal;
+                        }
+                    }
+                    if (addDetails.Any())
+                    {
+                        await _poRepositories.AddDetailRangeAsync(addDetails);
+                        await _prRepositories.UpdateAllDetailStatus(addPrDetails, StatusConstants.PrDetailWaitingOrder);
+                    }
+                    await _poRepositories.UpdateDetailRangeAsync(details);
+                    ids = request.Details.Where(x => x.Id.HasValue && x.Id.Value != 0)
+                        .Select(x => x.Id.Value).ToList();
+                }
+
+                if (ids.Any())
+                {
+                    var deleteIds = details.Where(x => ids.Contains(x.Id) && x.ProductId != 0).Select(x => x.Id).ToList();
+                    await _prRepositories.UpdateAllDetailStatusByPoDetail(deleteIds, StatusConstants.PrDetailWaitingOrder);
+                    await _poRepositories.DeleteDetailRangeAsync(deleteIds);
+                }
+                if (request.Other != null)
+                {
+                    if (!details.Any(x => x.ProductId == 0))
+                    {
+                        var addDetail = new PoDetail()
+                        {
+                            Code = request.AdditionalType,
+                            ProductCode = request.AdditionalOther,
+                            PoId = po.Id,
+                            ProductId = 0,
+                            Quantity = 1,
+                            PricePerUnit = request.Other?.PricePerUnit,
+                            Discount = request.Other?.Discount,
+                            WhtRate = request.WhtRate,
+                            VatRate = request.VatRate,
+                            SubTotal = request.Other?.PricePerUnit
+                        };
+
+                        addDetail.Total = addDetail.SubTotal - addDetail.Discount;
+                        addDetail.Vat = (request.Other?.IsVat.HasValue ?? false) && (request.Other?.IsVat.Value ?? false) ? addDetail.Total * addDetail.VatRate : 0;
+                        addDetail.Wht = (request.Other?.IsWht.HasValue ?? false) && (request.Other?.IsWht.Value ?? false) ? addDetail.Total * addDetail.WhtRate : 0;
+                        addDetail.GrandTotal = addDetail.Total + addDetail.Vat - addDetail.Wht;
+                        subtotal += addDetail.SubTotal;
+                        discount += addDetail.Discount;
+                        total += addDetail.Total;
+                        vat += addDetail.Vat;
+                        wht += addDetail.Wht;
+                        grandtotal += addDetail.GrandTotal;
+                        await _poRepositories.AddDetailAsync(addDetail);
+                    }
+                    else
+                    {
+                        var updateDetail = details.FirstOrDefault(x => x.ProductId == 0);
+                        if (updateDetail != null)
+                        {
+                            updateDetail.PricePerUnit = request.Other?.PricePerUnit;
+                            updateDetail.Discount = request.Other?.Discount;
+                            updateDetail.WhtRate = request.WhtRate;
+                            updateDetail.VatRate = request.VatRate;
+                            updateDetail.SubTotal = request.Other?.PricePerUnit;
+                            updateDetail.Total = updateDetail.SubTotal - updateDetail.Discount;
+                            updateDetail.Vat = (request.Other?.IsVat.HasValue ?? false) && (request.Other?.IsVat.Value ?? false) ? updateDetail.Total * updateDetail.VatRate : 0;
+                            updateDetail.Wht = (request.Other?.IsWht.HasValue ?? false) && (request.Other?.IsWht.Value ?? false) ? updateDetail.Total * updateDetail.WhtRate : 0;
+                            updateDetail.GrandTotal = updateDetail.Total + updateDetail.Vat - updateDetail.Wht;
+                            subtotal += updateDetail.SubTotal;
+                            discount += updateDetail.Discount;
+                            total += updateDetail.Total;
+                            vat += updateDetail.Vat;
+                            wht += updateDetail.Wht;
+                            grandtotal += updateDetail.GrandTotal;
+                            await _poRepositories.UpdateDetailAsync(updateDetail);
+                        }
+                    }
+                }
+                else if(details.Any(x => x.ProductId == 0))
+                {
+                    var delDetail = details.FirstOrDefault(x => x.ProductId == 0);
+                    if (delDetail != null)
+                        await _poRepositories.DeleteDetailAsync(delDetail.Id);
+                }
+                po.SubTotal = subtotal;
+                po.Discount = discount;
+                po.Total = total;
+                po.Vat = vat;
+                po.Wht = wht;
+                po.GrandTotal = grandtotal;
+                await _poRepositories.UpdateAsync(po);
                 return true;
             }
             catch (Exception ex)
@@ -344,7 +516,7 @@ namespace MuetongWeb.Services
         #region Private function
         private string GetPoNo()
         {
-            return string.Empty;
+            return "PO2301-00001";
         }
         #endregion
     }

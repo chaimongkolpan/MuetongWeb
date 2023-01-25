@@ -90,6 +90,8 @@ namespace MuetongWeb.Controllers.Api
                     var user = SessionHelpers.GetUserInfo(HttpContext.Session);
                     if (user != null)
                     {
+                        if (!string.IsNullOrWhiteSpace(request.JsonDetails)) request.Details = JsonConvert.DeserializeObject<List<PoDetailUpdateRequest>>(request.JsonDetails);
+                        if (!string.IsNullOrWhiteSpace(request.JsonOther)) request.Other = JsonConvert.DeserializeObject<PoDetailUpdateRequest>(request.JsonOther);
                         var response = await _poServices.UpdateIndexPo(id, user.Id, request);
                         return Ok(response);
                     }

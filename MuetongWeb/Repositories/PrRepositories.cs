@@ -36,6 +36,27 @@ namespace MuetongWeb.Repositories
                         .Include(pr => pr.PrDetails).ThenInclude(detail => detail.ProjectCode)
                         .ToListAsync();
         }
+        public async Task<IEnumerable<Pr>> SearchAsync(PrReceiveSearchRequest request)
+        {
+            return await _dbContext.Prs.Where(pr => pr.Project != null && request.User != null
+                            && (pr.Project.ProjectUsers.Any(pUser => pUser.UserId == request.User.Id) || RoleHelpers.CanSeeAllProject(request.User.Role))
+                            && (!request.ProjectId.HasValue || request.ProjectId.Value == RequestConstants.AllValue || pr.ProjectId == request.ProjectId.Value)
+                            && (string.IsNullOrWhiteSpace(request.PrNo) || request.PrNo == RequestConstants.AllString || pr.PrNo == request.PrNo)
+                            && (!request.RequesterId.HasValue || request.RequesterId.Value == RequestConstants.AllValue || pr.UserId == request.RequesterId.Value)
+                            //&& (pr.Status == StatusConstants.PrComplete || pr.Status == StatusConstants.PrWaitingTransfer)
+                            && (pr.PrDetails.Any(detail => detail.Status == StatusConstants.PrDetailComplete || detail.Status == StatusConstants.PrDetailWaitingTransfer))
+                        )
+                        .OrderBy(pr => pr.CreateDate)
+                        .Include(pr => pr.Project)
+                        .Include(pr => pr.Contractor)
+                        .Include(pr => pr.User)
+                        .Include(pr => pr.Approver)
+                        .Include(pr => pr.PrDetails).ThenInclude(detail => detail.Product)
+                        .Include(pr => pr.PrDetails).ThenInclude(detail => detail.PoDetail).ThenInclude(prDetail => prDetail.Po)
+                        .Include(pr => pr.PrDetails).ThenInclude(detail => detail.ProjectCode)
+                        .Include(pr => pr.PrDetails).ThenInclude(detail => detail.PrReceives).ThenInclude(receive => receive.User)
+                        .ToListAsync();
+        }
         public async Task<IEnumerable<Pr>> SearchAsync(PoIndexSearchRequest request)
         {
             return await _dbContext.Prs.Where(pr => pr.Project != null && request.User != null
@@ -54,6 +75,19 @@ namespace MuetongWeb.Repositories
                         .Include(pr => pr.PrDetails).ThenInclude(detail => detail.PoDetail).ThenInclude(prDetail => prDetail.Po)
                         .Include(pr => pr.PrDetails).ThenInclude(detail => detail.ProjectCode)
                         .ToListAsync();
+        }
+        public async Task<List<long>> SearchBillAsync(BillingIndexSearch request)
+        {
+            return await _dbContext.PrDetails.Where(detail => detail.Pr.Project != null && request.User != null
+                            && (detail.Pr.Project.ProjectUsers.Any(pUser => pUser.UserId == request.User.Id) || RoleHelpers.CanSeeAllProject(request.User.Role))
+                            && (request.ProjectId == RequestConstants.AllValue || detail.Pr.ProjectId == request.ProjectId)
+                            && (string.IsNullOrWhiteSpace(request.PrNo) || request.PrNo == RequestConstants.AllString || detail.Pr.PrNo == request.PrNo)
+                            && (request.RequesterId == RequestConstants.AllValue || detail.Pr.UserId == request.RequesterId)
+                            && detail.PoDetail != null 
+                            && (detail.Status == StatusConstants.PrDetailComplete || detail.Status == StatusConstants.PrDetailWaitingTransfer)
+                            && (string.IsNullOrWhiteSpace(request.PoNo) || request.PoNo == RequestConstants.AllString || detail.PoDetail.Po.PoNo == request.PoNo)
+                        ).Include(detail => detail.PoDetail)
+                        .Select(detail => detail.PoDetail.PoId).Distinct().ToListAsync();
         }
         public async Task<IEnumerable<PrDetail>> SearchDetailAsync(PoIndexSearchRequest request)
         {
@@ -199,6 +233,18 @@ namespace MuetongWeb.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> UpdateAllDetailStatusByPoDetail(List<long> ids, string status)
+        {
+            var details = await _dbContext.PrDetails.Where(detail => detail.PoDetailId.HasValue && ids.Contains(detail.PoDetailId.Value)).ToListAsync();
+            if (details.Any())
+            {
+                details.ForEach(detail => {
+                    detail.Status = status;
+                });
+            }
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
         public async Task<bool> UpdateDetailStatus(long id, string status)
         {
             var detail = await _dbContext.PrDetails.FindAsync(id);
@@ -226,6 +272,47 @@ namespace MuetongWeb.Repositories
                                                     .Include(detail => detail.ProjectCode)
                                                     .ToListAsync();
             return details;
+        }
+        public async Task<bool> AddReceiveAsync(PrReceive receive)
+        {
+            await _dbContext.PrReceives.AddAsync(receive);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> AddReceiveRangeAsync(List<PrReceive> receives)
+        {
+            await _dbContext.PrReceives.AddRangeAsync(receives);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> CheckReceive(List<long> detailId)
+        {
+            var details = await _dbContext.PrDetails.Where(detail => detailId.Contains(detail.Id))
+                                       .ToListAsync();
+            details.ForEach(detail =>
+            {
+                if (detail.PrReceives != null && detail.PrReceives.Any())
+                {
+                    var sum = detail.PrReceives.Sum(receive => receive.Quantity);
+                    if (sum >= detail.Quantity)
+                    {
+                        detail.Status = StatusConstants.PrDetailComplete;
+                    }
+                }
+            });
+            await _dbContext.SaveChangesAsync();
+            var prIds = details.Select(detail => detail.PrId).Distinct().ToList();
+            var prs = await _dbContext.Prs.Where(pr => prIds.Contains(pr.Id)).ToListAsync();
+            prs.ForEach(pr =>
+            {
+                if (pr.PrDetails.All(detail => detail.Status == StatusConstants.PrDetailComplete))
+                {
+                    pr.Status = StatusConstants.PrComplete;
+                    pr.ModifyDate = DateTime.Now;
+                }
+            });
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

@@ -28,6 +28,7 @@ namespace MuetongWeb.Models.Responses
         public string? ProjectCode { get; set; }
         public string? Status { get; set; }
         public string? Remark { get; set; }
+        public DateTime? CreateDate { get; set; }
         public List<IFormFile>? PrFiles { get; set; }
         public List<IFormFile>? PrApproveFiles { get; set; }
         public PoIndexPrDetailResponse() { }
@@ -45,6 +46,7 @@ namespace MuetongWeb.Models.Responses
             ProjectCode = detail.ProjectCode?.Code ?? string.Empty;
             Status = detail.Status ?? string.Empty;
             Remark = detail.Remark;
+            CreateDate = detail.Pr.CreateDate;
         }
     }
 }

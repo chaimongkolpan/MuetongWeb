@@ -168,6 +168,7 @@ function createTable() {
             html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
             html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
+            html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
             if (pr.isAdvancePay) {
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" style="color:#000;">done</span></td><td ' + rowspan + '>' + pr.contractorName + '</td>';
             } else {
@@ -224,6 +225,7 @@ function createTable() {
             html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
             html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
+            html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
             if (pr.isAdvancePay) {
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" style="color:#000;">done</span></td><td ' + rowspan + '>' + pr.contractorName + '</td>';
             } else {
@@ -283,6 +285,7 @@ function createTable() {
             html += '<td ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
             html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
+            html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
             if (pr.isAdvancePay) {
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" style="color:#000;">done</span></td><td ' + rowspan + '>' + pr.contractorName + '</td>';
             } else {
@@ -439,6 +442,8 @@ $('#add_btn').click(function () {
     $('#add_detail_pane').hide();
     $('#add_detail_table').empty();
     $('#add_pr_no').val('');
+    $('#add_files').val('');
+    $('#add_files').fileinput('clear');
     $('#add_advance_pay').prop('checked', false);
     $('#add_contractor').prop('disabled', 'disabled');
     var projectId = $('#add_project').val();
@@ -570,6 +575,8 @@ function edit_pr(id) {
             $('#edit_project').val(result.projectId);
             $('#edit_detail_pane').hide();
             $('#edit_pr_no').val(result.prNo);
+            $('#edit_files').val('');
+            $('#edit_files').fileinput('clear');
             if (result.isAdvancePay) {
                 $('#edit_advance_pay').prop('checked', true);
                 $('#edit_contractor').prop('disabled', false);
@@ -586,7 +593,7 @@ function edit_pr(id) {
                     var product = products.find(x => x.id == detail.productId);
                     var projectCode = projectCodes.find(x => x.id == detail.projectCodeId);
                     var tmp = {
-                        Id: detail.Id,
+                        Id: detail.id,
                         ProductId: detail.productId,
                         Product: product,
                         Quantity: detail.quantity,

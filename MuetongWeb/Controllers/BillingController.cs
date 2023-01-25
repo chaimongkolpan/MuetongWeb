@@ -12,18 +12,54 @@ namespace MuetongWeb.Controllers
     public class BillingController : Controller
     {
         private readonly ILogger<BillingController> _logger;
-        public BillingController(ILogger<BillingController> logger)
+        private readonly IBillingServices _billingServices;
+        public BillingController(ILogger<BillingController> logger, IBillingServices billingServices)
         {
             _logger = logger;
+            _billingServices = billingServices;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(1);
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_View, user.Permissions))
+                    {
+                        var response = await _billingServices.IndexAsync(PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_Edit, user.Permissions), user);
+                        response.Set(user);
+                        return View(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("BillingController => Index: " + ex.Message);
+            }
+            return Redirect(ViewConstants.DefaultHomePage);
         }
         [Route("Approver")]
-        public IActionResult Approver()
+        public async Task<IActionResult> Approver()
         {
-            return View(1);
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_View, user.Permissions))
+                    {
+                        var response = await _billingServices.IndexAsync(PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_Edit, user.Permissions), user);
+                        response.Set(user);
+                        return View(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("BillingController => Approver: " + ex.Message);
+            }
+            return Redirect(ViewConstants.DefaultHomePage);
         }
     }
 }
