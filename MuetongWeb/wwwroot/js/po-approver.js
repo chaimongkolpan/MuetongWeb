@@ -200,7 +200,11 @@ function bindPaymentEdit(id) {
     $('#edit_mobile_no').val(store.phoneNo);
     $('#edit_tax_no').val(store.taxNo);
 }
-
+function checkEditStatus(status) {
+    if (status == "รอสินค้าจัดส่ง" || status == "จัดส่งสำเร็จ" || status == "ยกเลิก")
+        return true;
+    return false;
+}
 $('#add_store').change(function () {
     bindPayment($('#add_store').val());
 });
@@ -454,8 +458,12 @@ function createTable() {
             }
             html += '<tr>';
             html += '<td class="bgpo" ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
-            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_po(' + i + ',1)" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionApprovePurchase">view_list</span></td>';
-            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_po(' + i + ',1)" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+            if (checkEditStatus(po.status)) {
+                html += '<td class="bgpo" ' + rowspan + '></td><td class="bgpo" ' + rowspan + '></td>';
+            } else {
+                html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_po(' + i + ',1)" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionApprovePurchase">view_list</span></td>';
+                html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_po(' + i + ',1)" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+            }
             html += '<td class="bgpo" ' + rowspan + '>' + po.poNo + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.storeName + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.storeAddress + '</td>';

@@ -145,6 +145,11 @@ $('#ProjectId').change(function () {
     $('#PrNo').val('ทั้งหมด');
     $('#RequesterId').val(0);
 });
+function checkEditStatus(status) {
+    if (status == "สั่งสินค้า" || status == "รอสั่งซื้อ" || status == "รอสินค้าจัดส่ง" || status == "จัดส่งสำเร็จ" || status == "ยกเลิก")
+        return true;
+    return false;
+}
 function createTable() {
     console.log(prColl);
     $('#all_table').empty();
@@ -161,8 +166,12 @@ function createTable() {
             }
             html += '<tr>';
             html += '<td ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
-            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr(' + pr.id + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span></td>';
-            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+            if (checkEditStatus(pr.status)) {
+                html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
+            } else {
+                html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr(' + pr.id + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionOrder">view_list</span></td>';
+                html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+            }
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
             html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
             html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
@@ -219,8 +228,12 @@ function createTable() {
             html += '<tr>';
             html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="approve_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:green;" data-bs-toggle="modal" data-bs-target="#ActionConfirm">check_circle</span></td>';
             html += '<td ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
-            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr(' + pr.id + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span></td>';
-            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+            if (checkEditStatus(pr.status)) {
+                html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
+            } else {
+                html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr(' + pr.id + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionOrder">view_list</span></td>';
+                html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+            }
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
             html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
             html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';

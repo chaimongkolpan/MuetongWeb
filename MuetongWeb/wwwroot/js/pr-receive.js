@@ -1,6 +1,8 @@
 ﻿var edit_detail = [];
 var products = [];
 var prColl = {};
+var allNum = 0;
+var waitNum = 0;
 function bindFilter(projectId) {
     var requesterUrl = baseUrl + 'requesterComplete/' + projectId;
     var jqxhr = $.get(requesterUrl)
@@ -89,7 +91,15 @@ function createRowExpand(pr, tab, i) {
             }
             var rece = {};
             if (detail.receives.length > 0) rece = createReceiveTable(detail.receives, detail.quantity);
-            html += '<td ' + rowspan + '>' + (parseInt(i) + parseInt(j) + 1) + '</td>';
+            var num = 0;
+            if (tab == 1) {
+                num = allNum;
+                allNum++;
+            } else {
+                num = waitNum;
+                waitNum++;
+            }
+            html += '<td ' + rowspan + '>' + (parseInt(num) + 1) + '</td>';
             if (detail.receives.length > 0 && rece.remain == 0)
                 html += '<td ' + rowspan + '></td>'
             else
@@ -181,6 +191,8 @@ function createTable() {
     console.log(prColl);
     $('#all_table').empty();
     $('#wait_table').empty();
+    allNum = 0;
+    waitNum = 0;
     if (prColl.all != null) {
         var html = '';
         for (var i in prColl.all) {

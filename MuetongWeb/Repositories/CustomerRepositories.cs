@@ -14,7 +14,7 @@ namespace MuetongWeb.Repositories
         public async Task<IEnumerable<Customer>> GetAsync()
         {
             return await _dbContext.Customers
-                                   .Include(customer => customer.ProvinceId)
+                                   .Include(customer => customer.Province)
                                    .Include(customer => customer.Projects)
                                    .OrderBy(customer => customer.Name)
                                    .ToListAsync();
@@ -26,19 +26,38 @@ namespace MuetongWeb.Repositories
                                            || customer.Name.Contains(query)
                                            || (!string.IsNullOrWhiteSpace(customer.Detail) && customer.Detail.Contains(query))
                                            || (!string.IsNullOrWhiteSpace(customer.PhoneNo) && customer.PhoneNo.Contains(query))
+                                           || (!string.IsNullOrWhiteSpace(customer.Address) && customer.Address.Contains(query))
+                                           || (!string.IsNullOrWhiteSpace(customer.Email) && customer.Email.Contains(query))
+                                           || (!string.IsNullOrWhiteSpace(customer.TaxNo) && customer.TaxNo.Contains(query))
                                            || (!string.IsNullOrWhiteSpace(customer.BranchNo) && customer.BranchNo.Contains(query))
                                         )
                                     )
                                    .OrderBy(customer => customer.Name)
                                    .Skip((page - 1) * pageSize).Take(pageSize)
-                                   .Include(customer => customer.ProvinceId)
+                                   .Include(customer => customer.Province)
                                    .Include(customer => customer.Projects)
                                    .ToListAsync();
+        }
+        public async Task<int> CountAsync(string? query, long? provinceId)
+        {
+            var count = await _dbContext.Customers.CountAsync(customer => (!provinceId.HasValue || customer.ProvinceId == provinceId.Value)
+                                        && (string.IsNullOrWhiteSpace(query)
+                                           || customer.Name.Contains(query)
+                                           || (!string.IsNullOrWhiteSpace(customer.Detail) && customer.Detail.Contains(query))
+                                           || (!string.IsNullOrWhiteSpace(customer.PhoneNo) && customer.PhoneNo.Contains(query))
+                                           || (!string.IsNullOrWhiteSpace(customer.Address) && customer.Address.Contains(query))
+                                           || (!string.IsNullOrWhiteSpace(customer.Email) && customer.Email.Contains(query))
+                                           || (!string.IsNullOrWhiteSpace(customer.TaxNo) && customer.TaxNo.Contains(query))
+                                           || (!string.IsNullOrWhiteSpace(customer.BranchNo) && customer.BranchNo.Contains(query))
+                                           )
+                                        );
+            return count;
         }
         public async Task<Customer?> GetAsync(long id)
         {
             return await _dbContext.Customers.Where(customer => customer.Id == id)
-                                   .Include(line => line.ProvinceId)
+                                   .Include(customer => customer.Province)
+                                   .Include(customer => customer.Projects)
                                    .FirstOrDefaultAsync();
         }
         public async Task<bool> AddAsync(Customer customer)

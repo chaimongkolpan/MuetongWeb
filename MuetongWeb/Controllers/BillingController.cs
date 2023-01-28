@@ -25,7 +25,7 @@ namespace MuetongWeb.Controllers
                 if (SessionHelpers.SessionAlive(HttpContext.Session))
                 {
                     var user = SessionHelpers.GetUserInfo(HttpContext.Session);
-                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_View, user.Permissions))
+                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Billing_Index_View, user.Permissions))
                     {
                         var response = await _billingServices.IndexAsync(PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_Edit, user.Permissions), user);
                         response.Set(user);
@@ -47,7 +47,7 @@ namespace MuetongWeb.Controllers
                 if (SessionHelpers.SessionAlive(HttpContext.Session))
                 {
                     var user = SessionHelpers.GetUserInfo(HttpContext.Session);
-                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_View, user.Permissions))
+                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Billing_Approver_View, user.Permissions))
                     {
                         var response = await _billingServices.IndexAsync(PermissionHelpers.Authenticate(PermissionConstants.Pr_Index_Edit, user.Permissions), user);
                         response.Set(user);

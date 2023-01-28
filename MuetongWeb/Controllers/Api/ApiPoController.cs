@@ -279,6 +279,21 @@ namespace MuetongWeb.Controllers.Api
                 return BadRequest(ex.Message);
             }
         }
+        [Route("NextPo")]
+        [HttpGet]
+        public async Task<IActionResult> GetNextPoNoAsync()
+        {
+            try
+            {
+                var response = await _poServices.GetPoNo();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => GetNextPoNoAsync: " + ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
 

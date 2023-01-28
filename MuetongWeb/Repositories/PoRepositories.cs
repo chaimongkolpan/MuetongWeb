@@ -4,6 +4,7 @@ using MuetongWeb.Models.Entities;
 using MuetongWeb.Models.Requests;
 using MuetongWeb.Helpers;
 using MuetongWeb.Constants;
+using Microsoft.Data.SqlClient;
 
 namespace MuetongWeb.Repositories
 {
@@ -18,14 +19,20 @@ namespace MuetongWeb.Repositories
         {
             return await _dbContext.Pos.OrderBy(po => po.CreateDate)
                                        .Include(po => po.PoDetails)
-                                       .Include(po => po.User)
+                                       .Include(po => po.User).ThenInclude(user => user.Role)
+                                       .Include(po => po.User).ThenInclude(user => user.SubDepartment)
+                                       .ThenInclude(sub => sub.Department)
+                                       .ThenInclude(de => de.Line)
                                        .ToListAsync();
         }
         public async Task<Po?> GetAsync(long id)
         {
             return await _dbContext.Pos.Where(po => po.Id == id)
                                        .Include(po => po.PoDetails)
-                                       .Include(po => po.User)
+                                       .Include(pr => pr.User).ThenInclude(user => user.Role)
+                                       .Include(pr => pr.User).ThenInclude(user => user.SubDepartment)
+                                       .ThenInclude(sub => sub.Department)
+                                       .ThenInclude(de => de.Line)
                                        .FirstOrDefaultAsync();
         }
         public async Task<List<PoDetail>> GetDetailAsync(long id)
@@ -279,6 +286,23 @@ namespace MuetongWeb.Repositories
                                         detail.Status = StatusConstants.PrDetailWaitingTransfer;
                                     });
             await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<short> GetPoNo(string sql)
+        {
+            var parameterReturn = new SqlParameter
+            {
+                ParameterName = "ReturnValue",
+                SqlDbType = System.Data.SqlDbType.SmallInt,
+                Direction = System.Data.ParameterDirection.Output,
+            };
+            var result = await _dbContext.Database.ExecuteSqlRawAsync(sql, parameterReturn);
+            short returnValue = (short)parameterReturn.Value;
+            return returnValue;
+        }
+        public async Task<bool> ExecuteSql(string sql)
+        {
+            var result = await _dbContext.Database.ExecuteSqlRawAsync(sql);
             return true;
         }
     }

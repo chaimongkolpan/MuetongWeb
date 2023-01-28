@@ -93,7 +93,7 @@ namespace MuetongWeb.Services
         {
             try
             {
-                string poNo = GetPoNo();
+                string poNo = await GetPoNo();
                 var po = new Po()
                 {
                     PoNo = poNo,
@@ -514,9 +514,14 @@ namespace MuetongWeb.Services
         }
         #endregion
         #region Private function
-        private string GetPoNo()
+        public async Task<string> GetPoNo()
         {
-            return "PO2301-00001";
+            var today = DateTime.Today;
+            var thisYear = today.Year;
+            var thisMonth = today.Month;
+            var result = await _poRepositories.GetPoNo(SequenceConstants.GetPoNoByMonth(thisMonth));
+            await _poRepositories.ExecuteSql(SequenceConstants.ResetSequence[thisMonth - 1]);
+            return SequenceConstants.PoNoBuilder(thisYear, thisMonth, result);
         }
         #endregion
     }

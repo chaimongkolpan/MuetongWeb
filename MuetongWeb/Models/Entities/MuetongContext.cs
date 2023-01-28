@@ -908,6 +908,54 @@ namespace MuetongWeb.Models.Entities
                     .HasConstraintName("FK_User_User");
             });
 
+            modelBuilder.HasSequence<short>("Po1")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po10")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po11")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po12")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po2")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po3")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po4")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po5")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po6")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po7")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po8")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po9")
+                .HasMin(1)
+                .HasMax(30000);
+
             OnModelCreatingPartial(modelBuilder);
         }
 
