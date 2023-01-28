@@ -824,7 +824,11 @@ function createRowCancelTable(bill, i) {
         rowspan = 'rowspan="' + bill.rowspan + '"';
     }
     html += '<tr>';
-    html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="read(' + i + ')" style="color:#A42206;"  data-bs-toggle="modal" data-bs-target="#ActionApproveCancel">assignment_late</span></td>';
+    if (bill.isReadCancel) {
+        html += '<td class="bgpc" ' + rowspan + '></td>';
+    } else {
+        html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="read(' + i + ')" style="color:#A42206;"  data-bs-toggle="modal" data-bs-target="#ActionApproveCancel">assignment_late</span></td>';
+    }
     html += '<td class="bgpc" ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
     html += '<td class="bgpc" ' + rowspan + '>' + bill.billingNo + '</td>';
     html += '<td class="bgpc" ' + rowspan + '>' + dateFormat(bill.billingDate) + '</td>';
@@ -1041,7 +1045,11 @@ function createRowAllTable(bill, i, tab) {
     html += '<tr>';
     html += '<td class="bgpc" ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
     html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="show(' + i + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionAll">view_list</span></td>';
-    html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel(' + i + ',' + tab + ')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+    if (bill.status == "วางบิลสำเร็จ" || bill.status == "ยกเลิก") {
+        html += '<td class="bgpc" ' + rowspan + '></td>';
+    } else {
+        html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel(' + i + ',' + tab + ')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+    }
     html += '<td class="bgpc" ' + rowspan + '>' + bill.billingNo + '</td>';
     html += '<td class="bgpc" ' + rowspan + '>' + dateFormat(bill.billingDate) + '</td>';
     html += '<td class="bgpc" ' + rowspan + '>' + dateFormat(bill.paymentDate) + '</td>';

@@ -38,7 +38,11 @@ var paymentType = {
 };
 var vatRate = 0.07;
 /*************************** Main **********************************/
-
+function checkEditStatus(status) {
+    if (status == "รอสินค้าจัดส่ง" || status == "จัดส่งสำเร็จ" || status == "ยกเลิก")
+        return true;
+    return false;
+}
 $('#ProjectId').change(function () {
     bindFilter($('#ProjectId').val());
     $('#PrNo').val('ทั้งหมด');
@@ -62,8 +66,12 @@ function createTable() {
             }
             html += '<tr>';
             html += '<td class="bgpo" ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
-            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_po(' + i + ',1)" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionPurchase">view_list</span></td>';
-            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_po(' + i + ',1)" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+            if (checkEditStatus(po.status)) {
+                html += '<td class="bgpo" ' + rowspan + '></td><td class="bgpo" ' + rowspan + '></td>';
+            } else {
+                html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_po(' + i + ',1)" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionPurchase">view_list</span></td>';
+                html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_po(' + i + ',1)" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
+            }
             html += '<td class="bgpo" ' + rowspan + '>' + po.poNo + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.storeName + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.storeAddress + '</td>';

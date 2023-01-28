@@ -93,40 +93,40 @@ else
                         <div class="flex-shrink-0 dropdown">
                             <ul class="navbar-nav nav nav-tabs nav-fill me-auto mb-2 mb-md-0">
                                 <!-- Contractor -->
-                                <li class="nav-item">
+                                <li class="nav-item pr_index_view" style="display: none;">
                                     <a id="pr-index" asp-area="" asp-controller="Pr" asp-action="Index" class="d-flex nav-link align-items-center justify-content-center p-3 link-dark text-decoration-none">
                                         <span class="material-symbols-outlined">assignment_add</span>&nbsp;สั่งสินค้า
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item pr_approver_view" style="display: none;">
                                     <a id="pr-check" asp-area="" asp-controller="Pr" asp-action="Approver" class="d-flex nav-link align-items-center justify-content-center p-3 link-dark text-decoration-none">
                                         <span class="material-symbols-outlined">playlist_add_check</span>&nbsp;ตรวจสอบสั่งสินค้า
                                     </a>
                                 </li>
                                 <!-- Purchase -->
-                                <li class="nav-item">
+                                <li class="nav-item po_index_view" style="display: none;">
                                     <a id="po-index" asp-area="" asp-controller="Po" asp-action="Index" class="d-flex nav-link align-items-center justify-content-center p-3 link-dark text-decoration-none">
                                         <span class="material-symbols-outlined">content_paste_go</span>&nbsp;สั่งซื้อ
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item po_approver_view" style="display: none;">
                                     <a id="po-check" asp-area="" asp-controller="Po" asp-action="Approver" class="d-flex nav-link align-items-center justify-content-center p-3 link-dark text-decoration-none">
                                         <span class="material-symbols-outlined">content_paste_search</span>&nbsp;ตรวจสอบสั่งซื้อ
                                     </a>
                                 </li>
                                 <!-- Account -->
-                                <li class="nav-item">
+                                <li class="nav-item billing_index_view" style="display: none;">
                                     <a id="billing-index" asp-area="" asp-controller="Billing" asp-action="Index" class="d-flex nav-link align-items-center justify-content-center p-3 link-dark text-decoration-none">
                                         <span class="material-symbols-outlined"> monetization_on </span>&nbsp;รับวางบิล
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item billing_approver_view" style="display: none;">
                                     <a id="billing-check" asp-area="" asp-controller="Billing" asp-action="Approver" class="d-flex nav-link align-items-center justify-content-center p-3 link-dark text-decoration-none">
                                         <span class="material-symbols-outlined">currency_exchange</span>&nbsp;ตรวจสอบรับวางบิล
                                     </a>
                                 </li>
                                 <!-- Receive -->
-                                <li class="nav-item">
+                                <li class="nav-item pr_receive_view" style="display: none;">
                                     <a id="receive-check" asp-area="" asp-controller="Pr" asp-action="Receive" class="d-flex nav-link align-items-center justify-content-center p-3 link-dark text-decoration-none">
                                         <span class="material-symbols-outlined">inventory</span>
                                         &nbsp;ตรวจสอบสินค้า
@@ -135,21 +135,21 @@ else
                                 <!-- Admin -->
                                 <li class="flex-shrink-0 dropdown">
                                     <a id="admin-dropdown" href="#" class="d-flex nav-link align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="material-symbols-outlined">person_filled</span>@ViewData["Username"]
+                                        <span class="material-symbols-outlined">person_filled</span><b id="main_username"></b>
                                     </a>
                                     <ul class="dropdown-menu text-small shadow" aria-labelledby="admin-dropdown">
-                                        <li><a id="admin-setting" class="dropdown-item" asp-area="" asp-controller="Setting" asp-action="Index">ตั้งค่า</a></li>
-                                        <li><a id="admin-user" class="dropdown-item" asp-area="" asp-controller="User" asp-action="Index">จัดการผู้ใช้งาน</a></li>
-                                        <li><a id="admin-role" class="dropdown-item" asp-area="" asp-controller="Role" asp-action="Index">Role Setting</a></li>
-                                        <li><a id="admin-workline" class="dropdown-item" asp-area="" asp-controller="WorkLine" asp-action="Index">Work Line Setting</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a id="admin-customer" class="dropdown-item" asp-area="" asp-controller="Customer" asp-action="Index">Customer Setting</a></li>
-                                        <li><a id="admin-contractor" class="dropdown-item" asp-area="" asp-controller="Contractor" asp-action="Index">Contractor Setting</a></li>
-                                        <li><a id="admin-project" class="dropdown-item" asp-area="" asp-controller="Project" asp-action="Index">Project Setting</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a id="admin-store" class="dropdown-item" asp-area="" asp-controller="Store" asp-action="Index">Store Setting</a></li>
-                                        <li><a id="admin-product" class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Index">Product Setting</a></li>
-                                        <li><hr class="dropdown-divider"></li>
+                                        <li class="setting_index_view" style="display: none;"><a id="admin-setting" class="dropdown-item" asp-area="" asp-controller="Setting" asp-action="Index">ตั้งค่า</a></li>
+                                        <li class="user_index_view" style="display: none;"><a id="admin-user" class="dropdown-item" asp-area="" asp-controller="User" asp-action="Index">จัดการผู้ใช้งาน</a></li>
+                                        <li class="role_index_view" style="display: none;"><a id="admin-role" class="dropdown-item" asp-area="" asp-controller="Role" asp-action="Index">สิทธิ์การใช้งาน</a></li>
+                                        <li class="setting_index_view" style="display: none;"><a id="admin-workline" class="dropdown-item" asp-area="" asp-controller="WorkLine" asp-action="Index">จัดการสายงาน</a></li>
+                                        <li class="setting_index_view" style="display: none;"><hr class="dropdown-divider"></li>
+                                        <li class="setting_index_view" style="display: none;"><a id="admin-customer" class="dropdown-item" asp-area="" asp-controller="Customer" asp-action="Index">จัดการลูกค้า</a></li>
+                                        <li class="setting_index_view" style="display: none;"><a id="admin-contractor" class="dropdown-item" asp-area="" asp-controller="Contractor" asp-action="Index">จัดการผู้รับเหมา</a></li>
+                                        <li class="setting_index_view" style="display: none;"><a id="admin-project" class="dropdown-item" asp-area="" asp-controller="Project" asp-action="Index">จัดการโครงการ</a></li>
+                                        <li class="setting_index_view" style="display: none;"><hr class="dropdown-divider"></li>
+                                        <li class="setting_index_view" style="display: none;"><a id="admin-store" class="dropdown-item" asp-area="" asp-controller="Store" asp-action="Index">จัดการร้านค้า</a></li>
+                                        <li class="setting_index_view" style="display: none;"><a id="admin-product" class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Index">จัดการสินค้า</a></li>
+                                        <li class="setting_index_view" style="display: none;"><hr class="dropdown-divider"></li>
                                         <li><a id="admin-password" class="dropdown-item" asp-area="" asp-controller="User" asp-action="ChangePassword">เปลี่ยนรหัสผ่าน</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Logout">ออกจากระบบ</a></li>
@@ -180,6 +180,9 @@ else
     <script src="~/js/fileinput.js"></script>
 
     <script type="text/javascript">
+var mainUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
+var logoutUrl = mainUrl + (mainUrl == '/' ? 'logout' : '/logout');
+mainUrl = mainUrl + (mainUrl == '/' ? 'api/user/' : '/api/user/');
 function prettyPrint() {
     console.log('call pretty print')
 }
@@ -211,6 +214,7 @@ function demo() {
             demo();
         });
     </script>
+    
     <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

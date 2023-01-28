@@ -19,14 +19,20 @@ namespace MuetongWeb.Repositories
         {
             return await _dbContext.Pos.OrderBy(po => po.CreateDate)
                                        .Include(po => po.PoDetails)
-                                       .Include(po => po.User)
+                                       .Include(po => po.User).ThenInclude(user => user.Role)
+                                       .Include(po => po.User).ThenInclude(user => user.SubDepartment)
+                                       .ThenInclude(sub => sub.Department)
+                                       .ThenInclude(de => de.Line)
                                        .ToListAsync();
         }
         public async Task<Po?> GetAsync(long id)
         {
             return await _dbContext.Pos.Where(po => po.Id == id)
                                        .Include(po => po.PoDetails)
-                                       .Include(po => po.User)
+                                       .Include(pr => pr.User).ThenInclude(user => user.Role)
+                                       .Include(pr => pr.User).ThenInclude(user => user.SubDepartment)
+                                       .ThenInclude(sub => sub.Department)
+                                       .ThenInclude(de => de.Line)
                                        .FirstOrDefaultAsync();
         }
         public async Task<List<PoDetail>> GetDetailAsync(long id)

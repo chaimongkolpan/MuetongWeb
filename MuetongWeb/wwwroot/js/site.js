@@ -83,3 +83,20 @@ function floatFormat(num) {
         return '0.00';
     return tmp.toFixed(2);
 }
+
+$(document).ready(function () {
+    var jqxhr = $.get(mainUrl)
+    .done(function (response) {
+        console.log(response);
+        $('#main_username').html(response.username);
+        for (var i in response.permissions) {
+            var permission = response.permissions[i];
+            $('.' + permission.name).show();
+        }
+    })
+    .fail(function (response) {
+        console.log(response);
+        alert(response);
+        location.href = logoutUrl;
+    });
+});

@@ -29,7 +29,10 @@ namespace MuetongWeb.Repositories
                         .OrderBy(pr => pr.CreateDate)
                         .Include(pr => pr.Project)
                         .Include(pr => pr.Contractor)
-                        .Include(pr => pr.User)
+                        .Include(pr => pr.User).ThenInclude(user => user.Role)
+                        .Include(pr => pr.User).ThenInclude(user => user.SubDepartment)
+                        .ThenInclude(sub => sub.Department)
+                        .ThenInclude(de => de.Line)
                         .Include(pr => pr.Approver)
                         .Include(pr => pr.PrDetails).ThenInclude(detail => detail.Product)
                         .Include(pr => pr.PrDetails).ThenInclude(detail => detail.PoDetail).ThenInclude(prDetail => prDetail.Po)
@@ -115,7 +118,10 @@ namespace MuetongWeb.Repositories
         {
             return await _dbContext.Prs.OrderBy(pr => pr.CreateDate)
                                        .Include(pr => pr.PrDetails)
-                                       .Include(pr => pr.User)
+                                       .Include(pr => pr.User).ThenInclude(user => user.Role)
+                                       .Include(pr => pr.User).ThenInclude(user => user.SubDepartment)
+                                       .ThenInclude(sub => sub.Department)
+                                       .ThenInclude(de => de.Line)
                                        .ToListAsync();
         }
         public async Task<IEnumerable<Pr>> GetByProjectAsync(long projectId)
@@ -123,7 +129,10 @@ namespace MuetongWeb.Repositories
             return await _dbContext.Prs.Where(pr => pr.ProjectId == projectId)
                                        .OrderBy(pr => pr.CreateDate)
                                        .Include(pr => pr.PrDetails)
-                                       .Include(pr => pr.User)
+                                       .Include(pr => pr.User).ThenInclude(user => user.Role)
+                                       .Include(pr => pr.User).ThenInclude(user => user.SubDepartment)
+                                       .ThenInclude(sub => sub.Department)
+                                       .ThenInclude(de => de.Line)
                                        .ToListAsync();
         }
         public async Task<IEnumerable<PrDetail>> GetByPrAsync(long prId)

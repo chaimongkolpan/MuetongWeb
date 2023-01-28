@@ -53,6 +53,7 @@ namespace MuetongWeb.Models.Responses
         public string ContractorName { get; set; } = string.Empty;
         public string RequesterName { get; set; } = string.Empty;
         public string ApproverName { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
         public DateTime? CreateDate { get; set; }
         public bool IsReadCancel { get; set; } = false;
         public List<PrDetailResponse> Details { get; set; } = new List<PrDetailResponse>();
@@ -83,6 +84,7 @@ namespace MuetongWeb.Models.Responses
             }
             CreateDate = pr.CreateDate;
             IsReadCancel = pr.IsReadCancel.HasValue ? pr.IsReadCancel.Value : false;
+            Status = pr.Status;
         }
     }
     public class PrDetailResponse
