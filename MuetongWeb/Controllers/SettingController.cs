@@ -20,7 +20,64 @@ namespace MuetongWeb.Controllers
         }
         public IActionResult Index()
         {
-            return View(new SettingResponse());
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Setting_Index_View, user.Permissions))
+                    {
+                        return View(new SettingResponse());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("SettingController => Index: " + ex.Message);
+            }
+            return Redirect(ViewConstants.DefaultHomePage);
+        }
+        [HttpGet]
+        [Route("All")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                return Ok(await _settingServices.GetAll());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("SettingController => GetAll: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [HttpPost]
+        [Route("Add")]
+        public async Task<IActionResult> Add(string name, string type)
+        {
+            try
+            {
+                return Ok(await _settingServices.Add(name, type));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("SettingController => Add: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [HttpGet]
+        [Route("Delete/{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            try
+            {
+                return Ok(await _settingServices.Delete(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("SettingController => Delete: " + ex.Message);
+            }
+            return BadRequest();
         }
         [HttpPost]
         [Route("ImportCustomer")]

@@ -19,6 +19,7 @@ namespace MuetongWeb.Services
         private readonly IStoreRepositories _storeRepositories;
         private readonly IPaymentAccountRepositories _paymentAccountRepositories;
         private readonly IProductRepositories _productRepositories;
+        private readonly ISettingConstantRepositories _settingConstantRepositories;
         public SettingServices
         (
             ILogger<SettingServices> logger,
@@ -28,7 +29,8 @@ namespace MuetongWeb.Services
             IContractorRepositories contractorRepositories,
             IStoreRepositories storeRepositories,
             IPaymentAccountRepositories paymentAccountRepositories,
-            IProductRepositories productRepositories
+            IProductRepositories productRepositories,
+            ISettingConstantRepositories settingConstantRepositories
         )
         {
             _logger = logger;
@@ -40,6 +42,29 @@ namespace MuetongWeb.Services
             _storeRepositories = storeRepositories;
             _paymentAccountRepositories = paymentAccountRepositories;
             _productRepositories = productRepositories;
+            _settingConstantRepositories = settingConstantRepositories;
+        }
+        public async Task<SettingCollectionResponse> GetAll()
+        {
+            var settings = await _settingConstantRepositories.GetAsync();
+            var response = new SettingCollectionResponse(settings);
+            return response;
+        }
+        public async Task<bool> Add(string name, string type)
+        {
+            var setting = new SettingConstant()
+            {
+                Name = name,
+                Detail = name,
+                Type = type
+            };
+            await _settingConstantRepositories.AddAsync(setting);
+            return true;
+        }
+        public async Task<bool> Delete(long id)
+        {
+            await _settingConstantRepositories.DeleteAsync(id);
+            return true;
         }
         public async Task<SettingResponse> ImportCustomerFileAsync(SettingImportCustomerRequest request, long userId)
         {
