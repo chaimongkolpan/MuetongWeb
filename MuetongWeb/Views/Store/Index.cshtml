@@ -1,11 +1,267 @@
 ﻿@using Newtonsoft.Json;
-@if(Model == null)
-{
-    <script>location.href = '/';</script>
+@{
+    ViewData["Title"] = "จัดการร้านค้า";
 }
+<div class="d-flex justify-content-end ">
+    <button type="button" class="btn btn-warning" onclick="addClick();" data-bs-toggle="modal" data-bs-target="#add-modal">
+        <i class="fa fa-plus"> &nbsp;เพิ่มร้านค้า</i>
+    </button>
+</div><br />
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>ลำดับ</th>
+            <th>ดำเนินการ</th>
+            <th>ชื่อร้านค้า</th>
+            <th>ที่อยู่</th>
+            <th>จังหวัด</th>
+            <th>เบอร์โทรศัพท์</th>
+            <th>เลขผู้เสียภาษี</th>
+            <th>ชื่อผู้ติดต่อ</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody id="store_table">
+    </tbody>
+</table>
+<div class="pagina-container" id="pagina"></div>
 @if (Model != null)
 {
-    <div class="container">
-
-    </div>
+    <p>Total Stores : @Model.Stores.Count</p>
 }
+else
+{
+    <p>Total Stores : 0</p>
+}
+<div id="add-modal" class="modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>เพิ่มร้านค้า</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อร้านค้า</span>
+                            <input type="text" class="form-control" id="add_name" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">เลขผู้เสียภาษี</span>
+                            <input type="text" class="form-control" id="add_taxno" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">เบอร์โทรศัพท์</span>
+                            <input type="text" class="form-control" id="add_phone" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ที่อยู่</span>
+                            <textarea class="form-control" id="add_address" aria-describedby="basic-addon1"></textarea>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">จังหวัด</span>
+                            <select class="form-select" id="add_province" name="add_province">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อผู้ติดต่อ</span>
+                            <input type="text" class="form-control" id="add_contractname" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Email</span>
+                            <input type="text" class="form-control" id="add_email" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="button" id="add_btn" class="btn btn-success">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="edit_id" />
+<div id="edit-modal" class="modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>แก้ไขร้านค้า</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อร้านค้า</span>
+                            <input type="text" class="form-control" id="edit_name" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">เลขผู้เสียภาษี</span>
+                            <input type="text" class="form-control" id="edit_taxno" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">เบอร์โทรศัพท์</span>
+                            <input type="text" class="form-control" id="edit_phone" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ที่อยู่</span>
+                            <textarea class="form-control" id="edit_address" aria-describedby="basic-addon1"></textarea>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">จังหวัด</span>
+                            <select class="form-select" id="edit_province" name="add_province">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อผู้ติดต่อ</span>
+                            <input type="text" class="form-control" id="edit_contractname" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Email</span>
+                            <input type="text" class="form-control" id="edit_email" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-end ">
+                            <button type="button" class="btn btn-warning" onclick="addAccountClick();">
+                                <i class="fa fa-plus"> &nbsp;เพิ่มบัญชี</i>
+                            </button>
+                        </div><br />
+                        <div class="col-12">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ลำดับ</th>
+                                        <th>ดำเนินการ</th>
+                                        <th>เลขบัญชี</th>
+                                        <th>ชื่อบัญชี</th>
+                                        <th>ธนาคาร</th>
+                                        <th>ประเภทบัญชี</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="edit_accounts">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row row-cols-1 row-cols-lg-2" id="account_pane">
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">เลขบัญชี</span>
+                                    <input type="text" class="form-control" id="edit_account_no" aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">ชื่อบัญชี</span>
+                                    <input type="text" class="form-control" id="edit_account_name" aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">ธนาคาร</span>
+                                    <input type="text" class="form-control" id="edit_bank" aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">ประเภทบัญชี</span>
+                                    <select class="form-select" id="edit_type" name="edit_type">
+                                        <option selected>ออมทรัพย์</option>
+                                        <option>กระแสรายวัน</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" id="edit_account_id" />
+                            <div class="col-12 d-flex justify-content-center" id="edit_account_pane">
+                                <button type="button" id="edit_account_edit_btn" class="btn btn-warning"><i class="fa fa-edit"></i></button>
+                            </div>
+                            <div class="col-12 d-flex justify-content-center" id="add_account_pane">
+                                <button type="button" id="edit_account_add_btn" class="btn btn-warning"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="button" id="edit_btn" class="btn btn-success">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="delete_id" />
+<div id="delete-modal" class="modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>ลบร้านค้า</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div id="delete_text" class="row row-cols-1 row-cols-lg-2">
+                    ท่านต้องการลบร้านค้า ใช่หรือไม่ ?
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="button" id="delete_btn" class="btn btn-success">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var model = @Html.Raw(JsonConvert.SerializeObject(Model));
+var currentPage = model.Page;
+var baseUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
+baseUrl = baseUrl + (baseUrl == '/' ? 'store/' : 'store/');
+</script>
+<script type="text/javascript" src="~/js/store.js"></script>

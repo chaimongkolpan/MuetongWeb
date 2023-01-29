@@ -29,6 +29,18 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\uploads\billing\" />
+    <Folder Include="wwwroot\uploads\po\" />
+    <Folder Include="wwwroot\uploads\pr\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Controllers\Api\" />
+    <None Remove="Models\Requests\PrIndexUpdateRequest.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\img\" />
+    <Content Remove="wwwroot\uploads\Pr\" />
+  </ItemGroup>
 </Project>

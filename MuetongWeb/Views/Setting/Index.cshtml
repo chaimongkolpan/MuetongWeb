@@ -1,7 +1,6 @@
 ﻿@using Newtonsoft.Json;
-@if(Model == null)
-{
-    <script>location.href = '/';</script>
+@{
+    ViewData["Title"] = "ตั้งค่า";
 }
 @if (Model != null)
 {
@@ -26,11 +25,205 @@
                 }
             }
         });
+@*ReceiveBilling
+ReceiveReceipt
+CreditType
+PaymentType
+ExtraType*@
     </script>
     <div class="container">
         <div class="row">
+            <div class="col-12">
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="bill_receive_heading">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#bill_receive_coll" aria-expanded="true" aria-controls="bill_receive_coll">
+                                <b>ช่องทางการรับวางบิล</b>
+                            </button>
+                        </h2>
+                        <div id="bill_receive_coll" class="accordion-collapse collapse show" aria-labelledby="bill_receive_heading">
+                            <div class="accordion-body">
+                                <div class="row row-cols-1 row-cols-lg-2">
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" id="basic-addon1">ช่องทางการรับวางบิล</span>
+                                            <input type="text" class="form-control" id="bill_receive_name" aria-describedby="basic-addon1" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <button class="btn btn-warning" type="button" id="bill_receive_btn"><b>เพิ่มช่องทางการรับวางบิล</b></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 p-3" style="overflow-x:auto;">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">ลำดับ</th>
+                                                    <th scope="col">ดำเนินการ</th>
+                                                    <th scope="col">รายละเอียด</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bill_receive_table">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="receipt_receive_heading">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#receipt_receive_coll" aria-expanded="true" aria-controls="receipt_receive_coll">
+                                <b>ช่องทางการรับใบเสร็จ</b>
+                            </button>
+                        </h2>
+                        <div id="receipt_receive_coll" class="accordion-collapse collapse show" aria-labelledby="receipt_receive_heading">
+                            <div class="accordion-body">
+                                <div class="row row-cols-1 row-cols-lg-2">
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" id="basic-addon1">ช่องทางการรับใบเสร็จ</span>
+                                            <input type="text" class="form-control" id="receipt_receive_name" aria-describedby="basic-addon1" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <button class="btn btn-warning" type="button" id="receipt_receive_btn"><b>เพิ่มช่องทางการรับใบเสร็จ</b></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 p-3" style="overflow-x:auto;">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">ลำดับ</th>
+                                                    <th scope="col">ดำเนินการ</th>
+                                                    <th scope="col">รายละเอียด</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="receipt_receive_table">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="credit_type_heading">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#credit_type_coll" aria-expanded="true" aria-controls="credit_type_coll">
+                                <b>ประเภทการชำระเงินเครดิต</b>
+                            </button>
+                        </h2>
+                        <div id="credit_type_coll" class="accordion-collapse collapse show" aria-labelledby="credit_type_heading">
+                            <div class="accordion-body">
+                                <div class="row row-cols-1 row-cols-lg-2">
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" id="basic-addon1">ประเภทการชำระเงินเครดิต</span>
+                                            <input type="text" class="form-control" id="credit_type_name" aria-describedby="basic-addon1" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <button class="btn btn-warning" type="button" id="credit_type_btn"><b>เพิ่มประเภทการชำระเงินเครดิต</b></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 p-3" style="overflow-x:auto;">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">ลำดับ</th>
+                                                    <th scope="col">ดำเนินการ</th>
+                                                    <th scope="col">รายละเอียด</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="credit_type_table">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="payment_type_heading">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#payment_type_coll" aria-expanded="true" aria-controls="payment_type_coll">
+                                <b>ประเภทการชำระเงิน</b>
+                            </button>
+                        </h2>
+                        <div id="payment_type_coll" class="accordion-collapse collapse show" aria-labelledby="payment_type_heading">
+                            <div class="accordion-body">
+                                <div class="row row-cols-1 row-cols-lg-2">
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" id="basic-addon1">ประเภทการชำระเงิน</span>
+                                            <input type="text" class="form-control" id="payment_type_name" aria-describedby="basic-addon1" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <button class="btn btn-warning" type="button" id="payment_type_btn"><b>เพิ่มประเภทการชำระเงิน</b></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 p-3" style="overflow-x:auto;">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">ลำดับ</th>
+                                                    <th scope="col">ดำเนินการ</th>
+                                                    <th scope="col">รายละเอียด</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="payment_type_table">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="extra_type_heading">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#extra_type_coll" aria-expanded="true" aria-controls="extra_type_coll">
+                                <b>ค่าใช้จ่ายเพิ่มเติม</b>
+                            </button>
+                        </h2>
+                        <div id="extra_type_coll" class="accordion-collapse collapse show" aria-labelledby="extra_type_heading">
+                            <div class="accordion-body">
+                                <div class="row row-cols-1 row-cols-lg-2">
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" id="basic-addon1">ค่าใช้จ่ายเพิ่มเติม</span>
+                                            <input type="text" class="form-control" id="extra_type_name" aria-describedby="basic-addon1" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <button class="btn btn-warning" type="button" id="extra_type_btn"><b>เพิ่มค่าใช้จ่ายเพิ่มเติม</b></button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 p-3" style="overflow-x:auto;">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">ลำดับ</th>
+                                                    <th scope="col">ดำเนินการ</th>
+                                                    <th scope="col">รายละเอียด</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="extra_type_table">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-4">
-                <form class="login100-form validate-form" method="post" action="@Url.Action("ImportCustomer", "Setting")" enctype="multipart/form-data" onsubmit="AJAXSubmit(this); return false;">
+                <form class="login100-form validate-form mt-3" method="post" action="@Url.Action("ImportCustomer", "Setting")" enctype="multipart/form-data" onsubmit="AJAXSubmit(this); return false;">
                     <span class="login100-form-title">
                         <b>Import Customer File</b>
                     </span>
@@ -43,7 +236,7 @@
                 </form>
             </div>
             <div class="col-4">
-                <form class="login100-form validate-form" method="post" action="@Url.Action("ImportStore", "Setting")" enctype="multipart/form-data" onsubmit="AJAXSubmit(this); return false;">
+                <form class="login100-form validate-form mt-3" method="post" action="@Url.Action("ImportStore", "Setting")" enctype="multipart/form-data" onsubmit="AJAXSubmit(this); return false;">
                     <span class="login100-form-title">
                         <b>Import Store File</b>
                     </span>
@@ -58,3 +251,10 @@
         </div>
     </div>
 }
+
+<script>
+    var model = @Html.Raw(JsonConvert.SerializeObject(Model));
+    var baseUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
+    baseUrl = baseUrl + (baseUrl == '/' ? 'setting/' : '/setting/');
+</script>
+<script type="text/javascript" src="~/js/setting.js"></script>

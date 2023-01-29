@@ -1,11 +1,327 @@
 ﻿@using Newtonsoft.Json;
-@if(Model == null)
-{
-    <script>location.href = '/';</script>
+@{
+    ViewData["Title"] = "จัดการโครงการ";
 }
-@if (Model != null)
-{
-    <div class="container">
+<div class="d-flex justify-content-end ">
+    <button type="button" class="btn btn-warning" onclick="addClick();" data-bs-toggle="modal" data-bs-target="#add-modal">
+        <i class="fa fa-plus"> &nbsp;เพิ่มโครงการ</i>
+    </button>
+</div><br />
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>ลำดับ</th>
+            <th>ดำเนินการ</th>
+            <th>ชื่อโครงการ</th>
+            <th>เลขที่สัญญา</th>
+            <th>ที่อยู่</th>
+            <th>จังหวัด</th>
+            <th>ชื่อลูกค้า</th>
+            <th colspan="2">Code โครงการ</th>
+            <th colspan="2">ผู้ใช้งานในโครงการ</th>
+            <th colspan="2">ผู้รับเหมาในโครงการ</th>
+        </tr>
+    </thead>
+    <tbody id="project_table">
+    </tbody>
+</table>
+<div class="pagina-container" id="pagina"></div>
+<p id="project_total">Total Projects : 0</p>
 
+<input type="hidden" id="edit_code_id" />
+<div id="code-add-modal" class="modal">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>เพิ่ม Code โครงการ</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="d-flex justify-content-start">
+                        <button type="button" class="btn btn-warning" onclick="importCodeClick()" id="add_user_btn">
+                            <i class="fa fa-plus"> &nbsp;อัปโหลด Code</i>
+                        </button>
+                        <input type="file" id="add_code_files" />
+                    </div>
+                    <div class="col-12"><br />
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ลำดับ</th>
+                                    <th>Code</th>
+                                    <th>กลุ่มต้นทุน</th>
+                                </tr>
+                            </thead>
+                            <tbody id="code_table">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
     </div>
-}
+</div>
+
+<input type="hidden" id="edit_user_id" />
+<div id="user-add-modal" class="modal">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>เพิ่มผู้ใช้งานโครงการ</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อผู้ใช้งาน</span>
+                            <select class="form-select" id="add_user" name="add_user">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="d-flex justify-content-center ">
+                            <button type="button" class="btn btn-warning" onclick="addUserClick()" id="add_user_btn">
+                                <i class="fa fa-plus"> &nbsp;เพิ่มผู้ใช้งาน</i>
+                            </button>
+                        </div><br />
+                    </div>
+                    <div class="col-12">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ลำดับ</th>
+                                    <th>ดำเนินการ</th>
+                                    <th>ชื่อผู้ใช้งาน</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user_table">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="edit_contractor_id" />
+<div id="contractor-add-modal" class="modal">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>เพิ่มผู้รับเหมาโครงการ</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อผู้รับเหมา</span>
+                            <select class="form-select" id="add_contractor" name="add_contractor">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="d-flex justify-content-center ">
+                            <button type="button" class="btn btn-warning" onclick="addContractorClick()" id="add_contractor_btn">
+                                <i class="fa fa-plus"> &nbsp;เพิ่มผู้รับเหมา</i>
+                            </button>
+                        </div><br />
+                    </div>
+                    <div class="col-12">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ลำดับ</th>
+                                    <th>ดำเนินการ</th>
+                                    <th>ชื่อผู้รับเหมา</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contractor_table">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="add-modal" class="modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>เพิ่มโครงการ</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อลูกค้า</span>
+                            <select class="form-select" id="add_customer" name="add_customer">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อโครงการ</span>
+                            <input type="text" class="form-control" id="add_name" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">เลขที่สัญญา</span>
+                            <input type="text" class="form-control" id="add_contractno" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ที่อยู่</span>
+                            <textarea class="form-control" id="add_address" aria-describedby="basic-addon1"></textarea>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">จังหวัด</span>
+                            <select class="form-select" id="add_province" name="add_province">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="button" id="add_btn" class="btn btn-success">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="edit_id" />
+<div id="edit-modal" class="modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>แก้ไขโครงการ</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อลูกค้า</span>
+                            <select class="form-select" id="edit_customer" name="edit_customer">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ชื่อโครงการ</span>
+                            <input type="text" class="form-control" id="edit_name" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">เลขที่สัญญา</span>
+                            <input type="text" class="form-control" id="edit_contractno" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">ที่อยู่</span>
+                            <textarea class="form-control" id="edit_address" aria-describedby="basic-addon1"></textarea>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">จังหวัด</span>
+                            <select class="form-select" id="edit_province" name="edit_province">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="button" id="edit_btn" class="btn btn-success">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="delete_id" />
+<div id="delete-modal" class="modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>ลบโครงการ</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div id="delete_text" class="row row-cols-1 row-cols-lg-2">
+                    ท่านต้องการลบโครงการ ใช่หรือไม่ ?
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="button" id="delete_btn" class="btn btn-success">บันทึก</button>
+            </div>
+        </div>
+    </div>
+</div>
+       
+<script type="text/javascript">
+var model = @Html.Raw(JsonConvert.SerializeObject(Model));
+var currentPage = 0;
+var baseUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
+baseUrl = baseUrl + (baseUrl == '/' ? 'project/' : '/project/');
+</script>
+<script type="text/javascript" src="~/js/project.js"></script>

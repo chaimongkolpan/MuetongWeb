@@ -3,23 +3,25 @@ namespace MuetongWeb.Models.Pages
 {
     public class PageModel
     {
+        public UserInfoModel? UserInfo { get; set; }
         public bool IsAdmin { get; set; } = false;
         public bool IsAccount { get; set; } = false;
         public bool IsContractor { get; set; } = false;
         public bool IsPurchase { get; set; } = false;
         public bool IsManagement { get; set; } = false;
         public PageModel() { }
-        public PageModel(string name)
+        public PageModel(UserInfoModel user)
         {
-            Set(name);
+            Set(user);
         }
-        public void Set(string name)
+        public void Set(UserInfoModel user)
         {
-            IsAccount = RoleHelpers.CanAccessAccountSection(name);
-            IsAdmin = RoleHelpers.CanAccessAdminSection(name);
-            IsContractor = RoleHelpers.CanAccessContractorSection(name);
-            IsPurchase = RoleHelpers.CanAccessPurchaseSection(name);
-            IsManagement = RoleHelpers.CanAccessManagerSection(name);
+            UserInfo = user;
+            IsAccount = RoleHelpers.CanAccessAccountSection(user.Role);
+            IsAdmin = RoleHelpers.CanAccessAdminSection(user.Role);
+            IsContractor = RoleHelpers.CanAccessContractorSection(user.Role);
+            IsPurchase = RoleHelpers.CanAccessPurchaseSection(user.Role);
+            IsManagement = RoleHelpers.CanAccessManagerSection(user.Role);
         }
     }
 }

@@ -1,11 +1,16 @@
 ﻿@using Newtonsoft.Json;
-@if(Model == null)
-{
-    <script>location.href = '/';</script>
+@{
+    ViewData["Title"] = "จัดการสายงาน";
 }
-@if (Model != null)
-{
-    <div class="container">
-
-    </div>
-}
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>ลำดับ</th>
+            <th>ดำเนินการ</th>
+            <th>สายงาน</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>

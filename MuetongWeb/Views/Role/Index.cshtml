@@ -1,15 +1,14 @@
 ﻿@using Newtonsoft.Json;
-@if(Model == null)
-{
-    <script>location.href = '/';</script>
+@{
+    ViewData["Title"] = "สิทธิ์การใช้งาน";
 }
-<table>
+<table class="table table-hover align-middle">
     <thead>
         <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>Home Page</th>
-            <th></th>
+            <th>ดำเนินการ</th>
+            <th>สิทธิ์การใช้งาน</th>
+            <th>หน้าแรกเมื่อเข้าใช้งาน</th>
         </tr>
     </thead>
     <tbody>
@@ -20,19 +19,17 @@
             {
                 <tr>
                     <td>@i</td>
-                    <td>@role.Name</td>
-                    <td>@role.HomePageUrl</td>
                     <td>
                         @if (Model.CanEdit)
                         {
-                            <button onclick="showEdit(@role.Id)" type="button">Edit</button>
-
+                            <span class="material-symbols-outlined" style="color:#0752AE;" onclick="showEdit(@role.Id)" data-bs-toggle="modal" data-bs-target="#modal">edit</span>
                         }
                         else
                         {
-                            <button type="button" disabled>Edit</button>
                         }
                     </td>
+                    <td>@role.Name</td>
+                    <td>@role.HomePageUrl</td>
                 </tr>
                 i++;
             }
@@ -40,23 +37,76 @@
     </tbody>
 </table>
 
-<div id="modal" style="display: none;">
-    <input type="hidden" id="edit-id" />
-    <input type="text" id="edit-name" /><br />
-    <input type="text" id="edit-url" /><br />
-    @if (Model != null)
-    {
-        foreach (var permission in Model.Permissions)
-        {
-            @permission.Name <input type="checkbox" id="permission_@permission.Id" name="@permission.Name"/><br />
-        }
-    }
-    <button class="login-form-btn" onclick="save()" type="button">Save</button>
+<input type="hidden" id="edit-id" />
+<div id="modal" class="modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="background-color:#ae6378;color:white;">
+                <h4 class="modal-title"><b>แก้ไขสิทธิ์การใช้งาน</b></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">สิทธิ์การใช้งาน</span>
+                            <input type="text" class="form-control" id="edit-name" aria-describedby="basic-addon1" disabled>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">หน้าแรกเมื่อเข้าสู่ระบบ</span>
+                            <select class="form-select" id="edit-url" name="edit-url">
+                                <option value="~/" selected>หน้าแรก</option>
+                                <option value="~/Pr">สั่งสินค้า</option>
+                                <option value="~/Pr/Approver">ตรวจสอบสั่งสินค้า</option>
+                                <option value="~/Po">สั่งซื้อ</option>
+                                <option value="~/Po/Approver">ตรวจสอบสั่งซื้อ</option>
+                                <option value="~/Billing">วางบิล</option>
+                                <option value="~/Billing/Approver">ตรวจสอบวางบิล</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="row row-cols-1 row-cols-lg-2">
+                        @if (Model != null)
+                        {
+                            foreach (var permission in Model.Permissions)
+                            {
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-text">
+                                            <input type="checkbox" id="permission_@permission.Id" name="@permission.Name">
+                                        </div>
+                                        <span class="input-group-text" for="add_advance_pay">@permission.Description</span>
+                                        <!-- <span class="input-group-text" for="add_contractor">@permission.Name</span> -->
+                                    </div>
+                                </div>
+                            }
+                        }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="button" onclick="save()" class="btn btn-success">บันทึก</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
 var model = @Html.Raw(JsonConvert.SerializeObject(Model));
-var getDetailUrl = '/role/detail/';
-var updateUrl = '/role/update';
+var baseUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
+baseUrl = baseUrl + (baseUrl == '/' ? 'role/' : '/role/');
+var getDetailUrl = baseUrl + 'detail/';
+var updateUrl = baseUrl + 'update';
 var _prefix = 'permission_';
 var messages = {
     getDetailFailed: "Failed to get role detail.",

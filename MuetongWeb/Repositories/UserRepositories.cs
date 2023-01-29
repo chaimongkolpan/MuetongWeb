@@ -32,6 +32,17 @@ namespace MuetongWeb.Repositories
                                         );
             return count;
         }
+        public async Task<IEnumerable<User>> GetAsync()
+        {
+            var users = await _dbContext.Users
+                                        .Include(user => user.SubDepartment)
+                                        .ThenInclude(subDepartment => subDepartment.Department)
+                                        .ThenInclude(department => department.Line)
+                                        .Include(user => user.Province)
+                                        .Include(user => user.Role)
+                                        .ToListAsync();
+            return users;
+        }
         public async Task<IEnumerable<User>> GetAsync(string? query, int page, int pageSize)
         {
             var users = await _dbContext.Users.Where(user => string.IsNullOrWhiteSpace(query)
@@ -59,6 +70,18 @@ namespace MuetongWeb.Repositories
                                         .Include(user => user.Province)
                                         .Include(user => user.Role)
                                         .FirstOrDefaultAsync();
+        }
+        public async Task<IEnumerable<User>> GetListAsync(long[] userIds)
+        {
+            var users = await _dbContext.Users.Where(user => userIds.Contains(user.Id)
+                                        )
+                                        .Include(user => user.SubDepartment)
+                                        .ThenInclude(subDepartment => subDepartment.Department)
+                                        .ThenInclude(department => department.Line)
+                                        .Include(user => user.Province)
+                                        .Include(user => user.Role)
+                                        .ToListAsync();
+            return users;
         }
         public async Task<bool> AddAsync(User user)
         {

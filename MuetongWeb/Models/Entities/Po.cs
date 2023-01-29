@@ -43,6 +43,7 @@ namespace MuetongWeb.Models.Entities
         public long UserId { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public bool? IsReadCancel { get; set; }
 
         public virtual User? Approver { get; set; }
         public virtual SettingConstant? BillingReceiveTypeNavigation { get; set; }

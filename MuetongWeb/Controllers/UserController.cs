@@ -38,7 +38,7 @@ namespace MuetongWeb.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("RoleController => Index: " + ex.Message);
+                _logger.LogError("UserController => Index: " + ex.Message);
             }
             return Redirect(ViewConstants.DefaultHomePage);
         }
@@ -60,7 +60,7 @@ namespace MuetongWeb.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("RoleController => Index: " + ex.Message);
+                _logger.LogError("UserController => ChangePassword: " + ex.Message);
             }
             return Redirect(ViewConstants.DefaultHomePage);
         }
@@ -97,7 +97,7 @@ namespace MuetongWeb.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("RoleController => Index: " + ex.Message);
+                _logger.LogError("UserController => ChangePasswordAsync: " + ex.Message);
             }
             return Redirect(ViewConstants.DefaultHomePage);
         }

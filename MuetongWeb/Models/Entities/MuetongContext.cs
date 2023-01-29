@@ -74,6 +74,10 @@ namespace MuetongWeb.Models.Entities
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
 
+                entity.Property(e => e.ApproveDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ApproveRemark).IsUnicode(false);
+
                 entity.Property(e => e.BillingDate).HasColumnType("datetime");
 
                 entity.Property(e => e.BillingNo)
@@ -81,6 +85,16 @@ namespace MuetongWeb.Models.Entities
                     .IsUnicode(false);
 
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ExtraCost).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.ExtraOther)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceNo)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ModifyDate).HasColumnType("datetime");
 
@@ -95,6 +109,11 @@ namespace MuetongWeb.Models.Entities
                 entity.Property(e => e.Status)
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Approver)
+                    .WithMany(p => p.BillingApprovers)
+                    .HasForeignKey(d => d.ApproverId)
+                    .HasConstraintName("FK_Billing_Approver");
 
                 entity.HasOne(d => d.PaymentAccount)
                     .WithMany(p => p.Billings)
@@ -114,7 +133,7 @@ namespace MuetongWeb.Models.Entities
                     .HasConstraintName("FK_Billing_Store");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Billings)
+                    .WithMany(p => p.BillingUsers)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Billing_User");
@@ -888,6 +907,54 @@ namespace MuetongWeb.Models.Entities
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_User_User");
             });
+
+            modelBuilder.HasSequence<short>("Po1")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po10")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po11")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po12")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po2")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po3")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po4")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po5")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po6")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po7")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po8")
+                .HasMin(1)
+                .HasMax(30000);
+
+            modelBuilder.HasSequence<short>("Po9")
+                .HasMin(1)
+                .HasMax(30000);
 
             OnModelCreatingPartial(modelBuilder);
         }

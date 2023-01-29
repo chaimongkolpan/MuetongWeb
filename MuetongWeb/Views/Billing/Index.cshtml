@@ -1,11 +1,1040 @@
 ﻿@using Newtonsoft.Json;
-@if(Model == null)
-{
-    <script>location.href = '/';</script>
+@{
+    ViewData["Title"] = "รับวางบิล";
 }
-@if (Model != null)
-{
-    <div class="container">
-
+<div class="container-fluid" style="background-color:#fcfcfc">
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="ProjectId"><b>ชื่อโครงการ</b></label>
+                <select class="form-select" id="ProjectId">
+                    <option value="0" selected>ทั้งหมด</option>
+                    @if (Model != null)
+                    {
+                        @foreach (var item in Model.Projects)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
+                <select class="form-select" id="PrNo">
+                    <option selected>ทั้งหมด</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="PoNo"><b>เลขที่ PO</b></label>
+                <select class="form-select" id="PoNo">
+                    <option selected>ทั้งหมด</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="BillingNo"><b>เลขที่ใบวางบิล</b></label>
+                <select class="form-select" id="BillingNo">
+                    <option selected>ทั้งหมด</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
+                <select class="form-select" id="RequesterId">
+                    <option value="0" selected>ทั้งหมด</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="Status"><b>สถานะการวางบิล</b></label>
+                <select class="form-select" id="Status">
+                    <option selected>ทั้งหมด</option>
+                    <option>รอชำระเงิน</option>
+                    <option>รอรับใบเสร็จ/ใบกำกับภาษี</option>
+                    <option>รอตรวจสอบวางบิล</option>
+                    <option>วางบิลสำเร็จ</option>
+                    <option>ยกเลิก</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="no_payment"><b>รอชำระเงิน</b></label>
+                <select class="form-select" id="no_payment">
+                    <option value="0" selected>ทั้งหมด</option>
+                    <option value="1">ใช่</option>
+                    <option value="2">ไม่ใช่</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="no_receipt"><b>รอรับใบเสร็จ</b></label>
+                <select class="form-select" id="no_receipt">
+                    <option value="0" selected>ทั้งหมด</option>
+                    <option value="1">ใช่</option>
+                    <option value="2">ไม่ใช่</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="no_invoice"><b>รอรับใบกำกับภาษี</b></label>
+                <select class="form-select" id="no_invoice">
+                    <option value="0" selected>ทั้งหมด</option>
+                    <option value="1">ใช่</option>
+                    <option value="2">ไม่ใช่</option>
+                </select>
+            </div>
+        </div>
     </div>
-}
+    <div class="d-flex justify-content-center ">
+        <button id="search_btn" type="button" class="btn btn-outline-success"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
+    </div>
+    <div class="d-flex justify-content-end ">
+        <button type="button" class="btn btn-warning" id="add_billing" data-bs-toggle="modal" data-bs-target="#AddBilling">
+            <i class="fa fa-plus"> &nbsp;เพิ่มรับวางบิล</i>
+        </button>
+    </div>
+    <br>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#All">ทั้งหมด</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Approve" id="waiting_tab">ตรวจสอบรับวางบิล</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Billing" id="receipt_tab">รอชำระเงิน/ใบเสร็จ/ใบกำกับภาษี</a>
+        </li>  
+        <li class="nav-item">
+            <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Purchase" id="po_tab">สั่งซื้อ</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Cancel" id="cancel_tab">ยกเลิก</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <!-- Tab panes All -->
+        <div id="All" class="container-fluid tab-pane active">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="bgpc" scope="col">ลำดับ</th>
+                            <th class="bgpc" scope="col" colspan="2">ดำเนินการ</th>
+                            <th class="bgpc" scope="col">เลขที่ใบวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่รับวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่ชำระ</th>
+                            <th class="bgpc" scope="col">วิธีการชำระ</th>
+                            <th class="bgpc" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpc" scope="col">จำนวนเงิน</th>
+                            <th class="bgpc" scope="col">ค่าใช้จ่ายเพิ่มเติม</th>
+                            <th class="bgpc" scope="col">สถานะการชำระเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบเสร็จรับเงิน</th>
+                            <th class="bgpc" scope="col">เลขที่ใบเสร็จรับเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
+                                    <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
+                            <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">สถานะวางบิล</th>
+                            <th class="bgpo" scope="col">เลขที่ P0</th>
+                            <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                            <th class="bgpo" scope="col">ที่อยู่</th>
+                            <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                            <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                            <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                            <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                            <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                            <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                            <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                            <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                            <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                            <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                            <th class="bgpo" scope="col">แพลนของเข้า</th>
+                            <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                            <th class="bgpr" scope="col">โครงการ</th>
+                            <th class="bgpr" scope="col">เลขที่ PR</th>
+                            <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                            <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                            <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                            <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                            <th class="bgpr" scope="col">รายการสินค้า</th>
+                            <th class="bgpr" scope="col">จุดประสงค์</th>
+                            <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                            <th class="bgpr" scope="col">หน่วย</th>
+                            <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                            <th class="bgpr" scope="col">ส่วนลด</th>
+                            <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                            <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                            <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                            <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                            <th class="bgpr" scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--/////////////////////-->
+        <!-- Tab panes Approve -->
+        <div id="Approve" class="container-fluid tab-pane fade">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="bgpc" scope="col">ลำดับ</th>
+                            <th class="bgpc" scope="col" colspan="2">ดำเนินการ</th>
+                            <th class="bgpc" scope="col">เลขที่ใบวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่รับวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่ชำระ</th>
+                            <th class="bgpc" scope="col">วิธีการชำระ</th>
+                            <th class="bgpc" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpc" scope="col">จำนวนเงิน</th>
+                            <th class="bgpc" scope="col">ค่าใช้จ่ายเพิ่มเติม</th>
+                            <th class="bgpc" scope="col">สถานะการชำระเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบเสร็จรับเงิน</th>
+                            <th class="bgpc" scope="col">เลขที่ใบเสร็จรับเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
+                                    <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
+                            <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">สถานะวางบิล</th>
+                            <th class="bgpo" scope="col">เลขที่ P0</th>
+                            <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                            <th class="bgpo" scope="col">ที่อยู่</th>
+                            <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                            <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                            <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                            <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                            <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                            <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                            <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                            <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                            <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                            <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                            <th class="bgpo" scope="col">แพลนของเข้า</th>
+                            <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                            <th class="bgpr" scope="col">โครงการ</th>
+                            <th class="bgpr" scope="col">เลขที่ PR</th>
+                            <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                            <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                            <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                            <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                            <th class="bgpr" scope="col">รายการสินค้า</th>
+                            <th class="bgpr" scope="col">จุดประสงค์</th>
+                            <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                            <th class="bgpr" scope="col">หน่วย</th>
+                            <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                            <th class="bgpr" scope="col">ส่วนลด</th>
+                            <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                            <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                            <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                            <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                            <th class="bgpr" scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approve_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--/////////////////////-->
+        <!-- Tab panes Payment -->
+        <div id="Payment" class="container-fluid tab-pane fade">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="bgpc" scope="col">ลำดับ</th>
+                            <th class="bgpc" scope="col" colspan="2">ดำเนินการ</th>
+                            <th class="bgpc" scope="col">เลขที่ใบวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่รับวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่ชำระ</th>
+                            <th class="bgpc" scope="col">วิธีการชำระ</th>
+                            <th class="bgpc" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpc" scope="col">จำนวนเงิน</th>
+                            <th class="bgpc" scope="col">ค่าใช้จ่ายเพิ่มเติม</th>
+                            <th class="bgpc" scope="col">สถานะการชำระเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบเสร็จรับเงิน</th>
+                            <th class="bgpc" scope="col">เลขที่ใบเสร็จรับเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
+                                    <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
+                            <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">สถานะวางบิล</th>
+                            <th class="bgpo" scope="col">เลขที่ P0</th>
+                            <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                            <th class="bgpo" scope="col">ที่อยู่</th>
+                            <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                            <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                            <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                            <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                            <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                            <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                            <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                            <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                            <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                            <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                            <th class="bgpo" scope="col">แพลนของเข้า</th>
+                            <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                            <th class="bgpr" scope="col">โครงการ</th>
+                            <th class="bgpr" scope="col">เลขที่ PR</th>
+                            <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                            <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                            <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                            <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                            <th class="bgpr" scope="col">รายการสินค้า</th>
+                            <th class="bgpr" scope="col">จุดประสงค์</th>
+                            <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                            <th class="bgpr" scope="col">หน่วย</th>
+                            <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                            <th class="bgpr" scope="col">ส่วนลด</th>
+                            <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                            <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                            <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                            <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                            <th class="bgpr" scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payment_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--/////////////////////-->
+        <!-- Tab panes Billing -->
+        <div id="Billing" class="container-fluid tab-pane fade">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="bgpc" scope="col">ลำดับ</th>
+                            <th class="bgpc" scope="col" colspan="2">ดำเนินการ</th>
+                            <th class="bgpc" scope="col">เลขที่ใบวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่รับวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่ชำระ</th>
+                            <th class="bgpc" scope="col">วิธีการชำระ</th>
+                            <th class="bgpc" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpc" scope="col">จำนวนเงิน</th>
+                            <th class="bgpc" scope="col">ค่าใช้จ่ายเพิ่มเติม</th>
+                            <th class="bgpc" scope="col">สถานะการชำระเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบเสร็จรับเงิน</th>
+                            <th class="bgpc" scope="col">เลขที่ใบเสร็จรับเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
+                                    <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
+                            <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">สถานะวางบิล</th>
+                            <th class="bgpo" scope="col">เลขที่ P0</th>
+                            <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                            <th class="bgpo" scope="col">ที่อยู่</th>
+                            <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                            <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                            <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                            <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                            <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                            <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                            <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                            <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                            <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                            <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                            <th class="bgpo" scope="col">แพลนของเข้า</th>
+                            <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                            <th class="bgpr" scope="col">โครงการ</th>
+                            <th class="bgpr" scope="col">เลขที่ PR</th>
+                            <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                            <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                            <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                            <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                            <th class="bgpr" scope="col">รายการสินค้า</th>
+                            <th class="bgpr" scope="col">จุดประสงค์</th>
+                            <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                            <th class="bgpr" scope="col">หน่วย</th>
+                            <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                            <th class="bgpr" scope="col">ส่วนลด</th>
+                            <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                            <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                            <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                            <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                            <th class="bgpr" scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipt_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--/////////////////////-->
+        <!-- Tab panes Purchase -->
+        <div id="Purchase" class="container-fluid tab-pane fade">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="bgpo" scope="col">ลำดับ</th>
+                            <th class="bgpo" scope="col">เลขที่ P0</th>
+                            <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                            <th class="bgpo" scope="col">ที่อยู่</th>
+                            <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                            <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                            <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                            <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                            <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                            <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                            <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                            <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                            <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                            <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                            <th class="bgpo" scope="col">แพลนของเข้า</th>
+                            <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                            <th class="bgpr" scope="col">โครงการ</th>
+                            <th class="bgpr" scope="col">เลขที่ PR</th>
+                            <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                            <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                            <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                            <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                            <th class="bgpr" scope="col">รายการสินค้า</th>
+                            <th class="bgpr" scope="col">จุดประสงค์</th>
+                            <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                            <th class="bgpr" scope="col">หน่วย</th>
+                            <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                            <th class="bgpr" scope="col">ส่วนลด</th>
+                            <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                            <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                            <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                            <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                            <th class="bgpr" scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody id="po_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--/////////////////////-->
+        <!-- Tab panes Cancel -->
+        <div id="Cancel" class="container-fluid tab-pane fade">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="bgpc" scope="col"></th>
+                            <th class="bgpc" scope="col">ลำดับ</th>
+                            <th class="bgpc" scope="col">เลขที่ใบวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่รับวางบิล</th>
+                            <th class="bgpc" scope="col">วันที่ชำระ</th>
+                            <th class="bgpc" scope="col">วิธีการชำระ</th>
+                            <th class="bgpc" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpc" scope="col">จำนวนเงิน</th>
+                            <th class="bgpc" scope="col">ค่าใช้จ่ายเพิ่มเติม</th>
+                            <th class="bgpc" scope="col">สถานะการชำระเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบเสร็จรับเงิน</th>
+                            <th class="bgpc" scope="col">เลขที่ใบเสร็จรับเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
+                                    <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
+                            <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">สถานะวางบิล</th>
+                            <th class="bgpo" scope="col">เลขที่ P0</th>
+                            <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                            <th class="bgpo" scope="col">ที่อยู่</th>
+                            <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                            <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                            <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                            <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                            <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                            <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                            <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                            <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                            <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                            <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                            <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                            <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                            <th class="bgpo" scope="col">แพลนของเข้า</th>
+                            <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                            <th class="bgpr" scope="col">โครงการ</th>
+                            <th class="bgpr" scope="col">เลขที่ PR</th>
+                            <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                            <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                            <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                            <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                            <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                            <th class="bgpr" scope="col">รายการสินค้า</th>
+                            <th class="bgpr" scope="col">จุดประสงค์</th>
+                            <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                            <th class="bgpr" scope="col">หน่วย</th>
+                            <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                            <th class="bgpr" scope="col">ส่วนลด</th>
+                            <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                            <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                            <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                            <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                            <th class="bgpr" scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cancel_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--/////////////////////-->
+    </div>
+    
+    <input type="hidden" id="edit_id" />
+    <!-- The Modal ActionBilling -->
+    <div class="modal" id="ActionBilling">
+        <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+        <div class="modal-content">
+            
+            <!-- Modal Header -->
+            <div class="modal-header"  style="background-color:#ae6378;color:white;">
+            <h4 class="modal-title"><b>รายละเอียดรับวางบิล</b></h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col-12 p-3 mb-5" style="overflow-x:auto;">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="bgpc" scope="col">ลำดับ</th>
+                                    <th class="bgpc" scope="col">เลขที่ใบวางบิล</th>
+                                    <th class="bgpc" scope="col">วันที่รับวางบิล</th>
+                                    <th class="bgpc" scope="col">วันที่ชำระ</th>
+                                    <th class="bgpc" scope="col">วิธีการชำระ</th>
+                                    <th class="bgpc" scope="col">บัญชีโอนเงิน</th>
+                                    <th class="bgpc" scope="col">จำนวนเงิน</th>
+                                    <th class="bgpc" scope="col">ค่าใช้จ่ายเพิ่มเติม</th>
+                            <th class="bgpc" scope="col">สถานะการชำระเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบเสร็จรับเงิน</th>
+                            <th class="bgpc" scope="col">เลขที่ใบเสร็จรับเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
+                                    <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
+                                    <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                                    <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">สถานะวางบิล</th>
+                                    <th class="bgpo" scope="col">เลขที่ P0</th>
+                                    <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                                    <th class="bgpo" scope="col">ที่อยู่</th>
+                                    <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                                    <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                                    <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                                    <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                                    <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                                    <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                                    <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                                    <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                                    <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                                    <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                                    <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                                    <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                                    <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                                    <th class="bgpo" scope="col">แพลนของเข้า</th>
+                                    <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                                    <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                                    <th class="bgpr" scope="col">โครงการ</th>
+                                    <th class="bgpr" scope="col">เลขที่ PR</th>
+                                    <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                                    <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                                    <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                                    <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                                    <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                                    <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                                    <th class="bgpr" scope="col">รายการสินค้า</th>
+                                    <th class="bgpr" scope="col">จุดประสงค์</th>
+                                    <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                                    <th class="bgpr" scope="col">หน่วย</th>
+                                    <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                                    <th class="bgpr" scope="col">ส่วนลด</th>
+                                    <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                                    <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                                    <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                                    <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                                    <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                                    <th class="bgpr" scope="col">สถานะสินค้า</th>
+                                </tr>
+                            </thead>
+                            <tbody id="edit_table">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">เลขที่ใบวางบิล</span>
+                            <input type="text" class="form-control" id="edit_billing_no" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">วันที่รับวางบิล</span>
+                            <input type="date" class="form-control" id="edit_billing_date" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">วันที่ชำระ</span>
+                            <input type="date" class="form-control" id="edit_payment_date" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="edit_payment_type">วิธีการชำระ</label>
+                            <select class="form-select" id="edit_payment_type">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="edit_payment_account">บัญชีโอนเงิน</label>
+                            <select class="form-select" id="edit_payment_account">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">จำนวนเงิน</span>
+                            <input type="text" class="form-control" id="edit_amount" aria-describedby="basic-addon1" >
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">หมายเหตุบัญชี</span>
+                            <input type="text" class="form-control" id="edit_remark" aria-describedby="basic-addon1" >
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="input-group mb-3">
+                            <div class="input-group-text">
+                                <input type="checkbox" id="edit_has_receipt">
+                            </div>
+                            <span class="input-group-text">เลขที่ใบเสร็จรับเงิน</span>
+                            <input type="text" class="form-control" id="edit_receipt_no" aria-describedby="basic-addon1" >
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="input-group mb-3">
+                            <div class="input-group-text">
+                                <input type="checkbox" id="edit_has_extra">
+                            </div>
+                            <span class="input-group-text" for="edit_extra_type">ค่าใช้จ่ายเพิ่มเติม</span>
+                            <select class="form-select" id="edit_extra_type" required>
+                            </select>
+                            <input type="text" class="form-control" id="edit_extra_other" aria-describedby="basic-addon1" disabled required>
+                            <span class="input-group-text" for="edit_extra_amount">จำนวนเงิน</span>
+                            <input type="text" class="form-control" id="edit_extra_amount" aria-describedby="basic-addon1" required>
+                            <span class="input-group-text" for="edit_extra_amount">บาท</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="input-group mb-3">
+                            <div class="input-group-text">
+                                <input type="checkbox" id="edit_has_invoice">
+                            </div>
+                            <span class="input-group-text">ใบกำกับภาษี</span>
+                            <input type="text" class="form-control" id="edit_invoice_no" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="file-loading">
+                                <input id="edit_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="edit_approve">ส่งตรวจสอบ</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+            <button type="button" class="btn btn-success" id="edit_save_btn">บันทึก</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!--/////////////////////-->
+    <!-- The Modal ActionAll -->
+    <div class="modal" id="ActionAll">
+        <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+        <div class="modal-content">
+            
+            <!-- Modal Header -->
+            <div class="modal-header"  style="background-color:#ae6378;color:white;">
+            <h4 class="modal-title"><b>รายละเอียดรับวางบิล</b></h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col-12 p-3" style="overflow-x:auto;">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="bgpc" scope="col">ลำดับ</th>
+                                    <th class="bgpc" scope="col">เลขที่ใบวางบิล</th>
+                                    <th class="bgpc" scope="col">วันที่รับวางบิล</th>
+                                    <th class="bgpc" scope="col">วันที่ชำระ</th>
+                                    <th class="bgpc" scope="col">วิธีการชำระ</th>
+                                    <th class="bgpc" scope="col">บัญชีโอนเงิน</th>
+                                    <th class="bgpc" scope="col">จำนวนเงิน</th>
+                                    <th class="bgpc" scope="col">ค่าใช้จ่ายเพิ่มเติม</th>
+                            <th class="bgpc" scope="col">สถานะการชำระเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบเสร็จรับเงิน</th>
+                            <th class="bgpc" scope="col">เลขที่ใบเสร็จรับเงิน</th>
+                                    <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
+                                    <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
+                                    <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                                    <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">สถานะวางบิล</th>
+                                    <th class="bgpo" scope="col">เลขที่ P0</th>
+                                    <th class="bgpo" scope="col">ผู้จำหน่าย</th>
+                                    <th class="bgpo" scope="col">ที่อยู่</th>
+                                    <th class="bgpo" scope="col">เบอร์ติดต่อ</th>
+                                    <th class="bgpo" scope="col">เลขประจำตัวผู้เสียภาษี</th>
+                                    <th class="bgpo" scope="col">หลักประกันร้านค้า</th>
+                                    <th class="bgpo" scope="col">ชำระล่วงหน้า(วัน)</th>
+                                    <th class="bgpo" scope="col">เลขที่สัญญา/เลขที่เช็ค</th>
+                                    <th class="bgpo" scope="col">วันที่ชำระเงิน</th>
+                                    <th class="bgpo" scope="col">จำนวนวัน(วัน)</th>
+                                    <th class="bgpo" scope="col">ช่องทางการชำระเงิน</th>
+                                    <th class="bgpo" scope="col">บัญชีโอนเงิน</th>
+                                    <th class="bgpo" scope="col">ประเภทบัญชี</th>
+                                    <th class="bgpo" scope="col">วันที่ต้องชำระ</th>
+                                    <th class="bgpo" scope="col">ช่องทางรับใบวางบิล</th>
+                                    <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
+                                    <th class="bgpo" scope="col">แพลนของเข้า</th>
+                                    <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                                    <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                                    <th class="bgpr" scope="col">โครงการ</th>
+                                    <th class="bgpr" scope="col">เลขที่ PR</th>
+                                    <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
+                                    <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
+                                    <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                                    <th class="bgpr" scope="col">หักผู้รับเหมา</th>
+                                    <th class="bgpr" scope="col">ผู้รับเหมา</th>
+                                    <th class="bgpr" scope="col">ลำดับสินค้า</th>
+                                    <th class="bgpr" scope="col">รายการสินค้า</th>
+                                    <th class="bgpr" scope="col">จุดประสงค์</th>
+                                    <th class="bgpr" scope="col">จำนวนสินค้า</th>
+                                    <th class="bgpr" scope="col">หน่วย</th>
+                                    <th class="bgpr" scope="col">ราคา/หน่วย</th>
+                                    <th class="bgpr" scope="col">ส่วนลด</th>
+                                    <th class="bgpr" scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                                    <th class="bgpr" scope="col">หัก ณ ที่จ่าย</th>
+                                    <th class="bgpr" scope="col">จำนวนเงินทั้งสิ้น</th>
+                                    <th class="bgpr" scope="col">วันที่ต้องการส่งมอบ</th>
+                                    <th class="bgpr" scope="col">หมายเหตุสินค้า</th>
+                                    <th class="bgpr" scope="col">สถานะสินค้า</th>
+                                </tr>
+                            </thead>
+                            <tbody id="show_table">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!--/////////////////////-->
+    <!-- The Modal AddBilling -->
+    <div class="modal" id="AddBilling">
+        <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="background-color:#ae6378;color:white;">
+                    <h4 class="modal-title"><b>เพิ่มรับวางบิล</b></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row row-cols-1 row-cols-lg-2">
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="add_store">ผู้จำหน่าย</label>
+                                <select class="form-select" id="add_store">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="add_pono">เลขที่ PO</span>
+                                <input type="text" class="form-control" id="add_pono" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <p></p><br />
+                        <div class="col-12 d-flex justify-content-center ">
+                            <button type="button" class="btn btn-outline-success" id="search_po"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
+                        </div>
+                        <p></p><br />
+                        <div class="col-12">
+                            <div class="accordion" id="accordionExample">
+                                <!-- /////////////////ค้นหา////////////////// -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            <b>ค้นหา</b>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-12 p-3" style="overflow-x:auto;">
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col"><input type="checkbox" class="custom-control-input" id="po_check_all"><br />#</th>
+                                                                <th scope="col">ลำดับ</th>
+                                                                <th scope="col">เลขที่ P0</th>
+                                                                <th scope="col">หมายเหตุ PO</th>
+                                                                <th scope="col">สถานะ PO</th>
+                                                                <th scope="col">ร้านค้า</th>
+                                                                <th scope="col">ลำดับรายการ</th>
+                                                                <th scope="col">โครงการ</th>
+                                                                <th scope="col">เลขที่ PR</th>
+                                                                <th scope="col">วันที่สั่งซื้อ</th>
+                                                                <th scope="col">หักผู้รับเหมา</th>
+                                                                <th scope="col">ผู้รับเหมา</th>
+                                                                <th scope="col">ผู้ขอจัดซื้อ</th>
+                                                                <th scope="col">รายการสินค้า</th>
+                                                                <th scope="col">จุดประสงค์</th>
+                                                                <th scope="col">สถานะสินค้า</th>
+                                                                <th scope="col">จำนวนสินค้า</th>
+                                                                <th scope="col">หน่วย</th>
+                                                                <th scope="col">ราคา/หน่วย</th>
+                                                                <th scope="col">ส่วนลด</th>
+                                                                <th scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                                                                <th scope="col">หัก ณ ที่จ่าย</th>
+                                                                <th scope="col">จำนวนเงินทั้งสิ้น</th>
+                                                                <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                                                <th scope="col">หมายเหตุสินค้า</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="add_po_table">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class=" d-flex justify-content-center p-3">
+                                                    <button type="button" class="btn btn-warning" id="add_po"><i class="fa fa-plus"> &nbsp;เพิ่มรายการวางบิล</i></button> &nbsp; &nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /////////////////////////////////// -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                            <b>รายละเอียดรับวางบิล</b>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
+                                        <div class="accordion-body">
+                                            <div class="row row-cols-1 row-cols-lg-2">
+                                                <div class="col">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text" id="basic-addon1">เลขที่ใบวางบิล</span>
+                                                        <input type="text" class="form-control" id="billing_no" aria-describedby="basic-addon1" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text" id="basic-addon1">วันที่รับวางบิล</span>
+                                                        <input type="date" class="form-control" id="billing_date" aria-describedby="basic-addon1" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <div class="file-loading">
+                                                            <input id="billing_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 p-3" style="overflow-x:auto;">
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">ลำดับ</th>
+                                                                <th scope="col">ลบออกจากรายการ</th>
+                                                                <th scope="col">เลขที่ P0</th>
+                                                                <th scope="col">หมายเหตุ PO</th>
+                                                                <th scope="col">สถานะ PO</th>
+                                                                <th scope="col">ร้านค้า</th>
+                                                                <th scope="col">ลำดับรายการ</th>
+                                                                <th scope="col">โครงการ</th>
+                                                                <th scope="col">เลขที่ PR</th>
+                                                                <th scope="col">วันที่สั่งซื้อ</th>
+                                                                <th scope="col">ผู้รับเหมา</th>
+                                                                <th scope="col">หักผู้รับเหมา</th>
+                                                                <th scope="col">ผู้ขอจัดซื้อ</th>
+                                                                <th scope="col">รายการสินค้า</th>
+                                                                <th scope="col">จุดประสงค์</th>
+                                                                <th scope="col">สถานะสินค้า</th>
+                                                                <th scope="col">จำนวนสินค้า</th>
+                                                                <th scope="col">หน่วย</th>
+                                                                <th scope="col">ราคา/หน่วย</th>
+                                                                <th scope="col">ส่วนลด</th>
+                                                                <th scope="col">ภาษีมูลค่าเพิ่ม 7%</th>
+                                                                <th scope="col">หัก ณ ที่จ่าย</th>
+                                                                <th scope="col">จำนวนเงินทั้งสิ้น</th>
+                                                                <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                                                <th scope="col">หมายเหตุสินค้า</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="billing_po_table">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /////////////////////////////////// -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-success" id="add_billing_save_btn">บันทึก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/////////////////////-->
+    <input type="hidden" id="cancel_id" />
+    <!-- The Modal ActionCancel-->
+    <div class="modal" id="ActionCancel">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">ยกเลิกการวางบิล</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <span id="cancel_text"></span>
+                    <div class="input-group mb-3 mt-3">
+                        <span class="input-group-text" id="basic-addon1">หมายเหตุการยกเลิก</span>
+                        <input type="text" class="form-control" id="cancel_remark" aria-describedby="basic-addon1" required>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <button type="button" class="btn btn-danger" id="cancel_btn">ยืนยันยกเลิก</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
+    <input type="hidden" id="cancel_read_id" />
+    <!-- The Modal ActionApproveCancel-->
+    <div class="modal" id="ActionApproveCancel">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">รับทราบการยกเลิกการวางบิล</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body" id="cancel_read_text">
+                    ท่านรับทราบการยกเลิกการวางบิล เลขที่ 
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <button type="button" class="btn btn-danger" id="read_btn">ตกลง</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
+</div>
+
+<script>
+    var model = @Html.Raw(JsonConvert.SerializeObject(Model));
+    var baseUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
+    baseUrl = baseUrl + (baseUrl == '/' ? 'api/billing/' : '/api/billing/');
+</script>
+<script type="text/javascript" src="~/js/billing-index.js"></script>

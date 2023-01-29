@@ -1,4 +1,102 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿var url = window.location.pathname;
+if ((url.includes("/Po") || url.includes("/po"))
+    && !(url.includes("/Approver") || url.includes("/approver"))) {
+    $('#po-index').addClass("active");
+} else if ((url.includes("/Po") || url.includes("/po"))
+    && (url.includes("/Approver") || url.includes("/approver"))) {
+    $('#po-check').addClass("active");
+} else if ((url.includes("/Billing") || url.includes("/billing"))
+    && !(url.includes("/Approver") || url.includes("/approver"))) {
+    $('#billing-index').addClass("active");
+} else if ((url.includes("/Billing") || url.includes("/billing"))
+    && (url.includes("/Approver") || url.includes("/approver"))) {
+    $('#billing-check').addClass("active");
+} else if (url.includes("/Setting") || url.includes("/setting")) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-setting').addClass("active");
+} else if ((url.includes("/User") || url.includes("/user"))
+    && !(url.includes("/ChangePassword") || url.includes("/changepassword"))) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-user').addClass("active");
+} else if (url.includes("/Role") || url.includes("/role")) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-role').addClass("active");
+} else if (url.includes("/WorkLine") || url.includes("/workline")) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-workline').addClass("active");
+} else if (url.includes("/Customer") || url.includes("/customer")) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-customer').addClass("active");
+} else if (url.includes("/Contractor") || url.includes("/contractor")) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-contractor').addClass("active");
+} else if (url.includes("/Project") || url.includes("/project")) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-project').addClass("active");
+} else if (url.includes("/Store") || url.includes("/store")) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-store').addClass("active");
+} else if (url.includes("/Product") || url.includes("/product")) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-product').addClass("active");
+} else if ((url.includes("/Pr") || url.includes("/pr"))
+    && !(url.includes("/Approver") || url.includes("/approver"))
+    && !(url.includes("/Receive") || url.includes("/receive"))) {
+    $('#pr-index').addClass("active");
+} else if ((url.includes("/Pr") || url.includes("/pr"))
+    && (url.includes("/Approver") || url.includes("/approver"))) {
+    $('#pr-check').addClass("active");
+} else if ((url.includes("/Pr") || url.includes("/pr"))
+    && (url.includes("/Receive") || url.includes("/receive"))) {
+    $('#receive-check').addClass("active");
+} else if ((url.includes("/User") || url.includes("/user"))
+    && (url.includes("/ChangePassword") || url.includes("/changepassword"))) {
+    $('#admin-dropdown').addClass("active");
+    $('#admin-password').addClass("active");
+}
 
-// Write your JavaScript code.
+function dateValue(date) {
+    if (date == null) return '';
+    var dateTime = new Date(date);
+    var y = dateTime.getFullYear();
+    var m = dateTime.getMonth() + 1;
+    var d = dateTime.getDate();
+    return y + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2);
+}
+function dateFormat(date) {
+    if (date == null || date == '') return '';
+    var dateTime = new Date(date);
+    var y = dateTime.getFullYear() + 543;
+    var m = dateTime.getMonth() + 1;
+    var d = dateTime.getDate();
+    return d + '/' + m + '/' + y;
+}
+function floatValue(num) {
+    var tmp = parseFloat(num);
+    if (isNaN(tmp))
+        return 0;
+    return tmp;
+}
+function floatFormat(num) {
+    var tmp = parseFloat(num);
+    if (isNaN(tmp))
+        return '0.00';
+    return tmp.toFixed(2);
+}
+
+$(document).ready(function () {
+    var jqxhr = $.get(mainUrl)
+    .done(function (response) {
+        console.log(response);
+        $('#main_username').html(response.username);
+        for (var i in response.permissions) {
+            var permission = response.permissions[i];
+            $('.' + permission.name).show();
+        }
+    })
+    .fail(function (response) {
+        console.log(response);
+        alert(response);
+        location.href = logoutUrl;
+    });
+});

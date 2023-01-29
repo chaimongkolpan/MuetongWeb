@@ -12,10 +12,29 @@ namespace MuetongWeb.Repositories
             _dbContext = dbContext;
         }
         #region Project
+        public async Task<IEnumerable<Project>> GetAsync()
+        {
+            return await _dbContext.Projects
+                                   .OrderBy(project => project.Name)
+                                   .Include(project => project.Customer)
+                                   .Include(project => project.Province)
+                                   .Include(project => project.ProjectCodes)
+                                   .Include(project => project.ProjectUsers).ThenInclude(user => user.User)
+                                   .Include(project => project.ProjectContractors).ThenInclude(contractor => contractor.Contractor)
+                                   .ToListAsync();
+        }
         public async Task<IEnumerable<Project>> GetByCustomerAsync(long customerId)
         {
             return await _dbContext.Projects.Where(project => project.CustomerId == customerId)
-                                   .OrderBy(project => project.CreateDate)
+                                   .OrderBy(project => project.Name)
+                                   .Include(project => project.Customer)
+                                   .Include(project => project.Province)
+                                   .ToListAsync();
+        }
+        public async Task<IEnumerable<Project>> GetByUserIdAsync(long userId)
+        {
+            return await _dbContext.Projects.Where(project => project.ProjectUsers != null && project.ProjectUsers.Any(pUser => pUser.UserId == userId))
+                                   .OrderBy(project => project.Name)
                                    .Include(project => project.Customer)
                                    .Include(project => project.Province)
                                    .ToListAsync();
@@ -25,6 +44,9 @@ namespace MuetongWeb.Repositories
             return await _dbContext.Projects.Where(project => project.Id == id)
                                    .Include(project => project.Customer)
                                    .Include(project => project.Province)
+                                   .Include(project => project.ProjectCodes)
+                                   .Include(project => project.ProjectUsers).ThenInclude(user => user.User)
+                                   .Include(project => project.ProjectContractors).ThenInclude(contractor => contractor.Contractor)
                                    .FirstOrDefaultAsync();
         }
         public async Task<bool> AddAsync(Project project)
@@ -49,6 +71,9 @@ namespace MuetongWeb.Repositories
         }
         public async Task<bool> DeleteAsync(long id)
         {
+            await DeleteCodeAllAsync(id);
+            await DeleteContractorByProjectAsync(id);
+            await DeleteUserByProjectAsync(id);
             var tmp = await _dbContext.Projects.FindAsync(id);
             if (tmp == null)
                 return false;
@@ -58,36 +83,72 @@ namespace MuetongWeb.Repositories
         }
         #endregion
         #region User
+        public async Task<bool> AddUserAsync(ProjectUser projectUser)
+        {
+            await _dbContext.ProjectUsers.AddAsync(projectUser);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
         public async Task<bool> AddUserAsync(List<ProjectUser> projectUsers)
         {
             await _dbContext.ProjectUsers.AddRangeAsync(projectUsers);
             await _dbContext.SaveChangesAsync();
                 return true;
-            }
+        }
         public async Task<bool> DeleteUserAsync(long id)
+        {
+            var tmp = await _dbContext.ProjectUsers.FirstOrDefaultAsync(projectUser => projectUser.UserId == id);
+            if (tmp == null)
+                return false;
+            _dbContext.ProjectUsers.Remove(tmp);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> DeleteUserByProjectAsync(long id)
         {
             var tmp = await _dbContext.ProjectUsers.Where(projectUser => projectUser.ProjectId == id).ToListAsync();
             if (tmp.Any())
             {
-                _dbContext.RemoveRange(tmp);
+                _dbContext.ProjectUsers.RemoveRange(tmp);
                 await _dbContext.SaveChangesAsync();
             }
             return true;
         }
         #endregion
         #region Contractor
+        public async Task<IEnumerable<ProjectContractor>> GetContractorAsync(long projectId)
+        {
+            return await _dbContext.ProjectContractors.Where(project => project.ProjectId == projectId)
+                                                      .Include(project => project.Contractor)
+                                                      .ToListAsync();
+        }
         public async Task<bool> AddContractorAsync(List<ProjectContractor> projectContractors)
         {
             await _dbContext.ProjectContractors.AddRangeAsync(projectContractors);
             await _dbContext.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> AddContractorAsync(ProjectContractor projectContractor)
+        {
+            await _dbContext.ProjectContractors.AddAsync(projectContractor);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
         public async Task<bool> DeleteContractorAsync(long id)
+        {
+            var tmp = await _dbContext.ProjectContractors.FirstOrDefaultAsync(projectContractor => projectContractor.ContractorId == id);
+            if (tmp == null)
+                return false;
+            _dbContext.ProjectContractors.Remove(tmp);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> DeleteContractorByProjectAsync(long id)
         {
             var tmp = await _dbContext.ProjectContractors.Where(projectContractor => projectContractor.ProjectId == id).ToListAsync();
             if (tmp.Any())
             {
-                _dbContext.RemoveRange(tmp);
+                _dbContext.ProjectContractors.RemoveRange(tmp);
                 await _dbContext.SaveChangesAsync();
             }
             return true;
@@ -98,6 +159,14 @@ namespace MuetongWeb.Repositories
         {
             return await _dbContext.ProjectCodes.Where(projectCode => projectCode.ProjectId == projectId)
                                    .ToListAsync();
+        }
+        public async Task<ProjectCode?> FindAsync(long id)
+        {
+            return await _dbContext.ProjectCodes.FindAsync(id);
+        }
+        public async Task<ProjectCode?> FindByCodeAsync(long projectId, string codeRequest)
+        {
+            return await _dbContext.ProjectCodes.FirstOrDefaultAsync(code => code.ProjectId == projectId && code.Code == codeRequest);
         }
         public async Task<bool> AddCodeAsync(ProjectCode projectCode)
         {
@@ -128,7 +197,7 @@ namespace MuetongWeb.Repositories
             var tmp = await _dbContext.ProjectCodes.FindAsync(id);
             if (tmp == null)
                 return false;
-            _dbContext.Remove(tmp);
+            _dbContext.ProjectCodes.Remove(tmp);
             await _dbContext.SaveChangesAsync();
             return true;
         }
@@ -137,7 +206,7 @@ namespace MuetongWeb.Repositories
             var tmp = await _dbContext.ProjectCodes.Where(projectCode => projectCode.ProjectId == id).ToListAsync();
             if (tmp.Any())
             {
-                _dbContext.RemoveRange(tmp);
+                _dbContext.ProjectCodes.RemoveRange(tmp);
                 await _dbContext.SaveChangesAsync();
             }
             return true;

@@ -3,18 +3,64 @@ using MuetongWeb.Models.Requests;
 using MuetongWeb.Services.Interfaces;
 using OfficeOpenXml;
 using Newtonsoft.Json;
+using MuetongWeb.Repositories.Interfaces;
+using MuetongWeb.Helpers;
+using MuetongWeb.Models.Entities;
 
 namespace MuetongWeb.Services
 {
     public class FileServices : IFileServices
     {
         private readonly ILogger<FileServices> _logger;
+        private readonly IFileRepositories _fileRepositories;
         public FileServices
         (
-            ILogger<FileServices> logger
+            ILogger<FileServices> logger,
+            IFileRepositories fileRepositories
         )
         {
             _logger = logger;
+            _fileRepositories = fileRepositories;
+        }
+        public async Task<bool> ImportFileList(long id, string type,List<IFormFile> files)
+        {
+            try
+            {
+                List<Models.Entities.File> saveFiles = new List<Models.Entities.File>();
+                var path = Path.Combine(FileConstants.UploadPath, type);
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                var fullpath = Path.Combine(path, id.ToString());
+                if (!Directory.Exists(fullpath))
+                    Directory.CreateDirectory(fullpath);
+                foreach (var file in files)
+                {
+                    string filePath = Path.Combine(fullpath, file.FileName);
+                    using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+                    var ext = FileHelpers.GetExtention(file.FileName);
+                    Models.Entities.File tmp = new Models.Entities.File()
+                    {
+                        EntityId = id,
+                        Type = type,
+                        Extention = ext,
+                        Path = ""
+                    };
+                    saveFiles.Add(tmp);
+                }
+                if (saveFiles.Any())
+                {
+                    await _fileRepositories.AddRangeAsync(saveFiles);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("FileServices => ImportFileList: " + ex.Message);
+                return false;
+            }
         }
         public async Task<SettingImportCustomerDataModel?> ReadExcel(SettingImportCustomerRequest request, List<ExcelDataSchema> schemas)
         {
@@ -242,6 +288,39 @@ namespace MuetongWeb.Services
             catch (Exception ex)
             {
                 _logger.LogError("FileServices => ReadExcel(Store): request=" + JsonConvert.SerializeObject(request) + " error:" + ex.Message);
+                throw;
+            }
+        }
+        public async Task<List<ProjectCode>> ImportProjectCodeExcel(ProjectCodeImportRequest request, long projectId)
+        {
+            try
+            {
+                if (request.File == null || (request.File != null && request.File.Length == 0))
+                    return new List<ProjectCode>();
+                var ms = new MemoryStream();
+                await request.File.CopyToAsync(ms);
+                var excel = new ExcelPackage(ms);
+                var response = new List<ProjectCode>();
+                var sheet = excel.Workbook.Worksheets[0];
+                int rowIndex = 2;
+                while (sheet.Rows[rowIndex] != null)
+                {
+                    ProjectCode code = new ProjectCode();
+                    if (string.IsNullOrWhiteSpace(sheet.GetValue<string>(rowIndex, 1)))
+                        break;
+                    code.Code = sheet.GetValue<string>(rowIndex, 1);
+                    code.Detail = sheet.GetValue<string>(rowIndex, 2);
+                    code.Budjet = sheet.GetValue<decimal?>(rowIndex, 3);
+                    code.Cost = sheet.GetValue<decimal?>(rowIndex, 4);
+                    code.ProjectId = projectId;
+                    response.Add(code);
+                    rowIndex++;
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("FileServices => ImportProjectCodeExcel: request=" + JsonConvert.SerializeObject(request) + " error:" + ex.Message);
                 throw;
             }
         }

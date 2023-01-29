@@ -19,6 +19,36 @@ namespace MuetongWeb.Helpers
             }
             return userRequest;
         }
+        public static CustomerRequest GetCustomerRequest(HttpRequest request)
+        {
+            var customerRequest = new CustomerRequest();
+            try
+            {
+                customerRequest.Query = request.Query["textsearch"];
+                customerRequest.Page = GetIntWithDefault(request.Query["page"], 1);
+                customerRequest.PageSize = GetIntWithDefault(request.Query["pagesize"], 10);
+            }
+            catch
+            {
+                customerRequest = new CustomerRequest();
+            }
+            return customerRequest;
+        }
+        public static ContractorRequest GetContractorRequest(HttpRequest request)
+        {
+            var contractorRequest = new ContractorRequest();
+            try
+            {
+                contractorRequest.Query = request.Query["textsearch"];
+                contractorRequest.Page = GetIntWithDefault(request.Query["page"], 1);
+                contractorRequest.PageSize = GetIntWithDefault(request.Query["pagesize"], 10);
+            }
+            catch
+            {
+                contractorRequest = new ContractorRequest();
+            }
+            return contractorRequest;
+        }
         private static int GetIntWithDefault(string? query, int value)
         {
             if(string.IsNullOrEmpty(query))

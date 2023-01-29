@@ -14,17 +14,30 @@ namespace MuetongWeb.Services
         private readonly ILogger<UserServices> _logger;
         private readonly IRolePermissionRepositories _rolePermissionRepositories;
         private readonly IUserRepositories _userRepositories;
+        private readonly IProvinceRepositories _provinceRepositories;
+        private readonly ILineRepositories _lineRepositories;
+        private readonly IDepartmentRepositories _departmentRepositories;
+        private readonly ISubDepartmentRepositories _subDepartmentRepositories;
         public UserServices
         (
             ILogger<UserServices> logger,
             IRolePermissionRepositories rolePermissionRepositories,
-            IUserRepositories userRepositories
+            IUserRepositories userRepositories,
+            IProvinceRepositories provinceRepositories,
+            ILineRepositories lineRepositories,
+            IDepartmentRepositories departmentRepositories,
+            ISubDepartmentRepositories subDepartmentRepositories
         )
         {
             _logger = logger;
             _rolePermissionRepositories = rolePermissionRepositories;
             _userRepositories = userRepositories;
+            _provinceRepositories = provinceRepositories;
+            _lineRepositories = lineRepositories;
+            _departmentRepositories = departmentRepositories;
+            _subDepartmentRepositories = subDepartmentRepositories;
         }
+        #region Page Service
         public async Task<UserInfoModel?> LoginAsync(LoginRequest request)
         {
             try
@@ -95,5 +108,115 @@ namespace MuetongWeb.Services
                 throw;
             }
         }
+        #endregion
+        #region Api Service
+        public async Task<bool> AddAsync(UserAddRequest request)
+        {
+            var user = new User()
+            {
+                Username = request.Username,
+                Password = EncryptionHelpers.Encrypt(request.Username),
+                Firstname = request.Firstname,
+                Lastname = request.Lastname,
+                Address = request.Address,
+                ProvinceId = request.ProvinceId,
+                PhoneNo = request.Phone,
+                Email = request.Email,
+                SubDepartmentId= request.SubDepartmentId,
+                RoleId = request.RoleId,
+                UserId = request.User.Id,
+                CreateDate = DateTime.Now,
+                EmployeeId = request.EmployeeId,
+                CitizenId = request.Idcard
+            };
+            await _userRepositories.AddAsync(user);
+            return true;
+        }
+        public async Task<bool> UpdateAsync(long id, UserUpdateRequest request)
+        {
+            var user = await _userRepositories.GetAsync(id);
+            if (user == null)
+                return false;
+            user.Firstname = request.Firstname;
+            user.Lastname = request.Lastname;
+            user.Address = request.Address;
+            user.ProvinceId = request.ProvinceId;
+            user.PhoneNo = request.Phone;
+            user.Email = request.Email;
+            user.SubDepartmentId = request.SubDepartmentId;
+            user.RoleId = request.RoleId;
+            user.ModifyDate = DateTime.Now;
+            user.EmployeeId = request.EmployeeId;
+            user.CitizenId = request.Idcard;
+            await _userRepositories.UpdateAsync(user);
+            return true;
+        }
+        public async Task<bool> DeleteAsync(long id)
+        {
+            await _userRepositories.DeleteAsync(id);
+            return true;
+        }
+        public async Task<IEnumerable<Province>> GetProvince()
+        {
+            try
+            {
+                var provinces = await _provinceRepositories.GetAsync();
+                return provinces;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("UserServices => GetProvince: " + ex.Message);
+                throw;
+            }
+        }
+        public async Task<List<WorkLineResponse>> GetWorkLine()
+        {
+            try
+            {
+                var lines = await _lineRepositories.GetAsync();
+                var result = new List<WorkLineResponse>();
+                foreach (var line in lines)
+                    result.Add(new WorkLineResponse(line));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("UserServices => GetWorkLine: " + ex.Message);
+                throw;
+            }
+        }
+        public async Task<List<DepartmentResponse>> GetDepartment(long id)
+        {
+            try
+            {
+                var departments = await _departmentRepositories.GetByLineAsync(id);
+                var result = new List<DepartmentResponse>();
+                foreach (var department in departments)
+                    result.Add(new DepartmentResponse(department));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("UserServices => GetDepartment: " + ex.Message);
+                throw;
+            }
+        }
+        public async Task<List<SubDepartmentResponse>> GetSubDepartment(long id)
+        {
+            try
+            {
+                var subDepartments = await _subDepartmentRepositories.GetByDepartmentAsync(id);
+                var result = new List<SubDepartmentResponse>();
+                foreach (var subDepartment in subDepartments)
+                    result.Add(new SubDepartmentResponse(subDepartment));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("UserServices => GetSubDepartment: " + ex.Message);
+                throw;
+            }
+        }
+        #endregion
     }
 }

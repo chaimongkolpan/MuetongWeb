@@ -1,0 +1,237 @@
+﻿@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "ตรวจสอบสินค้า";
+}
+<div class="container-fluid" style="background-color:#fcfcfc">
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="ProjectId"><b>ชื่อโครงการ</b></label>
+                <select class="form-select" id="ProjectId">
+                    <option selected>ทั้งหมด</option>
+                    @if (Model != null)
+                    {
+                        @foreach (var item in Model.Projects)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
+                <select class="form-select" id="PrNo">
+                    <option selected>ทั้งหมด</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
+                <select class="form-select" id="RequesterId">
+                    <option selected>ทั้งหมด</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center ">
+        <button type="button" id="search_btn" class="btn btn-outline-success"><i class="fa fa-search"> &nbsp;ค้นหา</i></button>
+    </div>
+    <br>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#All">ทั้งหมด</a>
+        </li>
+        <li class="nav-item">
+            <a id="wait_tab" class="nav-link d-flex justify-content-center" data-bs-toggle="tab" href="#Wait">จัดส่ง</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div id="All" class="container-fluid tab-pane active">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">ลำดับ</th>
+                            <th scope="col">ดำเนินการ</th>
+                            <th scope="col">โครงการ</th>
+                            <th scope="col">เลขที่ PR</th>
+                                <th scope="col">วันที่สั่งสินค้า</th>
+                            <th scope="col">ผู้รับเหมา</th>
+                            <th scope="col">หักผู้รับเหมา</th>
+                            <th scope="col">ผู้ขอจัดซื้อ</th>
+                            <th scope="col">ลำดับสินค้า</th>
+                            <th scope="col">รายการสินค้า</th>
+                            <th scope="col">จำนวน</th>
+                            <th scope="col">หน่วย</th>
+                            <th scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th scope="col">จุดประสงค์</th>
+                            <th scope="col">หมายเหตุสินค้า</th>
+                            <th scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="Wait" class="container-fluid tab-pane fade">
+            <br>
+            <div class="col-12 p-3" style="overflow-x:auto;">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">ลำดับ</th>
+                            <th scope="col">ดำเนินการ</th>
+                            <th scope="col">โครงการ</th>
+                            <th scope="col">เลขที่ PR</th>
+                                <th scope="col">วันที่สั่งสินค้า</th>
+                            <th scope="col">ผู้รับเหมา</th>
+                            <th scope="col">หักผู้รับเหมา</th>
+                            <th scope="col">ผู้ขอจัดซื้อ</th>
+                            <th scope="col">ลำดับสินค้า</th>
+                            <th scope="col">รายการสินค้า</th>
+                            <th scope="col">จำนวน</th>
+                            <th scope="col">หน่วย</th>
+                            <th scope="col">วันที่ต้องการส่งมอบ</th>
+                            <th scope="col">จุดประสงค์</th>
+                            <th scope="col">หมายเหตุสินค้า</th>
+                            <th scope="col">สถานะสินค้า</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wait_table">
+                    </tbody>
+                </table>
+            </div>
+        </div><br>
+    </div>
+    
+    <input type="hidden" id="receive_id">
+    <!-- The Modal ActionDetail -->
+    <div class="modal" id="ActionDetail">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="background-color:#ae6378;color:white;">
+                    <h4 class="modal-title"><b>รายละเอียดการรับสินค้า</b></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row row-cols-1 row-cols-lg-2">
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="receive_project_name">ชื่อโครงการ</label>
+                                <input type="text" class="form-control" id="receive_project_name" aria-describedby="basic-addon1" disabled>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
+                                <input type="text" class="form-control" id="receive_pr_no" aria-describedby="basic-addon1" disabled>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">วันที่สั่งสินค้า</span>
+                                <input type="date" class="form-control" id="receive_create_date" aria-describedby="basic-addon1" disabled>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">ผู้สั่งสินค้า</span>
+                                <input type="text" class="form-control" id="receive_requester" aria-describedby="basic-addon1" disabled>
+                            </div>
+                        </div>
+                        <div class="col-12 p-3" style="overflow-x:auto;">
+                            <h4 class="text-center" style="color:black;">รายการสั่งสินค้า</h4><br />
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">รายการสินค้า</th>
+                                        <th scope="col">จำนวน</th>
+                                        <th scope="col">หน่วย</th>
+                                        <th scope="col">วันที่ต้องการส่งมอบ</th>
+                                        <th scope="col">จุดประสงค์</th>
+                                        <th scope="col">หมายเหตุสินค้า</th>
+                                        <th scope="col">สถานะสินค้า</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="receive_detail_table">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <div class="file-loading">
+                                    <input id="receive_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 p-3" style="overflow-x:auto;">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ลำดับ</th>
+                                        <th scope="col">รายการ</th>
+                                        <th scope="col">จำนวน</th>
+                                        <th scope="col">หน่วย</th>
+                                        <th scope="col">วันที่รับสินค้า</th>
+                                        <th scope="col">ชื่อผู้รับสินค้า</th>
+                                        <th scope="col">หมายเหตุการรับสินค้า</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="receive_table">
+                                </tbody>
+                            </table>
+                        </div>
+                        <p></p>
+                        <div class="col-12">
+                            <div class="card border">
+                                <div class="card-body">
+                                    <h4 class="text-center" style="color:black;">รับสินค้า</h4><br />
+                                    <div class="row row-cols-1 row-cols-lg-2">
+                                        <div class="col">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text" id="basic-addon1">จำนวน</span>
+                                                <input type="text" class="form-control" id="receive_quantity" aria-describedby="basic-addon1">
+                                                <span class="input-group-text" id="basic-addon1">หน่วย</span>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text" id="basic-addon1">หมายเหตุการรับสินค้า</span>
+                                                <input type="text" class="form-control" id="receive_remark" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" id="receive_btn" class="btn btn-success">บันทึก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var model = @Html.Raw(JsonConvert.SerializeObject(Model));
+    var baseUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
+    baseUrl = baseUrl + (baseUrl == '/' ? 'api/pr/' : '/api/pr/');
+</script>
+<script type="text/javascript" src="~/js/pr-receive.js"></script>

@@ -24,7 +24,20 @@ namespace MuetongWeb.Models.Entities
         public long UserId { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public long? ApproverId { get; set; }
+        public DateTime? ApproveDate { get; set; }
+        public string? ApproveRemark { get; set; }
+        public string? InvoiceNo { get; set; }
+        public decimal? ExtraCost { get; set; }
+        public bool? IsReadCancel { get; set; }
+        public long? ExtraType { get; set; }
+        public string? ExtraOther { get; set; }
+        public bool? HasReceipt { get; set; }
+        public bool? HasInvoice { get; set; }
+        public bool? IsPay { get; set; }
+        public bool? HasExtra { get; set; }
 
+        public virtual User? Approver { get; set; }
         public virtual PaymentAccount? PaymentAccount { get; set; }
         public virtual SettingConstant PaymentTypeNavigation { get; set; } = null!;
         public virtual Store Store { get; set; } = null!;
