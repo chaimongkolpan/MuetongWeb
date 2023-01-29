@@ -16,5 +16,27 @@ namespace MuetongWeb.Repositories
                                                     .OrderBy(setting => setting.OrderNumber)
                                                     .ToListAsync();
         }
+        public async Task<IEnumerable<SettingConstant>> GetAsync()
+        {
+            return await _dbContext.SettingConstants.OrderBy(setting => setting.Type).ThenBy(setting => setting.OrderNumber)
+                                                    .ToListAsync();
+        }
+        public async Task<bool> AddAsync(SettingConstant setting)
+        {
+            var max = _dbContext.SettingConstants.Where(sett => sett.Type == setting.Type).Max(sett => sett.OrderNumber);
+            setting.OrderNumber = max + 1;
+            await _dbContext.SettingConstants.AddAsync(setting);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> DeleteAsync(long id)
+        {
+            var tmp = await _dbContext.SettingConstants.FindAsync(id);
+            if (tmp == null)
+                return false;
+            _dbContext.SettingConstants.Remove(tmp);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

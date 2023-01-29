@@ -11,14 +11,20 @@ namespace MuetongWeb.Repositories.Interfaces
         Task<bool> UpdateAsync(Project project);
         Task<bool> DeleteAsync(long id);
 
+        Task<bool> AddUserAsync(ProjectUser projectUser);
         Task<bool> AddUserAsync(List<ProjectUser> projectUsers);
         Task<bool> DeleteUserAsync(long id);
+        Task<bool> DeleteUserByProjectAsync(long id);
 
         Task<IEnumerable<ProjectContractor>> GetContractorAsync(long projectId);
+        Task<bool> AddContractorAsync(ProjectContractor projectContractor);
         Task<bool> AddContractorAsync(List<ProjectContractor> projectContractors);
         Task<bool> DeleteContractorAsync(long id);
+        Task<bool> DeleteContractorByProjectAsync(long id);
 
         Task<IEnumerable<ProjectCode>> GetCodeAsync(long projectId);
+        Task<ProjectCode?> FindAsync(long id);
+        Task<ProjectCode?> FindByCodeAsync(long projectId, string codeRequest);
         Task<bool> AddCodeAsync(ProjectCode projectCode);
         Task<bool> AddCodeListAsync(List<ProjectCode> projectCodes);
         Task<bool> UpdateCodeAsync(ProjectCode projectCode);

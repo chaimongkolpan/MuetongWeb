@@ -141,7 +141,7 @@ else
                                         <li class="setting_index_view" style="display: none;"><a id="admin-setting" class="dropdown-item" asp-area="" asp-controller="Setting" asp-action="Index">ตั้งค่า</a></li>
                                         <li class="user_index_view" style="display: none;"><a id="admin-user" class="dropdown-item" asp-area="" asp-controller="User" asp-action="Index">จัดการผู้ใช้งาน</a></li>
                                         <li class="role_index_view" style="display: none;"><a id="admin-role" class="dropdown-item" asp-area="" asp-controller="Role" asp-action="Index">สิทธิ์การใช้งาน</a></li>
-                                        <li class="setting_index_view" style="display: none;"><a id="admin-workline" class="dropdown-item" asp-area="" asp-controller="WorkLine" asp-action="Index">จัดการสายงาน</a></li>
+                                        <li style="display: none;"><a id="admin-workline" class="dropdown-item" asp-area="" asp-controller="WorkLine" asp-action="Index">จัดการสายงาน</a></li>
                                         <li class="setting_index_view" style="display: none;"><hr class="dropdown-divider"></li>
                                         <li class="setting_index_view" style="display: none;"><a id="admin-customer" class="dropdown-item" asp-area="" asp-controller="Customer" asp-action="Index">จัดการลูกค้า</a></li>
                                         <li class="setting_index_view" style="display: none;"><a id="admin-contractor" class="dropdown-item" asp-area="" asp-controller="Contractor" asp-action="Index">จัดการผู้รับเหมา</a></li>
@@ -178,7 +178,6 @@ else
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="~/js/pagination.min.js"></script>
     <script src="~/js/fileinput.js"></script>
-
     <script type="text/javascript">
 var mainUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
 var logoutUrl = mainUrl + (mainUrl == '/' ? 'logout' : '/logout');

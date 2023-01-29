@@ -5,6 +5,7 @@ using OfficeOpenXml;
 using Newtonsoft.Json;
 using MuetongWeb.Repositories.Interfaces;
 using MuetongWeb.Helpers;
+using MuetongWeb.Models.Entities;
 
 namespace MuetongWeb.Services
 {
@@ -287,6 +288,39 @@ namespace MuetongWeb.Services
             catch (Exception ex)
             {
                 _logger.LogError("FileServices => ReadExcel(Store): request=" + JsonConvert.SerializeObject(request) + " error:" + ex.Message);
+                throw;
+            }
+        }
+        public async Task<List<ProjectCode>> ImportProjectCodeExcel(ProjectCodeImportRequest request, long projectId)
+        {
+            try
+            {
+                if (request.File == null || (request.File != null && request.File.Length == 0))
+                    return new List<ProjectCode>();
+                var ms = new MemoryStream();
+                await request.File.CopyToAsync(ms);
+                var excel = new ExcelPackage(ms);
+                var response = new List<ProjectCode>();
+                var sheet = excel.Workbook.Worksheets[0];
+                int rowIndex = 2;
+                while (sheet.Rows[rowIndex] != null)
+                {
+                    ProjectCode code = new ProjectCode();
+                    if (string.IsNullOrWhiteSpace(sheet.GetValue<string>(rowIndex, 1)))
+                        break;
+                    code.Code = sheet.GetValue<string>(rowIndex, 1);
+                    code.Detail = sheet.GetValue<string>(rowIndex, 2);
+                    code.Budjet = sheet.GetValue<decimal?>(rowIndex, 3);
+                    code.Cost = sheet.GetValue<decimal?>(rowIndex, 4);
+                    code.ProjectId = projectId;
+                    response.Add(code);
+                    rowIndex++;
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("FileServices => ImportProjectCodeExcel: request=" + JsonConvert.SerializeObject(request) + " error:" + ex.Message);
                 throw;
             }
         }
