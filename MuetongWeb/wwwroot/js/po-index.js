@@ -711,11 +711,59 @@ function createTablePr() {
         html += '<td>' + pr.projectCode + '</td>';
         html += '<td>' + pr.status + '</td>';
         html += '<td>' + pr.remark + '</td>';
-        html += '<td><span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefOrder">description</span></td>';
-        html += '<td><span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefApproverOrder">description</span></td>';
+        html += '<td><span class="material-symbols-outlined" onclick="showFileAdd(' + i + ')" data-bs-toggle="modal" data-bs-target="#RefOrder">description</span></td>';
+        html += '<td><span class="material-symbols-outlined" onclick="showApproveFileAdd(' + i + ')" data-bs-toggle="modal" data-bs-target="#RefApproverOrder">description</span></td>';
         html += '</tr>';
     }
     $('#add_pr_table').append(html);
+}
+function showFileAdd(i) {
+    var pr = prDetails.details[i];
+    console.log(pr);
+    $('#pr_files_pane').empty();
+    $('#pr_files_pane').append('<div class="file-loading"><input id="pr_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#pr_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: pr.filePreviews,
+        initialPreviewConfig: pr.files
+    });
+}
+function showApproveFileAdd(i) {
+    var pr = prDetails.details[i];
+    console.log(pr);
+    $('#pr_approve_files_pane').empty();
+    $('#pr_approve_files_pane').append('<div class="file-loading"><input id="pr_approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#pr_approve_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: pr.approveFilePreviews,
+        initialPreviewConfig: pr.approveFiles
+    });
+}
+function showFileEdit(i) {
+    var pr = prEditDetails.details[i];
+    console.log(pr);
+    $('#pr_files_pane').empty();
+    $('#pr_files_pane').append('<div class="file-loading"><input id="pr_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#pr_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: pr.filePreviews,
+        initialPreviewConfig: pr.files
+    });
+}
+function showApproveFileEdit(i) {
+    var pr = prEditDetails.details[i];
+    console.log(pr);
+    $('#pr_approve_files_pane').empty();
+    $('#pr_approve_files_pane').append('<div class="file-loading"><input id="pr_approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#pr_approve_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: pr.approveFilePreviews,
+        initialPreviewConfig: pr.approveFiles
+    });
 }
 function searchPr() {
     var searchUrl = baseUrl + 'searchpr';
@@ -877,6 +925,7 @@ function deleteDetailList(i) {
     createDetailList();
 }
 function createDetailList() {
+    location.href = "#po_detail_table";
     $('#po_detail_table').empty();
     var html = '';
     for (var i in insertDetailList) {
@@ -1186,8 +1235,8 @@ function createTablePrEdit() {
         html += '<td>' + pr.projectCode + '</td>';
         html += '<td>' + pr.status + '</td>';
         html += '<td>' + pr.remark + '</td>';
-        html += '<td><span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefOrder">description</span></td>';
-        html += '<td><span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefApproverOrder">description</span></td>';
+        html += '<td><span class="material-symbols-outlined" onclick="showFileEdit(' + i + ')" data-bs-toggle="modal" data-bs-target="#RefOrder">description</span></td>';
+        html += '<td><span class="material-symbols-outlined" onclick="showApproveFileEdit(' + i + ')" data-bs-toggle="modal" data-bs-target="#RefApproverOrder">description</span></td>';
         html += '</tr>';
     }
     $('#edit_pr_table').append(html);
@@ -1252,6 +1301,7 @@ function ediDeleteDetailList(i) {
     editCreateDetailList();
 }
 function editCreateDetailList() {
+    location.href = "#edit_po_detail_table";
     $('#edit_po_detail_table').empty();
     var html = '';
     for (var i in insertEditDetailList) {
@@ -1647,8 +1697,15 @@ function edit_po(index, tab) {
 }
 function bindDataEdit(po) {
     console.log(po);
-    $('#edit_files').val('');
-    $('#edit_files').fileinput('clear');
+    $('#edit_files_pane').empty();
+    $('#edit_files_pane').append('<div class="file-loading"><input id="edit_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
+    $('#edit_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: po.filePreviews,
+        initialPreviewConfig: po.files
+    });
+
     $('#edit_id').val(po.id);
     $('#edit_po_wht_value').val(po.whtRate);
     $('#EditProjectId').val(0);
@@ -1660,17 +1717,28 @@ function bindDataEdit(po) {
     $('#edit_mobile_no').val(po.storePhoneNo);
     $('#edit_tax_no').val(po.storeTaxNo);
     $('#edit_credit_type').val(po.creditTypeId);
+
+    edit_hide_credit_type();
     if (po.creditTypeId == creditType.non) {
+        $('#edit_non_credit_day_pane').show();
         $('#edit_non_credit_day').val(po.dateValue);
     } else if (po.creditTypeId == creditType.bg) {
+        $('#edit_bg_contract_no_pane').show();
+        $('#edit_bg_date_pane').show();
+        $('#edit_blank_pane').show();
         $('#edit_bg_contract_no').val(po.contractNo);
         $('#edit_bg_date').val(dateValue(po.dateSpecific));
     } else if (po.creditTypeId == creditType.check) {
+        $('#edit_port_check_no_pane').show();
+        $('#edit_port_check_date_pane').show();
+        $('#edit_blank_pane').show();
         $('#edit_port_check_no').val(po.chequeNo);
         $('#edit_port_check_date').val(dateValue(po.dateSpecific));
     } else if (po.creditTypeId == creditType.afTransfer) {
+        $('#edit_after_transfer_day_pane').show();
         $('#edit_after_transfer_day').val(po.dateValue);
     } else if (po.creditTypeId == creditType.afBilling) {
+        $('#edit_after_billing_day_pane').show();
         $('#edit_after_billing_day').val(po.dateValue);
     }
     $('#edit_payment_type').val(po.paymentTypeId);
@@ -1721,8 +1789,14 @@ function bindDataEdit(po) {
             };
             $('#edit_addition_check').prop('checked', true);
             $('#edit_addition').val(detail.additionalCode);
-            if (detail.additionalCode == 'อื่นๆ') $('#edit_addition_other').val(detail.additionalOtherCode);
-            else $('#edit_addition_other').val('');
+            if (detail.additionalCode == 'อื่นๆ') {
+                $('#edit_addition_other').val(detail.additionalOtherCode);
+                $('#edit_addition_other').prop('disabled', false);
+            }
+            else {
+                $('#edit_addition_other').val('');
+                $('#edit_addition_other').prop('disabled', 'disabled');
+            }
         }
     }
     editCreateDetailList();
@@ -1737,5 +1811,9 @@ $(document).ready(function () {
     bindStore();
     bindReceiveType();
     bindPaymentType();
+    $('#add_files').fileinput({
+        language: "th",
+        showUpload: false,
+    });
     search();
 });

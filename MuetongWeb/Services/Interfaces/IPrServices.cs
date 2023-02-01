@@ -14,7 +14,7 @@ namespace MuetongWeb.Services.Interfaces
         Task<PrResponse?> Get(long id);
         Task<bool> Read(long id);
         Task<bool> Cancel(long id);
-        Task<bool> Approve(long id, long userId);
+        Task<bool> Approve(long id, long userId, PrApproveRequest request);
         Task<bool> IndexAddAsync(long userId, PrIndexAddRequest request);
         Task<bool> IndexUpdateAsync(long id, long userId, PrIndexUpdateRequest request);
         Task<List<UserResponse>> GetRequesterByProject(long projectId);

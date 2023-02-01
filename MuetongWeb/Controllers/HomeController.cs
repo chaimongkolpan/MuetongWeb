@@ -12,10 +12,12 @@ namespace MuetongWeb.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserServices _userServices;
-        public HomeController(ILogger<HomeController> logger, IUserServices userServices)
+        private readonly IFileServices _fileServices;
+        public HomeController(ILogger<HomeController> logger, IUserServices userServices, IFileServices fileServices)
         {
             _logger = logger;
             _userServices = userServices;
+            _fileServices = fileServices;
         }
 
         public IActionResult Index()
@@ -75,6 +77,41 @@ namespace MuetongWeb.Controllers
         {
             HttpContext.Session.Clear();
             return View(ViewConstants.LoginView);
+        }
+        [Route("File/{id}/{filename}")]
+        [HttpGet]
+        public async Task<IActionResult> GetFile(long id, string filename)
+        {
+            try
+            {
+                var response = await _fileServices.GetFileAsync(id);
+                if (response == null)
+                    return BadRequest();
+                response.Position = 0;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrController => GetFile: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [Route("File/Delete/{id}")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteFile(long id)
+        {
+            try
+            {
+                var response = await _fileServices.DeleteFileAsync(id);
+                if (!response)
+                    return BadRequest();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrController => DeleteFile: " + ex.Message);
+            }
+            return BadRequest();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

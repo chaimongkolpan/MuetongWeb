@@ -246,7 +246,8 @@
         </div>
         <!--/////////////////////-->
     </div>
-
+    
+    <input type="hidden" id="edit_id" />
     <!-- The Modal ActionApprovePurchase -->
     <div class="modal" id="ActionApprovePurchase">
         <div class="modal-dialog modal-fullscreen modal-dialog-centered">
@@ -408,17 +409,17 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefOrder">
+                                            <span class="material-symbols-outlined" onclick="showFile()" data-bs-toggle="modal" data-bs-target="#RefOrder">
                                                 description
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefApproverOrder">
+                                            <span class="material-symbols-outlined" onclick="showApproveFile()" data-bs-toggle="modal" data-bs-target="#RefApproverOrder">
                                                 description
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="material-symbols-outlined" data-bs-toggle="modal" data-bs-target="#RefPurchase">
+                                            <span class="material-symbols-outlined" onclick="showFilePo()" data-bs-toggle="modal" data-bs-target="#RefPurchase">
                                                 description
                                             </span>
                                         </td>
@@ -484,15 +485,6 @@
                                 </tfoot>
                             </table>
                         </div>
-                        <!--
-                        <div class="col-12">
-                            <div class="form-group">
-                                <div class="file-loading">
-                                    <input id="approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
-                                </div>
-                            </div>
-                        </div>
-                        -->
                     </div>
                 </div>
 
@@ -550,9 +542,9 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <div class="form-group">
+                            <div class="form-group" id="pr_files_pane">
                                 <div class="file-loading">
-                                    <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
+                                    <input id="pr_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
                                 </div>
                             </div>
                         </div>
@@ -583,9 +575,9 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <div class="form-group">
+                            <div class="form-group" id="pr_approve_files_pane">
                                 <div class="file-loading">
-                                    <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
+                                    <input id="pr_approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
                                 </div>
                             </div>
                         </div>
@@ -616,9 +608,9 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <div class="form-group">
+                            <div class="form-group" id="po_files_pane">
                                 <div class="file-loading">
-                                    <input id="file-5" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
+                                    <input id="po_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
                                 </div>
                             </div>
                         </div>
@@ -674,8 +666,16 @@
                 </div>
 
                 <!-- Modal body -->
-                <div class="modal-body" id="approve_text">
-                    ท่านต้องการยืนยันตรวจสอบสั่งซื้อ เลขที่
+                <div class="modal-body">
+                    <h6><b id="approve_text"></b></h6><br/>
+                    <h6><b>เอกสารอ้างอิงตรวจสอบสั่งซื้อ</b></h6>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="file-loading">
+                                <input id="approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Modal footer -->

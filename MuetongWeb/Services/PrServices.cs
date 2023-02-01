@@ -125,7 +125,10 @@ namespace MuetongWeb.Services
                 var pr = await _prRepositories.GetAsync(id);
                 if (pr == null)
                     return null;
-                return new PrResponse(pr);
+                var response = new PrResponse(pr);
+                var files = await _fileServices.GetFilesAsync(pr.Id, FileConstants.PrPathType);
+                if (files.Any()) response.SetFiles(files);
+                return response;
             }
             catch (Exception ex)
             {
@@ -163,13 +166,17 @@ namespace MuetongWeb.Services
                 return false;
             }
         }
-        public async Task<bool> Approve(long id, long userId)
+        public async Task<bool> Approve(long id, long userId, PrApproveRequest request)
         {
             try
             {
                 if(await _prRepositories.Approve(id, userId))
                 {
                     await _prRepositories.UpdateAllDetailStatus(id, StatusConstants.PrDetailRequested);
+                    if (request.Files != null && request.Files.Any())
+                    {
+                        await _fileServices.ImportFileList(id, FileConstants.PrApprovePathType, request.Files);
+                    }
                     return true;
                 }
                 return false;
@@ -282,6 +289,8 @@ namespace MuetongWeb.Services
                         }
                         if (addDetails.Any())
                             await _prRepositories.AddDetailRangeAsync(addDetails);
+                        if (details.Any())
+                            await _prRepositories.UpdateDetailAsync(details.ToList());
                         foreach (var detail in details)
                         {
                             if (!request.Details.Any(d => d.Id == detail.Id))
@@ -368,7 +377,9 @@ namespace MuetongWeb.Services
             try
             {
                 var prs = await _prRepositories.SearchAsync(request);
-                var response = new PrReceiveResponse(prs);
+                var ids = prs.SelectMany(pr => pr.PrDetails.Select(detail => detail.Id)).ToList();
+                var files = await _fileServices.GetFilesListAsync(ids, FileConstants.PrReceivePathType);
+                var response = new PrReceiveResponse(prs, files);
                 return response;
             }
             catch (Exception ex)
@@ -429,7 +440,10 @@ namespace MuetongWeb.Services
                     CreateDate = DateTime.Now
                 };
                 await _prRepositories.AddReceiveAsync(tmp);
-                // save file receive
+                if (request.Files != null && request.Files.Any())
+                {
+                    await _fileServices.ImportFileList(request.DetailId, FileConstants.PrReceivePathType, request.Files);
+                }
                 await _prRepositories.CheckReceive(new List<long>() { request.DetailId });
                 return true;
             }

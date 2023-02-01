@@ -1,5 +1,6 @@
 ﻿using System;
 using MuetongWeb.Constants;
+using MuetongWeb.Helpers;
 using MuetongWeb.Models.Entities;
 
 namespace MuetongWeb.Models.Responses
@@ -25,6 +26,49 @@ namespace MuetongWeb.Models.Responses
             {
                 var status = po.Status;
                 var tmp = new PoResponse(po);
+
+                if (status == StatusConstants.PoCancel)
+                {
+                    if (!tmp.IsReadCancel)
+                    {
+                        UnreadCancelCount++;
+                    }
+                    //else
+                    //    All.Add(tmp);
+                    Cancel.Add(tmp);
+                }
+                else if (status == StatusConstants.PoWaitingApprove)
+                {
+                    WaitingCount++;
+                    Waiting.Add(tmp);
+                }
+                else
+                {
+                    All.Add(tmp);
+                }
+            }
+        }
+        public PoIndexResponse(IEnumerable<Po> pos, IEnumerable<Pr> prs, List<Models.Entities.File> files, List<Models.Entities.File> prFiles, List<Models.Entities.File> prApproveFiles)
+        {
+            PrCount = prs.Count();
+            foreach (var pr in prs)
+            {
+                Pr.Add(new PrResponse(pr));
+            }
+            foreach (var po in pos)
+            {
+                var status = po.Status;
+                var tmp = new PoResponse(po);
+                if (files.Any())
+                {
+                    var poFiles = files.Where(file => file.EntityId == po.Id).ToList();
+                    if (poFiles.Any()) tmp.SetFiles(poFiles);
+                }
+                var prids = po.PoDetails.SelectMany(po => po.PrDetails.Select(pr => pr.Pr.Id).ToList()).ToList();
+                var prfile = prFiles.Where(file => prids.Contains(file.EntityId)).ToList();
+                if (prfile.Any()) tmp.SetPrFiles(prfile);
+                var prapprovefile = prApproveFiles.Where(file => prids.Contains(file.EntityId)).ToList();
+                if (prapprovefile.Any()) tmp.SetPrApproveFiles(prapprovefile);
                 if (status == StatusConstants.PoCancel)
                 {
                     if (!tmp.IsReadCancel)
@@ -85,6 +129,12 @@ namespace MuetongWeb.Models.Responses
         public decimal WhtRate { get; set; } = 3;
         public DateTime? CreateDate { get; set; }
         public List<PoDetailResponse> Details { get; set; } = new List<PoDetailResponse>();
+        public List<FileResponse> Files { get; set; } = new List<FileResponse>();
+        public List<string> FilePreviews { get; set; } = new List<string>();
+        public List<FileResponse> PrFiles { get; set; } = new List<FileResponse>();
+        public List<string> PrFilePreviews { get; set; } = new List<string>();
+        public List<FileResponse> PrApproveFiles { get; set; } = new List<FileResponse>();
+        public List<string> PrApproveFilePreviews { get; set; } = new List<string>();
         public PoResponse() { }
         public PoResponse(Po po)
         {
@@ -129,6 +179,21 @@ namespace MuetongWeb.Models.Responses
             WhtRate = po.WhtRate.HasValue ? po.WhtRate.Value * 100 : 3;
             Remark = string.IsNullOrWhiteSpace(po.Remark) ? string.Empty : po.Remark;
             CreateDate = po.CreateDate;
+        }
+        public void SetFiles(List<Models.Entities.File> files)
+        {
+            Files.AddRange(files.Select(file => new FileResponse(file)).ToList());
+            FilePreviews.AddRange(files.Select(file => FileHelpers.GetUrlTag(file.Id, file.Extention, file.Path)).ToList());
+        }
+        public void SetPrFiles(List<Models.Entities.File> files)
+        {
+            PrFiles.AddRange(files.Select(file => new FileResponse(file)).ToList());
+            PrFilePreviews.AddRange(files.Select(file => FileHelpers.GetUrlTag(file.Id, file.Extention, file.Path)).ToList());
+        }
+        public void SetPrApproveFiles(List<Models.Entities.File> files)
+        {
+            PrApproveFiles.AddRange(files.Select(file => new FileResponse(file)).ToList());
+            PrApproveFilePreviews.AddRange(files.Select(file => FileHelpers.GetUrlTag(file.Id, file.Extention, file.Path)).ToList());
         }
         private bool IsPayBefore(string creditType)
         {

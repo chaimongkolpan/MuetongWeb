@@ -169,7 +169,7 @@ function createTable() {
             if (checkEditStatus(pr.status)) {
                 html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
             } else {
-                html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr(' + pr.id + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionOrder">view_list</span></td>';
+                html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr(' + pr.id + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span></td>';
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
             }
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
@@ -231,7 +231,7 @@ function createTable() {
             if (checkEditStatus(pr.status)) {
                 html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
             } else {
-                html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr(' + pr.id + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionOrder">view_list</span></td>';
+                html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr(' + pr.id + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span></td>';
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
             }
             html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
@@ -442,7 +442,9 @@ $('#show_edit_btn').click(function () {
     $('#edit_detail_pane').show();
 });
 function edit_pr(id) {
-    var editUrl = baseUrl + id;
+    var editUrl = baseUrl + id
+    $('#edit_files_pane').empty();
+    $('#edit_approve_files').fileinput('clear');
     $.ajax({
         type: "GET",
         url: editUrl,
@@ -452,6 +454,15 @@ function edit_pr(id) {
             console.log(result);
             projectCodes = [];
             bindContractorEdit(result.projectId);
+
+            $('#edit_files_pane').append('<div class="file-loading"><input id="edit_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+            $('#edit_files').fileinput({
+                language: "th",
+                showUpload: false,
+                initialPreview: result.filePreviews,
+                initialPreviewConfig: result.files
+            });
+
             $('#edit_id').val(id);
             $('#edit_project').val(result.projectId);
             $('#edit_detail_pane').hide();
@@ -532,13 +543,14 @@ $('#edit_detail_edit_btn').click(function () {
 $('#edit_pr_btn').click(function () {
     console.log(edit_detail);
     var id = $('#edit_id').val();
-    const input = document.getElementById('edit_files');
+    const input = document.getElementById('edit_approve_files');
     var updateUrl = baseUrl + 'update/' + id;
     var data = new FormData();
     data.append("ProjectId", $('#edit_project').val());
     data.append("PrNo", $('#edit_pr_no').val());
     data.append("AdvancePay", $('#edit_advance_pay').prop('checked'));
     data.append("ContractorId", $('#edit_contractor').val());
+
     for (var i = 0; i < input.files.length; i++) {
         data.append("Files", input.files[i]);
     }
@@ -559,7 +571,7 @@ $('#edit_pr_btn').click(function () {
         success: function (result) {
             console.log(result);
             search();
-            $('#ActionOrder').modal('hide');
+            $('#ActionApproveOrder').modal('hide');
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3 + " " + p4;
@@ -597,17 +609,26 @@ $('#cancel_btn').click(function () {
 });
 function approve_pr(id, prno) {
     console.log(id, prno);
+
+    $('#edit_approve_files').val('');
+    $('#edit_approve_files').fileinput('clear');
     $('#approve_id').val(id);
     $('#pr_approve_text').html('ท่านต้องการยืนยันตรวจสอบสั่งสินค้า เลขที่ PR ' + prno);
 }
 $('#approve_btn').click(function () {
     var id = $('#approve_id').val();
     var approveUrl = baseUrl + 'approve/' + id;
+    const input = document.getElementById('edit_approve_files');
+    var data = new FormData();
+    for (var i = 0; i < input.files.length; i++) {
+        data.append("Files", input.files[i]);
+    }
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: approveUrl,
         contentType: false,
         processData: false,
+        data: data,
         success: function (result) {
             search();
             $('#ActionConfirm').modal('hide');
@@ -648,6 +669,12 @@ $('#read_pr_btn').click(function () {
 });
 $(document).ready(function () {
     console.log('ready', model);
+
+    $('#edit_approve_files').fileinput({
+        language: "th",
+        showUpload: false,
+    });
+
     bindFilter(0)
     bindProduct();
     search();

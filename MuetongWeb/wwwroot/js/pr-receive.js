@@ -83,7 +83,6 @@ function createRowExpand(pr, tab, i) {
     if (pr.details.length > 0) {
         for (var j = 0; j < pr.details.length; j++) {
             var detail = pr.details[j];
-            html += '<tr>';
             var len = (detail.receives.length > 0 ? 1 : 0) + 1;
             var rowspan = '';
             if (len > 1) {
@@ -91,39 +90,42 @@ function createRowExpand(pr, tab, i) {
             }
             var rece = {};
             if (detail.receives.length > 0) rece = createReceiveTable(detail.receives, detail.quantity);
-            var num = 0;
-            if (tab == 1) {
-                num = allNum;
-                allNum++;
-            } else {
-                num = waitNum;
-                waitNum++;
+            if (tab == 1 || (tab == 2 && rece.remain != 0)) {
+                html += '<tr>';
+                var num = 0;
+                if (tab == 1) {
+                    num = allNum;
+                    allNum++;
+                } else {
+                    num = waitNum;
+                    waitNum++;
+                }
+                html += '<td ' + rowspan + '>' + (parseInt(num) + 1) + '</td>';
+                if (detail.receives.length > 0 && rece.remain == 0)
+                    html += '<td ' + rowspan + '></td>'
+                else
+                    html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr_detail(' + i + ',' + tab + ',' + j + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionDetail">edit</span></td>';
+                html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
+                html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
+                html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
+                if (pr.isAdvancePay) {
+                    html += '<td ' + rowspan + '><span class="material-symbols-outlined" style="color:#000;">done</span></td><td ' + rowspan + '>' + pr.contractorName + '</td>';
+                } else {
+                    html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
+                }
+                html += '<td ' + rowspan + '>' + pr.requesterName + '</td>';
+                html += '<td>' + (parseInt(j) + 1) + '</td>';
+                html += '<td>' + detail.name + '</td>';
+                html += '<td>' + detail.quantity + '</td>';
+                html += '<td>' + detail.unit + '</td>';
+                html += '<td>' + dateFormat(detail.useDate) + '</td>';
+                //html += '<td>' + dateFormat(detail.planTransferDate) + '</td>';
+                html += '<td>' + detail.code + '</td>';
+                html += '<td>' + detail.remark + '</td>';
+                html += '<td>' + detail.status + '</td>';
+                html += '</tr>';
+                if (detail.receives.length > 0) html += rece.html;
             }
-            html += '<td ' + rowspan + '>' + (parseInt(num) + 1) + '</td>';
-            if (detail.receives.length > 0 && rece.remain == 0)
-                html += '<td ' + rowspan + '></td>'
-            else
-                html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr_detail(' + i + ',' + tab + ',' + j + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionDetail">edit</span></td>';
-            html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
-            html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
-            html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
-            if (pr.isAdvancePay) {
-                html += '<td ' + rowspan + '><span class="material-symbols-outlined" style="color:#000;">done</span></td><td ' + rowspan + '>' + pr.contractorName + '</td>';
-            } else {
-                html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
-            }
-            html += '<td ' + rowspan + '>' + pr.requesterName + '</td>';
-            html += '<td>' + (parseInt(j) + 1) + '</td>';
-            html += '<td>' + detail.name + '</td>';
-            html += '<td>' + detail.quantity + '</td>';
-            html += '<td>' + detail.unit + '</td>';
-            html += '<td>' + dateFormat(detail.useDate) + '</td>';
-            //html += '<td>' + dateFormat(detail.planTransferDate) + '</td>';
-            html += '<td>' + detail.code + '</td>';
-            html += '<td>' + detail.remark + '</td>';
-            html += '<td>' + detail.status + '</td>';
-            html += '</tr>';
-            if (detail.receives.length > 0) html += rece.html;
         }
     }
     return html;
@@ -272,6 +274,15 @@ function bindReceiveData(pr) {
 function bindReceiveDataDetail(pr, j) {
     var detail = pr.details[j];
     console.log(pr, detail);
+
+    $('#receive_files_pane').empty();
+    $('#receive_files_pane').append('<div class="file-loading"><input id="receive_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
+    $('#receive_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: detail.filePreviews,
+        initialPreviewConfig: detail.files
+    });
     $('#receive_id').val(detail.id);
     $('#receive_project_name').val(pr.projectName);
     $('#receive_pr_no').val(pr.prNo);

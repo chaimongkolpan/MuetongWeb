@@ -1,4 +1,5 @@
 ﻿using MuetongWeb.Constants;
+using MuetongWeb.Helpers;
 using MuetongWeb.Models.Entities;
 
 namespace MuetongWeb.Models.Responses
@@ -14,6 +15,21 @@ namespace MuetongWeb.Models.Responses
             foreach (var pr in prs)
             {
                 var tmp = new ReceivePrResponse(pr);
+                if (pr.PrDetails.Any(detail => detail.Status == StatusConstants.PrWaitingTransfer))
+                {
+                    WaitingCount++;
+                    Waiting.Add(tmp);
+                }
+                All.Add(tmp);
+            }
+        }
+        public PrReceiveResponse(IEnumerable<Pr> prs, List<Models.Entities.File> files)
+        {
+            foreach (var pr in prs)
+            {
+                var ids = pr.PrDetails.Select(x => x.Id).ToList();
+                var prfiles = files.Where(file => ids.Contains(file.EntityId)).ToList();
+                var tmp = new ReceivePrResponse(pr, prfiles);
                 if (pr.PrDetails.Any(detail => detail.Status == StatusConstants.PrWaitingTransfer))
                 {
                     WaitingCount++;
@@ -60,8 +76,42 @@ namespace MuetongWeb.Models.Responses
             {
                 foreach (var detail in pr.PrDetails)
                 {
+                    if (detail.Status == StatusConstants.PrDetailComplete || detail.Status == StatusConstants.PrDetailWaitingTransfer)
+                        Details.Add(new ReceivePrDetailResponse(detail));
+                }
+                ReceiveCount = Details.Count(detail => detail.HasReceive);
+            }
+            IsReadCancel = pr.IsReadCancel.HasValue ? pr.IsReadCancel.Value : false;
+            CreateDate = pr.CreateDate;
+        }
+        public ReceivePrResponse(Pr pr, List<Models.Entities.File> files)
+        {
+            Id = pr.Id;
+            ProjectId = pr.ProjectId;
+            if (pr.Project != null)
+                ProjectName = pr.Project.Name;
+            PrNo = pr.PrNo;
+            if (pr.IsAdvancePay.HasValue)
+            {
+                IsAdvancePay = pr.IsAdvancePay.Value;
+                ContractId = pr.ContractorId;
+                if (pr.Contractor != null)
+                    ContractorName = pr.Contractor.Name;
+            }
+            RequesterName = string.Format("{0} {1}", pr.User.Firstname, pr.User.Lastname);
+            if (pr.Approver != null)
+                ApproverName = string.Format("{0} {1}", pr.Approver.Firstname, pr.Approver.Lastname);
+            if (pr.PrDetails.Any())
+            {
+                foreach (var detail in pr.PrDetails)
+                {
                     if(detail.Status == StatusConstants.PrDetailComplete || detail.Status == StatusConstants.PrDetailWaitingTransfer)
-                    Details.Add(new ReceivePrDetailResponse(detail));
+                    {
+                        var recfiles = files.Where(file => file.EntityId == detail.Id).ToList();
+                        var tmp = new ReceivePrDetailResponse(detail);
+                        if (recfiles.Any()) tmp.SetFiles(recfiles);
+                        Details.Add(tmp);
+                    }
                 }
                 ReceiveCount = Details.Count(detail => detail.HasReceive);
             }
@@ -83,6 +133,8 @@ namespace MuetongWeb.Models.Responses
         public string Remark { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public List<ReceiveResponse> Receives { get; set; } = new List<ReceiveResponse>();
+        public List<FileResponse> Files { get; set; } = new List<FileResponse>();
+        public List<string> FilePreviews { get; set; } = new List<string>();
         public decimal TotalReceive { get; set; } = 0;
         public bool HasReceive { get; set; } = false;
         public ReceivePrDetailResponse() { }
@@ -113,6 +165,11 @@ namespace MuetongWeb.Models.Responses
                 }
                 TotalReceive = detail.PrReceives.Sum(receive => receive.Quantity);
             }
+        }
+        public void SetFiles(List<Models.Entities.File> files)
+        {
+            Files.AddRange(files.Select(file => new FileResponse(file)).ToList());
+            FilePreviews.AddRange(files.Select(file => FileHelpers.GetUrlTag(file.Id, file.Extention, file.Path)).ToList());
         }
     }
     public class ReceiveResponse

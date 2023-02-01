@@ -575,6 +575,7 @@ $('#show_edit_btn').click(function () {
 });
 function edit_pr(id) {
     var editUrl = baseUrl + id;
+    $('#edit_files_pane').empty();
     $.ajax({
         type: "GET",
         url: editUrl,
@@ -584,12 +585,19 @@ function edit_pr(id) {
             console.log(result);
             projectCodes = [];
             bindContractorEdit(result.projectId);
+
+            $('#edit_files_pane').append('<div class="file-loading"><input id="edit_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
+            $('#edit_files').fileinput({
+                language: "th",
+                showUpload: false,
+                initialPreview: result.filePreviews,
+                initialPreviewConfig: result.files
+            });
+
             $('#edit_id').val(id);
             $('#edit_project').val(result.projectId);
             $('#edit_detail_pane').hide();
             $('#edit_pr_no').val(result.prNo);
-            $('#edit_files').val('');
-            $('#edit_files').fileinput('clear');
             if (result.isAdvancePay) {
                 $('#edit_advance_pay').prop('checked', true);
                 $('#edit_contractor').prop('disabled', false);
@@ -759,5 +767,9 @@ $(document).ready(function () {
     console.log('ready', model);
     bindFilter(0)
     bindProduct();
+    $('#add_files').fileinput({
+        language: "th",
+        showUpload: false,
+    });
     search();
 });

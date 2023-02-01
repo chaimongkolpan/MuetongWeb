@@ -1,5 +1,6 @@
 ﻿using System;
 using MuetongWeb.Constants;
+using MuetongWeb.Helpers;
 using MuetongWeb.Models.Entities;
 
 namespace MuetongWeb.Models.Responses
@@ -57,6 +58,8 @@ namespace MuetongWeb.Models.Responses
         public DateTime? CreateDate { get; set; }
         public bool IsReadCancel { get; set; } = false;
         public List<PrDetailResponse> Details { get; set; } = new List<PrDetailResponse>();
+        public List<FileResponse> Files { get; set; } = new List<FileResponse>();
+        public List<string> FilePreviews { get; set; } = new List<string>();
         public PrResponse() { }
         public PrResponse(Pr pr)
         {
@@ -85,6 +88,11 @@ namespace MuetongWeb.Models.Responses
             CreateDate = pr.CreateDate;
             IsReadCancel = pr.IsReadCancel.HasValue ? pr.IsReadCancel.Value : false;
             Status = pr.Status;
+        }
+        public void SetFiles(List<Models.Entities.File> files)
+        {
+            Files.AddRange(files.Select(file => new FileResponse(file)).ToList());
+            FilePreviews.AddRange(files.Select(file => FileHelpers.GetUrlTag(file.Id, file.Extention,file.Path)).ToList());
         }
     }
     public class PrDetailResponse

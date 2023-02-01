@@ -14,7 +14,7 @@ namespace MuetongWeb.Services.Interfaces
         Task<bool> UpdateIndexPo(long id, long userId, PoIndexUpdateRequest request);
         Task<bool> Read(long id);
         Task<bool> Cancel(long id, string? remark);
-        Task<bool> Approve(long id, long userId);
+        Task<bool> Approve(long id, long userId, PoApproveRequest request);
         Task<PoIndexPrResponse> IndexSearchPrAsync(PoIndexPrSearch request);
         Task<List<UserResponse>> GetRequesterByProject(long projectId);
         Task<List<string>> GetPrNoByProject(long projectId);

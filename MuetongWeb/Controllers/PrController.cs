@@ -14,10 +14,12 @@ namespace MuetongWeb.Controllers
     {
         private readonly ILogger<PrController> _logger;
         private readonly IPrServices _prServices;
-        public PrController(ILogger<PrController> logger, IPrServices prServices)
+        private readonly IFileServices _fileServices;
+        public PrController(ILogger<PrController> logger, IPrServices prServices, IFileServices fileServices)
         {
             _logger = logger;
             _prServices = prServices;
+            _fileServices = fileServices;
         }
         #region Pr Index
         public async Task<IActionResult> Index()
@@ -88,6 +90,24 @@ namespace MuetongWeb.Controllers
                 _logger.LogError("PrController => Approver: " + ex.Message);
             }
             return Redirect(ViewConstants.DefaultHomePage);
+        }
+        [Route("File/{id}/{filename}")]
+        [HttpGet]
+        public async Task<IActionResult> GetFile(long id, string filename)
+        {
+            try
+            {
+                var response = await _fileServices.GetFileAsync(id);
+                if (response == null)
+                    return BadRequest();
+                response.Position = 0;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrController => GetFile: " + ex.Message);
+            }
+            return BadRequest();
         }
         #endregion
     }
