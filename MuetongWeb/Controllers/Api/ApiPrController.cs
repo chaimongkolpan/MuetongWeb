@@ -17,10 +17,12 @@ namespace MuetongWeb.Controllers.Api
     {
         private readonly ILogger<ApiPrController> _logger;
         private readonly IPrServices _prServices;
-        public ApiPrController(ILogger<ApiPrController> logger, IPrServices prServices)
+        private readonly IFileServices _fileServices;
+        public ApiPrController(ILogger<ApiPrController> logger, IPrServices prServices, IFileServices fileServices)
         {
             _logger = logger;
             _prServices = prServices;
+            _fileServices = fileServices;
         }
 
         public IActionResult Index()
@@ -121,8 +123,8 @@ namespace MuetongWeb.Controllers.Api
             return BadRequest();
         }
         [Route("Approve/{id}")]
-        [HttpGet]
-        public async Task<IActionResult> PrApprove(long id)
+        [HttpPost]
+        public async Task<IActionResult> PrApprove(long id, PrApproveRequest request)
         {
             try
             {
@@ -131,7 +133,7 @@ namespace MuetongWeb.Controllers.Api
                     var user = SessionHelpers.GetUserInfo(HttpContext.Session);
                     if (user != null)
                     {
-                        var response = await _prServices.Approve(id, user.Id);
+                        var response = await _prServices.Approve(id, user.Id, request);
                         return Ok(response);
                     }
                 }

@@ -45,8 +45,8 @@ namespace MuetongWeb.Controllers.Api
             return BadRequest();
         }
         [Route("Approve/{id}")]
-        [HttpGet]
-        public async Task<IActionResult> PoIndexApprove(long id)
+        [HttpPost]
+        public async Task<IActionResult> PoIndexApprove(long id, PoApproveRequest request)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace MuetongWeb.Controllers.Api
                     var user = SessionHelpers.GetUserInfo(HttpContext.Session);
                     if (user != null)
                     {
-                        return Ok(await _poServices.Approve(id, user.Id));
+                        return Ok(await _poServices.Approve(id, user.Id, request));
                     }
                 }
             }

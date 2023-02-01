@@ -22,6 +22,87 @@ namespace MuetongWeb.Services
             _logger = logger;
             _fileRepositories = fileRepositories;
         }
+
+        public async Task<MemoryStream?> GetFileAsync(long id)
+        {
+            try
+            {
+                var file = await _fileRepositories.GetAsync(id);
+                if (file == null)
+                    return null;
+                var path = Path.Combine(FileConstants.UploadPath, file.Type);
+                var fullpath = Path.Combine(path, file.EntityId.ToString());
+                if (!Directory.Exists(fullpath))
+                    return null;
+                MemoryStream ms = new MemoryStream();
+                var filename = FileHelpers.GetFilename(file.Path);
+                var fullfilename = Path.Combine(fullpath, filename);
+                var streamFile = System.IO.File.Open(fullfilename, FileMode.Open);
+                await streamFile.CopyToAsync(ms);
+                streamFile.Dispose();
+                return ms;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("FileServices => GetFileAsync: " + ex.Message);
+                return null;
+            }
+        }
+        public async Task<bool> DeleteFileAsync(long id)
+        {
+            try
+            {
+                var file = await _fileRepositories.GetAsync(id);
+                var result = await _fileRepositories.DeleteAsync(id);
+                if (result && file != null)
+                {
+                    var path = Path.Combine(FileConstants.UploadPath, file.Type);
+                    var fullpath = Path.Combine(path, file.EntityId.ToString());
+                    if (Directory.Exists(fullpath))
+                    {
+                        var filename = FileHelpers.GetFilename(file.Path);
+                        var fullfilename = Path.Combine(fullpath, filename);
+                        if (System.IO.File.Exists(fullfilename))
+                        {  
+                            System.IO.File.Delete(fullfilename);
+                            _logger.LogInformation("FileServices => DeleteFileAsync: File " + fullfilename + " deleted.");
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("FileServices => DeleteFileAsync: " + ex.Message);
+                return false;
+            }
+        }
+        public async Task<List<Models.Entities.File>> GetFilesAsync(long id, string type)
+        {
+            try
+            {
+                List<Models.Entities.File> files = await _fileRepositories.GetAsync(id, type);
+                return files;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("FileServices => GetFilesAsync: " + ex.Message);
+                return new List<Models.Entities.File>();
+            }
+        }
+        public async Task<List<Models.Entities.File>> GetFilesListAsync(List<long> ids, string type)
+        {
+            try
+            {
+                List<Models.Entities.File> files = await _fileRepositories.GetAsync(ids, type);
+                return files;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("FileServices => GetFilesListAsync: " + ex.Message);
+                return new List<Models.Entities.File>();
+            }
+        }
         public async Task<bool> ImportFileList(long id, string type,List<IFormFile> files)
         {
             try
@@ -36,6 +117,7 @@ namespace MuetongWeb.Services
                 foreach (var file in files)
                 {
                     string filePath = Path.Combine(fullpath, file.FileName);
+                    string fileLoadPath = Path.Combine(FileConstants.GetPath, type, id.ToString(), file.FileName);
                     using (Stream fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(fileStream);
@@ -46,7 +128,7 @@ namespace MuetongWeb.Services
                         EntityId = id,
                         Type = type,
                         Extention = ext,
-                        Path = ""
+                        Path = fileLoadPath
                     };
                     saveFiles.Add(tmp);
                 }

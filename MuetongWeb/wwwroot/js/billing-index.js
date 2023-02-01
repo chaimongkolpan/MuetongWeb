@@ -47,6 +47,7 @@ function remove_po(i) {
     createBillingPo();
 }
 function createBillingPo() {
+    location.href = "#billing_po_table";
     $('#billing_po_table').empty();
     if (billingPo.length > 0) {
         var html = '';
@@ -606,8 +607,6 @@ function bindEditData(bill) {
         $('#edit_invoice_no').prop('disabled', 'disabled');
         $('#edit_invoice_no').val('');
     }
-    $('#edit_files').val('');
-    $('#edit_files').fileinput('clear');
 }
 function edit(i, tab) {
     var bill = {};
@@ -615,6 +614,15 @@ function edit(i, tab) {
         bill = billingColl.waitingApprove[i];
     else
         bill = billingColl.waitingReceipt[i];
+    console.log('edit', bill);
+    $('#edit_files_pane').empty();
+    $('#edit_files_pane').append('<div class="file-loading"><input id="edit_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
+    $('#edit_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: bill.filePreviews,
+        initialPreviewConfig: bill.files
+    });
     var storeUrl = baseUrl + 'payment/' + bill.id;
     $('#edit_extra_type').empty();
     $('#edit_payment_account').empty();

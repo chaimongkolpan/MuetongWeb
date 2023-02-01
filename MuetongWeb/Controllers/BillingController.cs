@@ -13,10 +13,12 @@ namespace MuetongWeb.Controllers
     {
         private readonly ILogger<BillingController> _logger;
         private readonly IBillingServices _billingServices;
-        public BillingController(ILogger<BillingController> logger, IBillingServices billingServices)
+        private readonly IFileServices _fileServices;
+        public BillingController(ILogger<BillingController> logger, IBillingServices billingServices, IFileServices fileServices)
         {
             _logger = logger;
             _billingServices = billingServices;
+            _fileServices = fileServices;
         }
         public async Task<IActionResult> Index()
         {
@@ -60,6 +62,24 @@ namespace MuetongWeb.Controllers
                 _logger.LogError("BillingController => Approver: " + ex.Message);
             }
             return Redirect(ViewConstants.DefaultHomePage);
+        }
+        [Route("File/{id}/{filename}")]
+        [HttpGet]
+        public async Task<IActionResult> GetFile(long id, string filename)
+        {
+            try
+            {
+                var response = await _fileServices.GetFileAsync(id);
+                if (response == null)
+                    return BadRequest();
+                response.Position = 0;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("BillingController => GetFile: " + ex.Message);
+            }
+            return BadRequest();
         }
     }
 }

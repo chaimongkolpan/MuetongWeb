@@ -14,10 +14,12 @@ namespace MuetongWeb.Controllers
     {
         private readonly ILogger<PoController> _logger;
         private readonly IPoServices _poServices;
-        public PoController(ILogger<PoController> logger, IPoServices poServices)
+        private readonly IFileServices _fileServices;
+        public PoController(ILogger<PoController> logger, IPoServices poServices, IFileServices fileServices)
         {
             _logger = logger;
             _poServices = poServices;
+            _fileServices = fileServices;
         }
         public async Task<IActionResult> Index()
         {
@@ -61,6 +63,24 @@ namespace MuetongWeb.Controllers
                 _logger.LogError("PoController => Approver: " + ex.Message);
             }
             return Redirect(ViewConstants.DefaultHomePage);
+        }
+        [Route("File/{id}/{filename}")]
+        [HttpGet]
+        public async Task<IActionResult> GetFile(long id, string filename)
+        {
+            try
+            {
+                var response = await _fileServices.GetFileAsync(id);
+                if (response == null)
+                    return BadRequest();
+                response.Position = 0;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PoController => GetFile: " + ex.Message);
+            }
+            return BadRequest();
         }
     }
 }

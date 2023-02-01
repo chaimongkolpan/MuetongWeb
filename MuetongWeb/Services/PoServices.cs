@@ -216,7 +216,13 @@ namespace MuetongWeb.Services
                 var details = await _prRepositories.SearchDetailAsync(request);
                 var detailIds = details.Where(d => d.PoDetailId.HasValue).Select(d => d.PoDetailId.Value).ToList();
                 var pos = await _poRepositories.SearchAsync(request, detailIds);
-                var response = new PoIndexResponse(pos, prs);
+                var ids = pos.Select(po => po.Id).ToList();
+                var podetails = pos.SelectMany(po => po.PoDetails).ToList();
+                var prids = podetails.SelectMany(detail => detail.PrDetails.Select(detail => detail.PrId)).ToList();
+                var files = await _fileServices.GetFilesListAsync(ids, FileConstants.PoPathType);
+                var prfiles = await _fileServices.GetFilesListAsync(prids, FileConstants.PrPathType);
+                var prapprovefiles = await _fileServices.GetFilesListAsync(prids, FileConstants.PrApprovePathType);
+                var response = new PoIndexResponse(pos, prs, files, prfiles, prapprovefiles);
                 return response;
             }
             catch (Exception ex)
@@ -328,7 +334,7 @@ namespace MuetongWeb.Services
 
                 if (ids.Any())
                 {
-                    var deleteIds = details.Where(x => ids.Contains(x.Id) && x.ProductId != 0).Select(x => x.Id).ToList();
+                    var deleteIds = details.Where(x => !ids.Contains(x.Id) && x.ProductId != 0).Select(x => x.Id).ToList();
                     await _prRepositories.UpdateAllDetailStatusByPoDetail(deleteIds, StatusConstants.PrDetailWaitingOrder);
                     await _poRepositories.DeleteDetailRangeAsync(deleteIds);
                 }
@@ -431,11 +437,19 @@ namespace MuetongWeb.Services
                 return false;
             }
         }
-        public async Task<bool> Approve(long id, long userId)
+        public async Task<bool> Approve(long id, long userId, PoApproveRequest request)
         {
             try
             {
-                return await _poRepositories.Approve(id, userId);
+                if(await _poRepositories.Approve(id, userId))
+                {
+                    if (request.Files != null && request.Files.Any())
+                    {
+                        await _fileServices.ImportFileList(id, FileConstants.PoApprovePathType, request.Files);
+                    }
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -448,7 +462,10 @@ namespace MuetongWeb.Services
             try
             {
                 var details = await _prRepositories.SearchAsync(request);
-                var response = new PoIndexPrResponse(details);
+                var ids = details.Select(x => x.Pr.Id).ToList();
+                var files = await _fileServices.GetFilesListAsync(ids, FileConstants.PrPathType);
+                var prapprovefiles = await _fileServices.GetFilesListAsync(ids, FileConstants.PrApprovePathType);
+                var response = new PoIndexPrResponse(details, files, prapprovefiles);
                 return response;
             }
             catch (Exception ex)

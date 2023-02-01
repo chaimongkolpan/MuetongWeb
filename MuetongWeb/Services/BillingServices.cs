@@ -275,7 +275,9 @@ namespace MuetongWeb.Services
                 List<long> ids = bills.Where(bill => bill.PoBillings != null).SelectMany(bill => bill.PoBillings.ToList()).Select(po => po.PoId).ToList();
                 var pobills = await _poRepositories.GetByBilling(ids);
                 var pos = await _poRepositories.SearchBillingAsync(request);
-                var response = new BillingIndexResponse(bills, pos, pobills);
+                List<long> billids = bills.Select(bill => bill.Id).ToList();
+                var files = await _fileServices.GetFilesListAsync(billids, FileConstants.BillingPathType);
+                var response = new BillingIndexResponse(bills, pos, pobills, files);
                 return response;
             }
             catch (Exception ex)

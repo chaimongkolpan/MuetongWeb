@@ -1,6 +1,7 @@
 ﻿var products = [];
 var stores = [];
 var poColl = {};
+var selectedPo = {};
 var prOther = {
     pricePerUnit: 0,
     discount: 0,
@@ -790,11 +791,17 @@ $('#edit_btn').click(function () {
 $('#approve_btn').click(function () {
     var id = $('#approve_id').val();
     var approveUrl = baseUrl + 'approve/' + id;
+    const input = document.getElementById('approve_files');
+    var data = new FormData();
+    for (var i = 0; i < input.files.length; i++) {
+        data.append("Files", input.files[i]);
+    }
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: approveUrl,
         contentType: false,
         processData: false,
+        data: data,
         success: function (result) {
             search();
             $('#ActionConfirm').modal('hide');
@@ -825,8 +832,10 @@ function cancel_po(index, tab) {
 }
 function edit_po(index, tab) {
     if (tab == 1) {
+        selectedPo = poColl.all[index];
         bindDataEdit(poColl.all[index]);
     } else if (tab == 2) {
+        selectedPo = poColl.waiting[index];
         bindDataEdit(poColl.waiting[index]);
     } else {
         $('#EditProjectId').val(0);
@@ -848,6 +857,38 @@ function edit_po(index, tab) {
         $('#edit_po_wht_value').val(3);
         calEditAll();
     }
+}
+
+function showFile() {
+    $('#pr_files_pane').empty();
+    $('#pr_files_pane').append('<div class="file-loading"><input id="pr_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#pr_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: selectedPo.prFilePreviews,
+        initialPreviewConfig: selectedPo.prFiles
+    });
+}
+function showApproveFile() {
+    $('#pr_approve_files_pane').empty();
+    $('#pr_approve_files_pane').append('<div class="file-loading"><input id="pr_approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#pr_approve_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: selectedPo.prApproveFilePreviews,
+        initialPreviewConfig: selectedPo.prApproveFiles
+    });
+}
+function showFilePo() {
+    console.log(selectedPo);
+    $('#po_files_pane').empty();
+    $('#po_files_pane').append('<div class="file-loading"><input id="po_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#po_files').fileinput({
+        language: "th",
+        showUpload: false,
+        initialPreview: selectedPo.filePreviews,
+        initialPreviewConfig: selectedPo.files
+    });
 }
 function bindDataEdit(po) {
     console.log(po);
@@ -931,6 +972,8 @@ function bindDataEdit(po) {
 }
 function approve_po(index) {
     var po = poColl.waiting[index];
+    $('#approve_files').val('');
+    $('#approve_files').fileinput('clear');
     $('#approve_id').val(po.id);
     $('#approve_text').html('ท่านต้องการยืนยันตรวจสอบสั่งซื้อ เลขที่ ' + po.poNo);
 }
@@ -1162,5 +1205,9 @@ $(document).ready(function () {
     bindStore();
     bindReceiveType();
     bindPaymentType();
+    $('#approve_files').fileinput({
+        language: "th",
+        showUpload: false,
+    });
     search();
 });

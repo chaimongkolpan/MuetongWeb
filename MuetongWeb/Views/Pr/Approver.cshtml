@@ -168,7 +168,8 @@
         </div>
         <br>
     </div>
-
+    
+    <input type="hidden" id="edit_id" />
     <!-- The Modal ActionApproveOrder -->
     <div class="modal" id="ActionApproveOrder">
         <div class="modal-dialog modal-fullscreen modal-dialog-centered">
@@ -217,10 +218,7 @@
                         <div class="col"></div>
                         <h6><b>เอกสารอ้างอิงสั่งสินค้า</b></h6>
                         <div class="col-12">
-                            <div class="form-group">
-                                <div class="file-loading">
-                                    <input id="edit_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="true">
-                                </div>
+                            <div class="form-group" id="edit_files_pane">
                             </div>
                         </div>
                         <div class="col-12 p-3" style="overflow-x:auto;">
@@ -240,21 +238,15 @@
                                 </tbody>
                             </table>
                         </div>
-                        <h6><b>เอกสารอ้างอิงตรวจสอบสั่งสินค้า</b></h6>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <div class="file-loading">
-                                    <input id="edit-_approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <!--
                     <button type="button" class="btn btn-success" id="edit_pr_btn">บันทึก</button>
+                    -->
                 </div>
             </div>
         </div>
@@ -273,8 +265,16 @@
                 </div>
 
                 <!-- Modal body -->
-                <div class="modal-body" id="pr_approve_text">
-                    ท่านต้องการยืนยันตรวจสอบสั่งสินค้า เลขที่
+                <div class="modal-body">
+                    <h6><b id="pr_approve_text"></b></h6><br/>
+                    <h6><b>เอกสารอ้างอิงตรวจสอบสั่งสินค้า</b></h6>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="file-loading">
+                                <input id="edit_approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Modal footer -->
