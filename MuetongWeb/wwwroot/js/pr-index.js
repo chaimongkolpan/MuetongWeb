@@ -590,6 +590,9 @@ function edit_pr(id) {
             $('#edit_files').fileinput({
                 language: "th",
                 showUpload: false,
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                overwriteInitial: false,
+                initialPreviewAsData: true,
                 initialPreview: result.filePreviews,
                 initialPreviewConfig: result.files
             });

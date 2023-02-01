@@ -620,6 +620,9 @@ function edit(i, tab) {
     $('#edit_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: bill.filePreviews,
         initialPreviewConfig: bill.files
     });

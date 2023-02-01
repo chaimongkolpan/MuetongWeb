@@ -725,6 +725,9 @@ function showFileAdd(i) {
     $('#pr_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: pr.filePreviews,
         initialPreviewConfig: pr.files
     });
@@ -737,6 +740,9 @@ function showApproveFileAdd(i) {
     $('#pr_approve_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: pr.approveFilePreviews,
         initialPreviewConfig: pr.approveFiles
     });
@@ -749,6 +755,9 @@ function showFileEdit(i) {
     $('#pr_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: pr.filePreviews,
         initialPreviewConfig: pr.files
     });
@@ -761,6 +770,9 @@ function showApproveFileEdit(i) {
     $('#pr_approve_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: pr.approveFilePreviews,
         initialPreviewConfig: pr.approveFiles
     });
@@ -1702,6 +1714,9 @@ function bindDataEdit(po) {
     $('#edit_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: po.filePreviews,
         initialPreviewConfig: po.files
     });
