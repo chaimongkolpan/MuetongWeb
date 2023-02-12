@@ -865,6 +865,9 @@ function showFile() {
     $('#pr_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: selectedPo.prFilePreviews,
         initialPreviewConfig: selectedPo.prFiles
     });
@@ -875,6 +878,9 @@ function showApproveFile() {
     $('#pr_approve_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: selectedPo.prApproveFilePreviews,
         initialPreviewConfig: selectedPo.prApproveFiles
     });
@@ -886,6 +892,9 @@ function showFilePo() {
     $('#po_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: selectedPo.filePreviews,
         initialPreviewConfig: selectedPo.files
     });

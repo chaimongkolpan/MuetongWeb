@@ -122,7 +122,7 @@ function showEdit(id) {
     .done(function(response) {
         $('#edit-id').val(response.id);
         $('#edit-name').val(response.name);
-        $('#edit-url').val(response.url);
+        $('#edit-url').val(response.homePageUrl);
         $("input[id^='" + _prefix + "']").prop('checked', false);
         if (response.permissions != null) {
             for (var permission of response.permissions) {

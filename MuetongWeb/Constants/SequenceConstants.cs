@@ -5,7 +5,7 @@
         public static string PoNoBuilder(int year, int month, short seq)
         {
             year -= 2000;if (year > 100) year -= 500;
-            return string.Format("PO{0:00}{1:00}-{2:00000}", year, month, seq);
+            return string.Format("PO{0:00}{1:00}-{2:000}", year, month, seq);
         }
         public static string GetPoNoByMonth(int m)
         {

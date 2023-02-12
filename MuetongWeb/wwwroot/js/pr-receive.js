@@ -280,6 +280,9 @@ function bindReceiveDataDetail(pr, j) {
     $('#receive_files').fileinput({
         language: "th",
         showUpload: false,
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
         initialPreview: detail.filePreviews,
         initialPreviewConfig: detail.files
     });
