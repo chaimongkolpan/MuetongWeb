@@ -529,6 +529,23 @@ namespace MuetongWeb.Services
             var response = new TypeSettingConstantResponse(credits, payments);
             return response;
         }
+        public async Task<FileModalResponse> GetFiles(long id, string type)
+        {
+            try
+            {
+                var files = await _fileServices.GetFilesAsync(id, type);
+                if (files.Any())
+                {
+                    return new FileModalResponse(files);
+                }
+                return new FileModalResponse();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PoServices => GetFiles: " + ex.Message);
+                return new FileModalResponse();
+            }
+        }
         #endregion
         #region Private function
         public async Task<string> GetPoNo()

@@ -370,6 +370,23 @@ namespace MuetongWeb.Services
             }
             return response;
         }
+        public async Task<FileModalResponse> GetFiles(long id, string type)
+        {
+            try
+            {
+                var files = await _fileServices.GetFilesAsync(id, type);
+                if(files.Any())
+                {
+                    return new FileModalResponse(files);
+                }
+                return new FileModalResponse();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrServices => GetFiles: " + ex.Message);
+                return new FileModalResponse();
+            }
+        }
         #endregion
         #region Receive
         public async Task<PrReceiveResponse> ReceiveSearchAsync(PrReceiveSearchRequest request)

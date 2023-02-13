@@ -150,6 +150,39 @@ function checkEditStatus(status) {
         return true;
     return false;
 }
+function showRefFiles(id, type, text) {
+    $('#show_files').val('');
+    $('#show_files').fileinput('clear');
+    $('#show_file_text').html(text);
+    var fileUrl = baseUrl + 'files/' + id + '/' + type;
+    $.ajax({
+        type: "GET",
+        url: fileUrl,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            $('#show_file_pane').empty();
+            $('#show_file_pane').append('<div class="file-loading"><input id="show_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
+            $('#show_files').fileinput({
+                language: "th",
+                showUpload: false,
+                showRemove: false,
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+                initialPreview: result.filePreviews,
+                initialPreviewConfig: result.files
+            });
+            $('#show_file_pane .kv-file-remove').hide();
+        },
+        error: function (xhr, status, p3, p4) {
+            var err = "Error " + " " + status + " " + p3 + " " + p4;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).Message;
+            console.log(err);
+        }
+    });
+}
 function createTable() {
     console.log(prColl);
     $('#all_table').empty();
@@ -181,7 +214,9 @@ function createTable() {
                 html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
             }
             html += '<td ' + rowspan + '>' + pr.requesterName + '</td>';
+            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + pr.id + ',\'pr\',\'เอกสารอ้างอิงสั่งสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             html += '<td ' + rowspan + '>' + pr.approverName + '</td>';
+            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + pr.id + ',\'prapprove\',\'เอกสารอ้างอิงตรวจสอบสั่งสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = pr.details[0];
                 html += '<td>1</td>';
@@ -193,6 +228,7 @@ function createTable() {
                 html += '<td>' + detail.code + '</td>';
                 html += '<td>' + detail.remark + '</td>';
                 html += '<td>' + detail.status + '</td>';
+                html += '<td><span class="material-symbols-outlined" onclick="showRefFiles(' + detail.id + ',\'prreceive\',\'เอกสารอ้างอิงรับสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
                 html += '</tr>';
                 for (var j = 1; j < len; j++) {
                     var detail = pr.details[j];
@@ -206,11 +242,12 @@ function createTable() {
                     html += '<td>' + detail.code + '</td>';
                     html += '<td>' + detail.remark + '</td>';
                     html += '<td>' + detail.status + '</td>';
+                    html += '<td><span class="material-symbols-outlined" onclick="showRefFiles(' + detail.id + ',\'prreceive\',\'เอกสารอ้างอิงรับสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
                     html += '</tr>';
                 }
 
             } else {
-                html += '<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>';
+                html += '<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>';
                 html += '</tr>';
             }
         }

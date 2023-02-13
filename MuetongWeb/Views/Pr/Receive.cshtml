@@ -62,7 +62,7 @@
                             <th scope="col">ดำเนินการ</th>
                             <th scope="col">โครงการ</th>
                             <th scope="col">เลขที่ PR</th>
-                                <th scope="col">วันที่สั่งสินค้า</th>
+                            <th scope="col">วันที่สั่งสินค้า</th>
                             <th scope="col">ผู้รับเหมา</th>
                             <th scope="col">หักผู้รับเหมา</th>
                             <th scope="col">ผู้ขอจัดซื้อ</th>
@@ -74,6 +74,7 @@
                             <th scope="col">จุดประสงค์</th>
                             <th scope="col">หมายเหตุสินค้า</th>
                             <th scope="col">สถานะสินค้า</th>
+                            <th scope="col">เอกสารอ้างอิงรับสินค้า</th>
                         </tr>
                     </thead>
                     <tbody id="all_table">
@@ -227,6 +228,40 @@
             </div>
         </div>
     </div>
+    
+    <!-- The Modal RefShowFile-->
+    <div class="modal" id="RefShowFile">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="show_file_text">เอกสารอ้างอิง</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group" id="show_file_pane">
+                                <div class="file-loading">
+                                    <input id="show_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
 </div>
 
 <script>

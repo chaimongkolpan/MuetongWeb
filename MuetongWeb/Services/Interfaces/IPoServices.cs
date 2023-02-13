@@ -22,6 +22,7 @@ namespace MuetongWeb.Services.Interfaces
         Task<StoreCollectionResponse> GetStore();
         Task<ReceiveSettingConstantResponse> GetReceive();
         Task<TypeSettingConstantResponse> GetTypeAsync();
+        Task<FileModalResponse> GetFiles(long id, string type);
         Task<string> GetPoNo();
     }
 }

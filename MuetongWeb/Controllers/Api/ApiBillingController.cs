@@ -283,5 +283,20 @@ namespace MuetongWeb.Controllers.Api
                 return BadRequest(ex.Message);
             }
         }
+        [Route("Files/{id}/{type}")]
+        [HttpGet]
+        public async Task<IActionResult> GetFiles(long id, string type)
+        {
+            try
+            {
+                var response = await _billingServices.GetFiles(id, type);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiBillingController => GetFiles: " + ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
