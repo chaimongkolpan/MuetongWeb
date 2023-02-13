@@ -39,10 +39,13 @@ function bindFilter(projectId) {
             $('#PrNo').append('<option selected>ทั้งหมด</option>');
         });
 }
-function createReceiveTable(receives, all) {
+function createReceiveTable(receives, all, tab) {
     var html = '';
     html += '<tr>';
-    html += '<td colspan="8">';
+    if (tab == 1)
+        html += '<td colspan="9">';
+    else
+        html += '<td colspan="8">';
     html += '<table class="table table-hover align-middle">';
     html += '<thead>';
     html += '<tr>';
@@ -78,6 +81,39 @@ function createReceiveTable(receives, all) {
         remain: (all - sum)
     };
 }
+function showRefFiles(id, type, text) {
+    $('#show_files').val('');
+    $('#show_files').fileinput('clear');
+    $('#show_file_text').html(text);
+    var fileUrl = baseUrl + 'files/' + id + '/' + type;
+    $.ajax({
+        type: "GET",
+        url: fileUrl,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            $('#show_file_pane').empty();
+            $('#show_file_pane').append('<div class="file-loading"><input id="show_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
+            $('#show_files').fileinput({
+                language: "th",
+                showUpload: false,
+                showRemove: false,
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+                initialPreview: result.filePreviews,
+                initialPreviewConfig: result.files
+            });
+            $('#show_file_pane .kv-file-remove').hide();
+        },
+        error: function (xhr, status, p3, p4) {
+            var err = "Error " + " " + status + " " + p3 + " " + p4;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).Message;
+            console.log(err);
+        }
+    });
+}
 function createRowExpand(pr, tab, i) {
     var html = '';
     if (pr.details.length > 0) {
@@ -89,7 +125,7 @@ function createRowExpand(pr, tab, i) {
                 rowspan = 'rowspan="' + len + '"';
             }
             var rece = {};
-            if (detail.receives.length > 0) rece = createReceiveTable(detail.receives, detail.quantity);
+            if (detail.receives.length > 0) rece = createReceiveTable(detail.receives, detail.quantity, tab);
             if (tab == 1 || (tab == 2 && rece.remain != 0)) {
                 html += '<tr>';
                 var num = 0;
@@ -123,6 +159,8 @@ function createRowExpand(pr, tab, i) {
                 html += '<td>' + detail.code + '</td>';
                 html += '<td>' + detail.remark + '</td>';
                 html += '<td>' + detail.status + '</td>';
+                if(tab == 1)
+                    html += '<td><span class="material-symbols-outlined" onclick="showRefFiles(' + detail.id + ',\'prreceive\',\'เอกสารอ้างอิงรับสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
                 html += '</tr>';
                 if (detail.receives.length > 0) html += rece.html;
             }
@@ -138,7 +176,7 @@ function createRowGroup(pr, tab, i) {
         rowspan = 'rowspan="' + len + '"';
     }
     var rece = {};
-    if (detail.receives.length > 0) rece = createReceiveTable(detail.receives, detail.quantity);
+    if (detail.receives.length > 0) rece = createReceiveTable(detail.receives, detail.quantity, tab);
     html += '<tr>';
     html += '<td ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
     if (detail.receives.length > 0 && rece.remain == 0)
@@ -167,7 +205,7 @@ function createRowGroup(pr, tab, i) {
         html += '<td>' + detail.remark + '</td>';
         html += '<td>' + detail.status + '</td>';
         html += '</tr>';
-        if (detail.receives.length > 0) html += createReceiveTable(detail.receives, detail.quantity);
+        if (detail.receives.length > 0) html += createReceiveTable(detail.receives, detail.quantity, tab);
         for (var j = 1; j < pr.details.length; j++) {
             var detail = pr.details[j];
             html += '<tr>';
@@ -181,7 +219,7 @@ function createRowGroup(pr, tab, i) {
             html += '<td>' + detail.remark + '</td>';
             html += '<td>' + detail.status + '</td>';
             html += '</tr>';
-            if (detail.receives.length > 0) html += createReceiveTable(detail.receives, detail.quantity);
+            if (detail.receives.length > 0) html += createReceiveTable(detail.receives, detail.quantity, tab);
         }
     } else {
         html += '<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>';

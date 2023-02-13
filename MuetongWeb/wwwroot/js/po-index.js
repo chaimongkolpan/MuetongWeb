@@ -49,6 +49,39 @@ $('#ProjectId').change(function () {
     $('#PoNo').val('ทั้งหมด');
     $('#RequesterId').val(0);
 });
+function showRefFiles(id, type, text) {
+    $('#show_files').val('');
+    $('#show_files').fileinput('clear');
+    $('#show_file_text').html(text);
+    var fileUrl = baseUrl + 'files/' + id + '/' + type;
+    $.ajax({
+        type: "GET",
+        url: fileUrl,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            $('#show_file_pane').empty();
+            $('#show_file_pane').append('<div class="file-loading"><input id="show_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
+            $('#show_files').fileinput({
+                language: "th",
+                showUpload: false,
+                showRemove: false,
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+                initialPreview: result.filePreviews,
+                initialPreviewConfig: result.files
+            });
+            $('#show_file_pane .kv-file-remove').hide();
+        },
+        error: function (xhr, status, p3, p4) {
+            var err = "Error " + " " + status + " " + p3 + " " + p4;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).Message;
+            console.log(err);
+        }
+    });
+}
 function createTable() {
     console.log(poColl);
     $('#all_table').empty();
@@ -90,7 +123,9 @@ function createTable() {
             html += '<td class="bgpo" ' + rowspan + '>' + po.receiptReceiveType + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + dateFormat(po.planTransferDate) + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.requesterName + '</td>';
+            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + po.id + ',\'po\',\'เอกสารอ้างอิงสั่งซื้อ\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.approverName + '</td>';
+            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + po.id + ',\'poapprove\',\'เอกสารอ้างอิงตรวจสอบสั่งซื้อ\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = po.details[0];
                 html += '<td class="bgpr">' + detail.projectName + '</td>';

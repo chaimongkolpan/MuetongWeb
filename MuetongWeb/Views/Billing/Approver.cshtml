@@ -131,12 +131,14 @@
                             <th class="bgpc" scope="col">จำนวนเงิน</th>
                             <th class="bgpc" scope="col">ค่าใช้จ่ายเพิ่มเติม</th>
                             <th class="bgpc" scope="col">สถานะการชำระเงิน</th>
-                                    <th class="bgpc" scope="col">สถานะใบเสร็จรับเงิน</th>
+                            <th class="bgpc" scope="col">สถานะใบเสร็จรับเงิน</th>
                             <th class="bgpc" scope="col">เลขที่ใบเสร็จรับเงิน</th>
-                                    <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
-                                    <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
+                            <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
+                            <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
                             <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงวางบิล</th>
                             <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงตรวจสอบวางบิล</th>
                             <th class="bgpc" scope="col">สถานะวางบิล</th>
                             <th class="bgpo" scope="col">เลขที่ P0</th>
                             <th class="bgpo" scope="col">ผู้จำหน่าย</th>
@@ -499,6 +501,39 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                     <button type="button" class="btn btn-danger" id="read_btn">ตกลง</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
+    <!-- The Modal RefShowFile-->
+    <div class="modal" id="RefShowFile">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="show_file_text">เอกสารอ้างอิง</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group" id="show_file_pane">
+                                <div class="file-loading">
+                                    <input id="show_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                 </div>
 
             </div>

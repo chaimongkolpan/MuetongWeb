@@ -23,5 +23,6 @@ namespace MuetongWeb.Services.Interfaces
         Task<bool> ReadAsync(long id);
         Task<bool> CancelAsync(long id, BillingCancelRequest request);
         Task<BillPaymentResponse> GetPaymentByBill(long id);
+        Task<FileModalResponse> GetFiles(long id, string type);
     }
 }

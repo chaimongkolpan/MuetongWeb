@@ -84,6 +84,8 @@
             </a>
         </li>
     </ul>
+
+    <!-- Tab panes -->
     <div class="tab-content">
         <!-- Tab panes All -->
         <div id="All" class="container-fluid tab-pane active">
@@ -112,7 +114,9 @@
                             <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
                             <th class="bgpo" scope="col">แพลนของเข้า</th>
                             <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">เอกสารอ้างอิงสั่งซื้อ</th>
                             <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                            <th class="bgpo" scope="col">เอกสารอ้างอิงตรวจสอบสั่งซื้อ</th>
                             <th class="bgpr" scope="col">โครงการ</th>
                             <th class="bgpr" scope="col">เลขที่ PR</th>
                             <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
@@ -1068,6 +1072,40 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                     <button type="button" class="btn btn-danger" id="read_po_btn">ตกลง</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
+    
+    <!-- The Modal RefShowFile-->
+    <div class="modal" id="RefShowFile">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="show_file_text">เอกสารอ้างอิง</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group" id="show_file_pane">
+                                <div class="file-loading">
+                                    <input id="show_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                 </div>
 
             </div>

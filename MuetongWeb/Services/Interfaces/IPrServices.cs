@@ -22,6 +22,7 @@ namespace MuetongWeb.Services.Interfaces
         Task<List<ContractorResponse>> GetContractorByProject(long projectId);
         Task<List<ProductResponse>> GetProduct();
         Task<List<ProjectCodeResponse>> GetProjectCode(long projectId);
+        Task<FileModalResponse> GetFiles(long id, string type);
 
         Task<PrReceiveResponse> ReceiveSearchAsync(PrReceiveSearchRequest request);
         Task<bool> ReceiveListAsync(PrReceiveAddRequest request);
