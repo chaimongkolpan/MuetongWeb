@@ -24,22 +24,20 @@ namespace MuetongWeb.Models.Responses
                     if (!tmp.IsReadCancel)
                     {
                         UnreadCancelCount++;
-                        Cancel.Add(tmp);
                     }
                     else
-                    {
                         All.Add(tmp);
-                    }
+                    Cancel.Add(tmp);
                 }
                 else if (status == StatusConstants.PrWaitingApprove)
                 {
                     WaitingCount++;
                     Waiting.Add(tmp);
-                }
-                else
-                {
                     All.Add(tmp);
                 }
+                else
+                    All.Add(tmp);
+                
             }
         }
     }

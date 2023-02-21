@@ -132,6 +132,6 @@ else
 var model = @Html.Raw(JsonConvert.SerializeObject(Model));
 var currentPage = 1;
 var baseUrl = @Html.Raw("\'" + Url.Action("Index", "Home") + "\'");
-baseUrl = baseUrl + (baseUrl == '/' ? 'product/' : 'product/');
+baseUrl = baseUrl + (baseUrl == '/' ? 'product/' : '/product/');
 </script>
 <script type="text/javascript" src="~/js/product.js"></script>

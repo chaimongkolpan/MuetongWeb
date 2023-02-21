@@ -424,7 +424,7 @@ namespace MuetongWeb.Services
                             Quantity = detail.Quantity,
                             Remark = detail.Remark,
                             UserId = request.User.Id,
-                            CreateDate = now
+                            CreateDate = detail.CreateDate.HasValue ? detail.CreateDate.Value : now
                         };
                         ids.Add(detail.DetailId);
                         prReceives.Add(tmp);
@@ -454,19 +454,83 @@ namespace MuetongWeb.Services
                     Quantity = request.Quantity,
                     Remark = request.Remark,
                     UserId = request.User.Id,
-                    CreateDate = DateTime.Now
+                    CreateDate = request.CreateDate.HasValue ? request.CreateDate.Value : DateTime.Now
                 };
                 await _prRepositories.AddReceiveAsync(tmp);
                 if (request.Files != null && request.Files.Any())
                 {
                     await _fileServices.ImportFileList(request.DetailId, FileConstants.PrReceivePathType, request.Files);
                 }
-                await _prRepositories.CheckReceive(new List<long>() { request.DetailId });
+                //await _prRepositories.CheckReceive(new List<long>() { request.DetailId });
                 return true;
             }
             catch (Exception ex)
             {
                 _logger.LogError("PrServices => ReceiveAsync: " + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> UpdateReceiveAsync(long receiveId, PrReceiveDetailRequest request)
+        {
+            try
+            {
+                if (request == null)
+                    return false;
+                var tmp = await _prRepositories.GetReceiveAsync(receiveId);
+                if (tmp == null)
+                {
+                    await _prRepositories.AddReceiveAsync(new PrReceive()
+                    {
+                        PrDetailId = request.DetailId,
+                        Quantity = request.Quantity,
+                        Remark = request.Remark,
+                        UserId = request.User.Id,
+                        CreateDate = request.CreateDate.HasValue ? request.CreateDate.Value : DateTime.Now
+                    });
+                }
+                else
+                {
+                    tmp.Quantity= request.Quantity;
+                    tmp.Remark= request.Remark;
+                    tmp.UserId = request.User.Id;
+                    tmp.CreateDate = request.CreateDate.HasValue ? request.CreateDate.Value : DateTime.Now;
+                    await _prRepositories.UpdateReceiveAsync(tmp);
+                }
+                if (request.Files != null && request.Files.Any())
+                {
+                    await _fileServices.ImportFileList(request.DetailId, FileConstants.PrReceivePathType, request.Files);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrServices => UpdateReceiveAsync: " + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> ApproveReceiveAsync(long detailId)
+        {
+            try
+            {
+                await _prRepositories.CheckReceive(new List<long>() { detailId });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrServices => ApproveReceiveAsync: " + ex.Message);
+                return false;
+            }
+        }
+        public async Task<bool> DisapproveReceiveAsync(long detailId)
+        {
+            try
+            {
+                await _prRepositories.DisapproveReceive(new List<long>() { detailId });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrServices => DisapproveReceiveAsync: " + ex.Message);
                 return false;
             }
         }

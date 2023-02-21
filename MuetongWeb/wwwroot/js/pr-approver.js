@@ -173,6 +173,7 @@ function showRefFiles(id, type, text) {
                 initialPreview: result.filePreviews,
                 initialPreviewConfig: result.files
             });
+            $('#show_files').prop('disabled', 'disabled');
             $('#show_file_pane .kv-file-remove').hide();
         },
         error: function (xhr, status, p3, p4) {
@@ -492,7 +493,7 @@ function edit_pr(id) {
             projectCodes = [];
             bindContractorEdit(result.projectId);
 
-            $('#edit_files_pane').append('<div class="file-loading"><input id="edit_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+            $('#edit_files_pane').append('<div class="file-loading"><input id="edit_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
             $('#edit_files').fileinput({
                 language: "th",
                 showUpload: false,
@@ -502,7 +503,7 @@ function edit_pr(id) {
                 initialPreview: result.filePreviews,
                 initialPreviewConfig: result.files
             });
-
+            $('#edit_files').prop('disabled', 'disabled');
             $('#edit_id').val(id);
             $('#edit_project').val(result.projectId);
             $('#edit_detail_pane').hide();
@@ -713,6 +714,9 @@ $(document).ready(function () {
     $('#edit_approve_files').fileinput({
         language: "th",
         showUpload: false,
+    });
+    $('#edit_approve_files').on('fileselect', function (event, numFiles, label) {
+        $('.kv-file-upload').hide();
     });
 
     bindFilter(0)

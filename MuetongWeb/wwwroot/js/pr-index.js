@@ -3,40 +3,48 @@ var edit_detail = [];
 var products = [];
 var projectCodes = [];
 var prColl = {};
+var prnoChoice = null;
+var requesterChoice = null;
 function bindFilter(projectId) {
     var requesterUrl = baseUrl + 'requester/' + projectId;
     var jqxhr = $.get(requesterUrl)
     .done(function (response) {
         console.log(response);
-        $('#RequesterId').empty();
-        $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+        var html = '<select id="RequesterId" name="RequesterId">';
+        html += '<option value="0" selected>ทั้งหมด</option>';
         for (var i in response) {
             var item = response[i];
-            var html = '<option value="' + item.id + '">' + item.fullname + '</option>';
-            $('#RequesterId').append(html);
+            html += '<option value="' + item.id + '">' + item.fullname + '</option>';
         }
+        html += '</select>';
+        dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
     })
     .fail(function (response) {
         console.log(response);
-        $('#RequesterId').empty();
-        $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+        var html = '<select id="RequesterId" name="RequesterId">';
+        html += '<option value="0" selected>ทั้งหมด</option>';
+        html += '</select>';
+        dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
     });
     var prnoUrl = baseUrl + 'prno/' + projectId;
     var jqxhr = $.get(prnoUrl)
     .done(function (response) {
         console.log(response);
-        $('#PrNo').empty();
-        $('#PrNo').append('<option selected>ทั้งหมด</option>');
+        var html = '<select id="PrNo" name="PrNo">';
+        html += '<option selected>ทั้งหมด</option>';
         for (var i in response) {
             var item = response[i];
-            var html = '<option>' + item + '</option>';
-            $('#PrNo').append(html);
+            html += '<option>' + item + '</option>';
         }
+        html += '</select>';
+        dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
     })
     .fail(function (response) {
         console.log(response);
-        $('#PrNo').empty();
-        $('#PrNo').append('<option selected>ทั้งหมด</option>');
+        var html = '<select id="PrNo" name="PrNo">';
+        html += '<option selected>ทั้งหมด</option>';
+        html += '</select>';
+        dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
     });
 }
 function bindContractor(projectId) {
@@ -138,11 +146,21 @@ function bindProduct() {
             $('#add_detail_product').append(html);
             $('#edit_detail_product').append(html);
         }
+        createAutocomplete('add_detail_product');
+        createAutocomplete('edit_detail_product');
     })
     .fail(function (response) {
         console.log(response);
     });
 }
+$('#add_detail_product').change(function () {
+    var product = products.find(x => x.id == $('#add_detail_product').val());
+    $('#add_detail_unit').text(product.unit);
+});
+$('#edit_detail_product').change(function () {
+    var product = products.find(x => x.id == $('#edit_detail_product').val());
+    $('#edit_detail_unit').text(product.unit);
+});
 $('#ProjectId').change(function () {
     bindFilter($('#ProjectId').val());
     $('#PrNo').val('ทั้งหมด');
@@ -176,6 +194,7 @@ function showRefFiles(id, type, text) {
                 initialPreview: result.filePreviews,
                 initialPreviewConfig: result.files
             });
+            $('#show_files').prop('disabled', 'disabled');
             $('#show_file_pane .kv-file-remove').hide();
         },
         error: function (xhr, status, p3, p4) {
@@ -511,6 +530,8 @@ $('#add_advance_pay').change(function () {
 });
 $('#show_add_btn').click(function () {
     $('#add_detail_quantity').val('');
+    var product = products.find(x => x.id == $('#add_detail_product').val());
+    $('#add_detail_unit').text(product.unit);
     $('#add_detail_usedate').val(null);
     $('#add_detail_remark').val('');
     $('#add_detail_btn').show();
@@ -604,6 +625,8 @@ $('#edit_advance_pay').change(function () {
 });
 $('#show_edit_btn').click(function () {
     $('#edit_detail_quantity').val('');
+    var product = products.find(x => x.id == $('#edit_detail_product').val());
+    $('#edit_detail_unit').text(product.unit);
     $('#edit_detail_usedate').val(null);
     $('#edit_detail_remark').val('');
     $('#edit_detail_btn').show();
@@ -803,13 +826,20 @@ $('#read_pr_btn').click(function () {
         }
     });
 });
+
 $(document).ready(function () {
     console.log('ready', model);
     bindFilter(0)
     bindProduct();
+    createAutocomplete('ProjectId');
+    createAutocomplete('add_project');
+    createAutocomplete('edit_project');
     $('#add_files').fileinput({
         language: "th",
-        showUpload: false,
+        showUpload: false
+    });
+    $('#add_files').on('fileselect', function (event, numFiles, label) {
+        $('.kv-file-upload').hide();
     });
     search();
 });

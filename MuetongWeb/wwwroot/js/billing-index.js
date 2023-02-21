@@ -626,6 +626,9 @@ function edit(i, tab) {
         initialPreview: bill.filePreviews,
         initialPreviewConfig: bill.files
     });
+    $('#edit_files').on('fileselect', function (event, numFiles, label) {
+        $('.kv-file-upload').hide();
+    });
     var storeUrl = baseUrl + 'payment/' + bill.id;
     $('#edit_extra_type').empty();
     $('#edit_payment_account').empty();
@@ -1070,6 +1073,7 @@ function showRefFiles(id, type, text) {
                 initialPreview: result.filePreviews,
                 initialPreviewConfig: result.files
             });
+            $('#show_files').prop('disabled', 'disabled');
             $('#show_file_pane .kv-file-remove').hide();
         },
         error: function (xhr, status, p3, p4) {
@@ -1322,5 +1326,12 @@ $(document).ready(function () {
     console.log('ready', model);
     bindFilter(0)
     bindStore();
+    $('#billing_files').fileinput({
+        language: "th",
+        showUpload: false
+    });
+    $('#billing_files').on('fileselect', function (event, numFiles, label) {
+        $('.kv-file-upload').hide();
+    });
     search();
 });

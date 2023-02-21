@@ -27,5 +27,8 @@ namespace MuetongWeb.Services.Interfaces
         Task<PrReceiveResponse> ReceiveSearchAsync(PrReceiveSearchRequest request);
         Task<bool> ReceiveListAsync(PrReceiveAddRequest request);
         Task<bool> ReceiveAsync(PrReceiveDetailRequest request);
+        Task<bool> UpdateReceiveAsync(long receiveId, PrReceiveDetailRequest request);
+        Task<bool> ApproveReceiveAsync(long detailId);
+        Task<bool> DisapproveReceiveAsync(long detailId);
     }
 }

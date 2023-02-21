@@ -7,7 +7,7 @@
         <div class="col">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="ProjectId"><b>ชื่อโครงการ</b></label>
-                <select class="form-select" id="ProjectId" name="ProjectId">
+                <select id="ProjectId" name="ProjectId" autocomplete="off">
                     <option value="0" selected>ทั้งหมด</option>
                     @if (Model != null)
                     {
@@ -20,17 +20,17 @@
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="PrNoPane">
                 <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
-                <select class="form-select" id="PrNo" name="PrNo">
+                <select id="PrNo" name="PrNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="RequesterPane">
                 <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
-                <select class="form-select" id="RequesterId" name="RequesterId">
+                <select id="RequesterId" name="RequesterId">
                     <option value="0" selected>ทั้งหมด</option>
                 </select>
             </div>
@@ -195,7 +195,7 @@
                         <div class="col">
                             <div class="input-group mb-3">
                                 <label class="input-group-text" for="add_project">ชื่อโครงการ</label>
-                                <select class="form-select" id="add_project">
+                                <select id="add_project">
                                     @if (Model != null)
                                     {
                                         @foreach (var item in Model.Projects)
@@ -263,7 +263,7 @@
                                         <div class="col">
                                             <div class="input-group mb-3">
                                                 <label class="input-group-text" for="add_detail_product">รายการสินค้า</label>
-                                                <select class="form-select" id="add_detail_product">
+                                                <select class="productAutoComplete" id="add_detail_product">
                                                 </select>
                                             </div>
                                         </div>
@@ -271,7 +271,7 @@
                                             <div class="input-group mb-3">
                                                 <span class="input-group-text" for="add_detail_quantity">จำนวน</span>
                                                 <input type="text" class="form-control" id="add_detail_quantity" aria-describedby="basic-addon1">
-                                                <span class="input-group-text" id="basic-addon1">หน่วย</span>
+                                                <span class="input-group-text" id="add_detail_unit">หน่วย</span>
                                             </div>
                                         </div>
                                         <div class="col">
@@ -332,7 +332,7 @@
                         <div class="col">
                             <div class="input-group mb-3">
                                 <label class="input-group-text" for="edit_project">ชื่อโครงการ</label>
-                                <select class="form-select" id="edit_project">
+                                <select id="edit_project">
                                     @if (Model != null)
                                     {
                                         @foreach (var item in Model.Projects)
@@ -356,7 +356,7 @@
                                 </div>
                                 <span class="input-group-text" id="basic-addon1">หักผู้รับเหมา</span>
                                 <span class="input-group-text" for="ProjectName">ผู้รับเหมา</span>
-                                <select class="form-select" id="edit_contractor">
+                                <select class="form-select"  id="edit_contractor">
                                 </select>
                             </div>
                         </div>
@@ -397,7 +397,7 @@
                                         <div class="col">
                                             <div class="input-group mb-3">
                                                 <label class="input-group-text" for="edit_detail_product">รายการสินค้า</label>
-                                                <select class="form-select" id="edit_detail_product">
+                                                <select id="edit_detail_product">
                                                 </select>
                                             </div>
                                         </div>
@@ -405,7 +405,7 @@
                                             <div class="input-group mb-3">
                                                 <span class="input-group-text" id="basic-addon1">จำนวน</span>
                                                 <input type="text" class="form-control" id="edit_detail_quantity" aria-describedby="basic-addon1">
-                                                <span class="input-group-text" id="basic-addon1">หน่วย</span>
+                                                <span class="input-group-text" id="edit_detail_unit">หน่วย</span>
                                             </div>
                                         </div>
                                         <div class="col">
