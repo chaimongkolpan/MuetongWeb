@@ -38,6 +38,8 @@ namespace MuetongWeb.Models.Responses
                     {
                         UnreadCancelCount++;
                     }
+                    else
+                        All.Add(tmp);
                     Cancel.Add(tmp);
                 }
                 else if (status == StatusConstants.BillingWaitingApprove)

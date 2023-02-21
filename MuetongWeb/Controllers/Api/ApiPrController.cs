@@ -317,6 +317,73 @@ namespace MuetongWeb.Controllers.Api
                 return BadRequest(ex.Message);
             }
         }
+        [Route("ApproveReceive/{prDetailId}")]
+        [HttpGet]
+        public async Task<IActionResult> PrApproveReceiveAsync(long prDetailId)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        var response = await _prServices.ApproveReceiveAsync(prDetailId);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrApproveReceiveAsync: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [Route("DisapproveReceive/{prDetailId}")]
+        [HttpGet]
+        public async Task<IActionResult> PrDisapproveReceiveAsync(long prDetailId)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        var response = await _prServices.DisapproveReceiveAsync(prDetailId);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrDisapproveReceiveAsync: " + ex.Message);
+            }
+            return BadRequest();
+        }
+        [Route("UpdateReceive/{receiveId}")]
+        [HttpPost]
+        public async Task<IActionResult> PrUpdateReceiveAsync(long receiveId, PrReceiveDetailRequest request)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        request.User = user;
+                        var response = await _prServices.UpdateReceiveAsync(receiveId, request);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrReceiveAsync: " + ex.Message);
+            }
+            return BadRequest();
+        }
         [Route("Receive")]
         [HttpPost]
         public async Task<IActionResult> PrReceiveAsync(PrReceiveDetailRequest request)

@@ -32,7 +32,7 @@ namespace MuetongWeb.Models.Responses
                 var tmp = new ReceivePrResponse(pr, prfiles);
                 if (pr.PrDetails.Any(detail => detail.Status == StatusConstants.PrWaitingTransfer))
                 {
-                    WaitingCount++;
+                    WaitingCount += pr.PrDetails.Count(detail => detail.Status == StatusConstants.PrWaitingTransfer);
                     Waiting.Add(tmp);
                 }
                 All.Add(tmp);
@@ -174,6 +174,7 @@ namespace MuetongWeb.Models.Responses
     }
     public class ReceiveResponse
     {
+        public long Id { get; set; }
         public decimal Quantity { get; set; } = 0;
         public DateTime CreateDate { get; set; }
         public string ReceiverName { get; set; } = string.Empty;
@@ -181,6 +182,7 @@ namespace MuetongWeb.Models.Responses
         public ReceiveResponse() { }
         public ReceiveResponse(PrReceive receive) 
         {
+            Id = receive.Id;
             Quantity = receive.Quantity;
             CreateDate = receive.CreateDate;
             ReceiverName = string.Format("{0} {1}", receive.User.Firstname, receive.User.Lastname);

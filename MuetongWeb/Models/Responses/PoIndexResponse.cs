@@ -33,14 +33,15 @@ namespace MuetongWeb.Models.Responses
                     {
                         UnreadCancelCount++;
                     }
-                    //else
-                    //    All.Add(tmp);
+                    else
+                        All.Add(tmp);
                     Cancel.Add(tmp);
                 }
                 else if (status == StatusConstants.PoWaitingApprove)
                 {
                     WaitingCount++;
                     Waiting.Add(tmp);
+                    All.Add(tmp);
                 }
                 else
                 {
@@ -158,6 +159,7 @@ namespace MuetongWeb.Models.Responses
                 PaymentAccountId = po.PaymentAccountId;
                 PaymentAccountType = po.PaymentAccount.Type;
             }
+            PaymentDate = po.PaymentDate;
             BillingReceiveTypeId = po.BillingReceiveType;
             BillingReceiveType = po.BillingReceiveTypeNavigation?.Name ?? string.Empty;
             ReceiptReceiveTypeId = po.ReceiptReceiveType;
@@ -223,6 +225,7 @@ namespace MuetongWeb.Models.Responses
         public decimal? Vat { get; set; }
         public decimal? Wht { get; set; }
         public decimal? Total { get; set; }
+        public decimal GrandTotal { get; set; } = 0;
         public DateTime? UseDate { get; set; }
         public DateTime? PlanTransferDate { get; set; }
         public string Code { get; set; } = string.Empty;
@@ -269,6 +272,7 @@ namespace MuetongWeb.Models.Responses
             Vat = detail.Vat;
             Wht = detail.Wht;
             Total = detail.Total;
+            GrandTotal = detail.GrandTotal.HasValue ? detail.GrandTotal.Value : 0;
             ProductId = detail.ProductId;
             if (detail.Product != null)
             {

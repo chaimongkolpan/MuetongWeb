@@ -262,7 +262,7 @@ function editCreateDetailList() {
         html += '<td><input type="text" class="form-control" disabled value="' + floatFormat(detail.discount) + '" id="edit_po_detail_discount__' + i + '" aria-describedby="basic-addon1" style="width: 120px;"></td>';
         html += '<td><input type="checkbox" disabled class="custom-control-input" id="edit_po_detail_vat_check__' + i + '"' + (detail.isVat ? 'checked' : '') + '><br /><label class="custom-control-label" id="edit_po_detail_vat_text__' + i + '">' + floatFormat(detail.vat) + '</label></td>';
         html += '<td><input type="checkbox" disabled class="custom-control-input" id="edit_po_detail_wht_check__' + i + '"' + (detail.isWht ? 'checked' : '') + '><br /><label class="custom-control-label" id="edit_po_detail_wht_text__' + i + '">' + floatFormat(detail.wht) + '</label></td>';
-        html += '<td><label class="custom-control-label" id="edit_po_detail_total__' + i + '">' + floatFormat(detail.total) + '</label></td>';
+        html += '<td><label class="custom-control-label" id="edit_po_detail_total__' + i + '">' + floatFormat(detail.grandTotal) + '</label></td>';
         html += '</tr>';
         calEditRecord(i);
     }
@@ -279,7 +279,7 @@ function editCreateDetailList() {
         html += '<td><input type="text" disabled class="form-control" value="' + floatFormat(detail.discount) + '" id="edit_po_detail_discount__' + insertEditDetailList.length + '" aria-describedby="basic-addon1" style="width: 120px;"></td>';
         html += '<td><input type="checkbox" disabled class="custom-control-input" id="edit_po_detail_vat_check__' + insertEditDetailList.length + '"' + (detail.isVat ? 'checked' : '') + '><br /><label class="custom-control-label" id="edit_po_detail_vat_text__' + insertEditDetailList.length + '">' + floatFormat(detail.vat) + '</label></td>';
         html += '<td><input type="checkbox" disabled class="custom-control-input" id="edit_po_detail_wht_check__' + insertEditDetailList.length + '"' + (detail.isWht ? 'checked' : '') + '><br /><label class="custom-control-label" id="edit_po_detail_wht_text__' + insertEditDetailList.length + '">' + floatFormat(detail.wht) + '</label></td>';
-        html += '<td><label class="custom-control-label" id="edit_po_detail_total__' + insertEditDetailList.length + '">' + floatFormat(detail.total) + '</label></td>';
+        html += '<td><label class="custom-control-label" id="edit_po_detail_total__' + insertEditDetailList.length + '">' + floatFormat(detail.grandTotal) + '</label></td>';
         html += '</tr>';
     }
     $('#edit_po_detail_table').append(html);
@@ -421,19 +421,19 @@ function calEditAll() {
     var grandtotal = 0;
     for (var i in insertEditDetailList) {
         var tmp = insertEditDetailList[i];
-        subtotal += tmp.total;
+        subtotal += tmp.total + tmp.discount + tmp.wht - tmp.vat;
         discount += tmp.discount;
         vat += tmp.vat;
         wht += tmp.wht;
-        total += tmp.total - tmp.discount;
-        grandtotal += (tmp.total - tmp.discount) + tmp.vat - tmp.wht;
+        total += tmp.total + tmp.wht;
+        grandtotal += tmp.total;
     }
     if ($('#edit_addition_check').prop('checked')) {
         subtotal += prOtherEdit.pricePerUnit;
         discount += prOtherEdit.discount;
         vat += prOtherEdit.vat;
         wht += prOtherEdit.wht;
-        total += prOtherEdit.pricePerUnit - prOtherEdit.discount;
+        total += prOtherEdit.pricePerUnit - prOtherEdit.discount + prOtherEdit.vat;
         grandtotal += (prOtherEdit.pricePerUnit - prOtherEdit.discount) + prOtherEdit.vat - prOtherEdit.wht;
     }
     $('#edit_po_foot_subtotal').html(floatFormat(subtotal));
@@ -466,6 +466,7 @@ function showRefFiles(id, type, text) {
                 initialPreview: result.filePreviews,
                 initialPreviewConfig: result.files
             });
+            $('#show_files').prop('disabled', 'disabled');
             $('#show_file_pane .kv-file-remove').hide();
         },
         error: function (xhr, status, p3, p4) {
@@ -540,7 +541,7 @@ function createTable() {
                 html += '<td class="bgpr">' + detail.discount + '</td>';
                 html += '<td class="bgpr">' + detail.vat + '</td>';
                 html += '<td class="bgpr">' + detail.wht + '</td>';
-                html += '<td class="bgpr">' + detail.total + '</td>';
+                html += '<td class="bgpr">' + (detail.grandTotal) + '</td>';
                 html += '<td class="bgpr">' + dateFormat(detail.useDate) + '</td>';
                 html += '<td class="bgpr">' + (detail.id != null ? detail.remark : detail.additionalOtherCode) + '</td>';
                 html += '<td class="bgpr">' + detail.status + '</td>';
@@ -567,7 +568,7 @@ function createTable() {
                     html += '<td class="bgpr">' + detail.discount + '</td>';
                     html += '<td class="bgpr">' + detail.vat + '</td>';
                     html += '<td class="bgpr">' + detail.wht + '</td>';
-                    html += '<td class="bgpr">' + detail.total + '</td>';
+                    html += '<td class="bgpr">' + (detail.grandTotal) + '</td>';
                     html += '<td class="bgpr">' + dateFormat(detail.useDate) + '</td>';
                     html += '<td class="bgpr">' + (detail.id != null ? detail.remark : detail.additionalOtherCode) + '</td>';
                     html += '<td class="bgpr">' + detail.status + '</td>';
@@ -633,7 +634,7 @@ function createTable() {
                 html += '<td class="bgpr">' + detail.discount + '</td>';
                 html += '<td class="bgpr">' + detail.vat + '</td>';
                 html += '<td class="bgpr">' + detail.wht + '</td>';
-                html += '<td class="bgpr">' + detail.total + '</td>';
+                html += '<td class="bgpr">' + (detail.grandTotal) + '</td>';
                 html += '<td class="bgpr">' + dateFormat(detail.useDate) + '</td>';
                 html += '<td class="bgpr">' + (detail.id != null ? detail.remark : detail.additionalOtherCode) + '</td>';
                 html += '<td class="bgpr">' + detail.status + '</td>';
@@ -660,7 +661,7 @@ function createTable() {
                     html += '<td class="bgpr">' + detail.discount + '</td>';
                     html += '<td class="bgpr">' + detail.vat + '</td>';
                     html += '<td class="bgpr">' + detail.wht + '</td>';
-                    html += '<td class="bgpr">' + detail.total + '</td>';
+                    html += '<td class="bgpr">' + (detail.grandTotal) + '</td>';
                     html += '<td class="bgpr">' + dateFormat(detail.useDate) + '</td>';
                     html += '<td class="bgpr">' + (detail.id != null ? detail.remark : detail.additionalOtherCode) + '</td>';
                     html += '<td class="bgpr">' + detail.status + '</td>';
@@ -733,7 +734,7 @@ function createTable() {
                 html += '<td class="bgpr">' + detail.discount + '</td>';
                 html += '<td class="bgpr">' + detail.vat + '</td>';
                 html += '<td class="bgpr">' + detail.wht + '</td>';
-                html += '<td class="bgpr">' + detail.total + '</td>';
+                html += '<td class="bgpr">' + (detail.grandTotal) + '</td>';
                 html += '<td class="bgpr">' + dateFormat(detail.useDate) + '</td>';
                 html += '<td class="bgpr">' + (detail.id != null ? detail.remark : detail.additionalOtherCode) + '</td>';
                 html += '<td class="bgpr">' + detail.status + '</td>';
@@ -760,7 +761,7 @@ function createTable() {
                     html += '<td class="bgpr">' + detail.discount + '</td>';
                     html += '<td class="bgpr">' + detail.vat + '</td>';
                     html += '<td class="bgpr">' + detail.wht + '</td>';
-                    html += '<td class="bgpr">' + detail.total + '</td>';
+                    html += '<td class="bgpr">' + (detail.grandTotal) + '</td>';
                     html += '<td class="bgpr">' + dateFormat(detail.useDate) + '</td>';
                     html += '<td class="bgpr">' + (detail.id != null ? detail.remark : detail.additionalOtherCode) + '</td>';
                     html += '<td class="bgpr">' + detail.status + '</td>';
@@ -896,7 +897,7 @@ function edit_po(index, tab) {
 
 function showFile() {
     $('#pr_files_pane').empty();
-    $('#pr_files_pane').append('<div class="file-loading"><input id="pr_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#pr_files_pane').append('<div class="file-loading"><input id="pr_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
     $('#pr_files').fileinput({
         language: "th",
         showUpload: false,
@@ -906,10 +907,11 @@ function showFile() {
         initialPreview: selectedPo.prFilePreviews,
         initialPreviewConfig: selectedPo.prFiles
     });
+    $('#pr_files').prop('disabled', 'disabled');
 }
 function showApproveFile() {
     $('#pr_approve_files_pane').empty();
-    $('#pr_approve_files_pane').append('<div class="file-loading"><input id="pr_approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#pr_approve_files_pane').append('<div class="file-loading"><input id="pr_approve_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
     $('#pr_approve_files').fileinput({
         language: "th",
         showUpload: false,
@@ -919,11 +921,12 @@ function showApproveFile() {
         initialPreview: selectedPo.prApproveFilePreviews,
         initialPreviewConfig: selectedPo.prApproveFiles
     });
+    $('#pr_approve_files').prop('disabled', 'disabled');
 }
 function showFilePo() {
     console.log(selectedPo);
     $('#po_files_pane').empty();
-    $('#po_files_pane').append('<div class="file-loading"><input id="po_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#" readonly="readonly"></div>');
+    $('#po_files_pane').append('<div class="file-loading"><input id="po_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
     $('#po_files').fileinput({
         language: "th",
         showUpload: false,
@@ -933,6 +936,7 @@ function showFilePo() {
         initialPreview: selectedPo.filePreviews,
         initialPreviewConfig: selectedPo.files
     });
+    $('#po_files').prop('disabled', 'disabled');
 }
 function bindDataEdit(po) {
     console.log(po);
@@ -992,7 +996,8 @@ function bindDataEdit(po) {
                 vat: detail.vat,
                 isWht: detail.wht != 0,
                 wht: detail.wht,
-                total: detail.total
+                total: detail.total,
+                grandTotal: detail.grandTotal
             };
             insertEditDetailList.push(tmp);
         } else {
@@ -1004,7 +1009,8 @@ function bindDataEdit(po) {
                 vat: detail.vat,
                 isWht: detail.wht != 0,
                 wht: detail.wht,
-                total: detail.total
+                total: detail.total,
+                grandTotal: detail.grandTotal
             };
             $('#edit_addition_check').prop('checked', true);
             $('#edit_addition').val(detail.additionalCode);
@@ -1252,6 +1258,9 @@ $(document).ready(function () {
     $('#approve_files').fileinput({
         language: "th",
         showUpload: false,
+    });
+    $('#approve_files').on('fileselect', function (event, numFiles, label) {
+        $('.kv-file-upload').hide();
     });
     search();
 });

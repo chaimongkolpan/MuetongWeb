@@ -104,6 +104,7 @@ function showRefFiles(id, type, text) {
                 initialPreview: result.filePreviews,
                 initialPreviewConfig: result.files
             });
+            $('#show_files').prop('disabled', 'disabled');
             $('#show_file_pane .kv-file-remove').hide();
         },
         error: function (xhr, status, p3, p4) {
@@ -126,7 +127,7 @@ function createRowExpand(pr, tab, i) {
             }
             var rece = {};
             if (detail.receives.length > 0) rece = createReceiveTable(detail.receives, detail.quantity, tab);
-            if (tab == 1 || (tab == 2 && rece.remain != 0)) {
+            if (tab == 1 || (tab == 2 && detail.status != 'จัดส่งสำเร็จ')) {
                 html += '<tr>';
                 var num = 0;
                 if (tab == 1) {
@@ -137,10 +138,18 @@ function createRowExpand(pr, tab, i) {
                     waitNum++;
                 }
                 html += '<td ' + rowspan + '>' + (parseInt(num) + 1) + '</td>';
-                if (detail.receives.length > 0 && rece.remain == 0)
-                    html += '<td ' + rowspan + '></td>'
-                else
-                    html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr_detail(' + i + ',' + tab + ',' + j + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionDetail">edit</span></td>';
+                if (detail.receives.length > 0 && rece.remain <= 0 && detail.status == 'จัดส่งสำเร็จ') {
+                    if (true) // has permission
+                        html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr_detail_disapprove(' + i + ',' + tab + ',' + j + ')" style="color:red;" data-bs-toggle="modal" data-bs-target="#DisapproveDetail">cancel</span></td>'
+                    else
+                        html += '<td ' + rowspan + '></td>'
+                } else {
+                    html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr_detail(' + i + ',' + tab + ',' + j + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionDetail">edit</span>';
+                    if (true && rece.remain <= 0) // has permission
+                        html += '<span class="material-symbols-outlined" onclick="edit_pr_detail_approve(' + i + ',' + tab + ',' + j + ')" style="color:green;" data-bs-toggle="modal" data-bs-target="#ApproveDetail">check_circle</span>';
+
+                    html += '</td>';
+                }
                 html += '<td ' + rowspan + '>' + pr.projectName + '</td>';
                 html += '<td ' + rowspan + '>' + pr.prNo + '</td>';
                 html += '<td ' + rowspan + '>' + dateFormat(pr.createDate) + '</td>';
@@ -306,6 +315,74 @@ function edit_pr_detail(i, tab, j) {
         //init blank data
     }
 }
+function edit_pr_detail_approve(i, tab, j) {
+    var pr = {}
+    if (tab == 1) {
+        pr = prColl.all[i];
+    } else if (tab == 2) {
+        pr = prColl.waiting[i];
+    } else {
+        //init blank data
+    }
+    var detail = pr.details[j];
+    console.log(pr, detail);
+    $('#approve_id').val(detail.id);
+    $('#approve_text').html('ยืนยันตรวจสอบสินค้า ' + detail.name + ' จาก PR เลขที่ : ' + pr.prNo);
+    console.log('approve');
+}
+function edit_pr_detail_disapprove(i, tab, j) {
+    var pr = {}
+    if (tab == 1) {
+        pr = prColl.all[i];
+    } else if (tab == 2) {
+        pr = prColl.waiting[i];
+    } else {
+        //init blank data
+    }
+    var detail = pr.details[j];
+    console.log(pr, detail);
+    $('#disapprove_id').val(detail.id);
+    $('#disapprove_text').html('ยกเลิกการตรวจสอบสินค้า ' + detail.name + ' จาก PR เลขที่ : ' + pr.prNo);
+    console.log('disapprove');
+}
+$('#approve_btn').click(function () {
+    var approveUrl = baseUrl + 'ApproveReceive/' + $('#approve_id').val();
+    $.ajax({
+        type: "GET",
+        url: approveUrl,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            search();
+            $('#ApproveDetail').modal('hide');
+        },
+        error: function (xhr, status, p3, p4) {
+            var err = "Error " + " " + status + " " + p3 + " " + p4;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).Message;
+            console.log(err);
+        }
+    });
+});
+$('#disapprove_btn').click(function () {
+    var disapproveUrl = baseUrl + 'DisapproveReceive/' + $('#disapprove_id').val();
+    $.ajax({
+        type: "GET",
+        url: disapproveUrl,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            search();
+            $('#DisapproveDetail').modal('hide');
+        },
+        error: function (xhr, status, p3, p4) {
+            var err = "Error " + " " + status + " " + p3 + " " + p4;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).Message;
+            console.log(err);
+        }
+    });
+});
 function bindReceiveData(pr) {
     console.log(pr);
 }
@@ -324,12 +401,16 @@ function bindReceiveDataDetail(pr, j) {
         initialPreview: detail.filePreviews,
         initialPreviewConfig: detail.files
     });
+    $('#receive_files').on('fileselect', function (event, numFiles, label) {
+        $('.kv-file-upload').hide();
+    });
     $('#receive_id').val(detail.id);
     $('#receive_project_name').val(pr.projectName);
     $('#receive_pr_no').val(pr.prNo);
     $('#receive_create_date').val(dateValue(pr.createDate));
     $('#receive_requester').val(pr.requesterName);
     $('#receive_detail_table').empty();
+    var all = detail.quantity;
     var detailHtml = '';
     detailHtml += '<tr>';
     detailHtml += '<td>' + detail.name + '</td>';
@@ -343,11 +424,18 @@ function bindReceiveDataDetail(pr, j) {
     $('#receive_detail_table').append(detailHtml);
     $('#receive_table').empty();
     var html = '';
+    var sum = 0;
     for (var i in detail.receives) {
         var receive = detail.receives[i];
         html += '<tr>';
         html += '<td>' + (parseInt(i) + 1) + '</td>';
+        if (detail.receives.length - 1 == i)
+            html += '<td><span class="material-symbols-outlined" onclick="bindUpdateReceive(' + receive.id + ',' + receive.quantity
+                + ',\'' + receive.remark + '\',\'' + dateValue(receive.createDate) + '\')" style="color:#0752AE;">edit</span></td>';
+        else
+            html += '<td></td>';
         html += '<td>' + detail.name + '</td>';
+        sum += receive.quantity;
         html += '<td>' + receive.quantity + '</td>';
         html += '<td>' + detail.unit + '</td>';
         html += '<td>' + dateFormat(receive.createDate) + '</td>';
@@ -355,42 +443,61 @@ function bindReceiveDataDetail(pr, j) {
         html += '<td>' + receive.remark + '</td>';
         html += '</tr>';
     }
+    $('#receive_remain').val(all-sum);
     $('#receive_table').append(html);
     $('#receive_quantity').val('');
     $('#receive_remark').val('');
 }
+function bindUpdateReceive(id, quantity, remark, date) {
+    $('#update_mode').val(1);
+    $('#update_receive_id').val(id);
+    $('#receive_quantity').val(quantity);
+    $('#receive_remark').val(remark);
+    $('#receive_date').val(date);
+}
 $('#receive_btn').click(function () {
-    if (confirm('คุณยืนยันที่จะรับสินค้านี้ใช่หรือไม่ ?')) {
-        const input = document.getElementById('receive_files');
-        var updateUrl = baseUrl + 'receive';
-        var data = new FormData();
-        data.append("DetailId", $('#receive_id').val());
-        data.append("Quantity", $('#receive_quantity').val());
-        data.append("Remark", $('#receive_remark').val());
-        for (var i = 0; i < input.files.length; i++) {
-            data.append("Files", input.files[i]);
-        }
-        $.ajax({
-            type: "POST",
-            url: updateUrl,
-            contentType: false,
-            processData: false,
-            data: data,
-            success: function (result) {
-                console.log(result);
-                alert('บันทึกสำเร็จ');
-                search();
-                $('#ActionDetail').modal('hide');
-            },
-            error: function (xhr, status, p3, p4) {
-                var err = "Error " + " " + status + " " + p3 + " " + p4;
-                if (xhr.responseText && xhr.responseText[0] == "{")
-                    err = JSON.parse(xhr.responseText).Message;
-                console.log(err);
-                alert('บันทึกไม่สำเร็จ');
-                $('#ActionDetail').modal('hide');
+    var mode = $('#update_mode').val();
+    var remain = $('#receive_remain').val();
+    var quantity = $('#receive_quantity').val();
+    if ((remain > 0 && remain >= quantity) || (remain <= 0)) {
+        if (confirm('คุณยืนยันที่จะรับสินค้านี้ใช่หรือไม่ ?')) {
+            const input = document.getElementById('receive_files');
+            var updateUrl = baseUrl + 'receive';
+            if (mode == 1) updateUrl = baseUrl + 'updatereceive/' + $('#update_receive_id').val();
+            var data = new FormData();
+            data.append("DetailId", $('#receive_id').val());
+            data.append("Quantity", quantity);
+            data.append("CreateDate", $('#receive_date').val());
+            data.append("Remark", $('#receive_remark').val());
+            for (var i = 0; i < input.files.length; i++) {
+                data.append("Files", input.files[i]);
             }
-        });
+            $.ajax({
+                type: "POST",
+                url: updateUrl,
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (result) {
+                    console.log(result);
+                    alert('บันทึกสำเร็จ');
+                    $('#update_mode').val(0);
+                    search();
+                    $('#ActionDetail').modal('hide');
+                },
+                error: function (xhr, status, p3, p4) {
+                    var err = "Error " + " " + status + " " + p3 + " " + p4;
+                    if (xhr.responseText && xhr.responseText[0] == "{")
+                        err = JSON.parse(xhr.responseText).Message;
+                    console.log(err);
+                    alert('บันทึกไม่สำเร็จ');
+                    $('#update_mode').val(0);
+                    $('#ActionDetail').modal('hide');
+                }
+            });
+        }
+    } else {
+        alert('คุณต้องใส่ตัวเลขไม่เกินจำนวนที่เหลืออยู่ !!!');
     }
 });
 $(document).ready(function () {

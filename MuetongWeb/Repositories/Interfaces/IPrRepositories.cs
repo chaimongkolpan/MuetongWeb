@@ -35,5 +35,8 @@ namespace MuetongWeb.Repositories.Interfaces
         Task<bool> AddReceiveAsync(PrReceive receive);
         Task<bool> AddReceiveRangeAsync(List<PrReceive> receives);
         Task<bool> CheckReceive(List<long> detailId);
+        Task<bool> DisapproveReceive(List<long> detailId);
+        Task<PrReceive?> GetReceiveAsync(long id);
+        Task<bool> UpdateReceiveAsync(PrReceive receive);
     }
 }

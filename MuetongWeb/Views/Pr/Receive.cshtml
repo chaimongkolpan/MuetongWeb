@@ -114,6 +114,7 @@
     </div>
     
     <input type="hidden" id="receive_id">
+    <input type="hidden" id="receive_remain">
     <!-- The Modal ActionDetail -->
     <div class="modal" id="ActionDetail">
         <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -182,6 +183,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">ลำดับ</th>
+                                        <th scope="col">ดำเนินการ</th>
                                         <th scope="col">รายการ</th>
                                         <th scope="col">จำนวน</th>
                                         <th scope="col">หน่วย</th>
@@ -209,6 +211,12 @@
                                         </div>
                                         <div class="col">
                                             <div class="input-group mb-3">
+                                                <span class="input-group-text" id="basic-addon1">วันที่รับของ</span>
+                                                <input type="date" class="form-control" id="receive_date" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="input-group mb-3">
                                                 <span class="input-group-text" id="basic-addon1">หมายเหตุการรับสินค้า</span>
                                                 <input type="text" class="form-control" id="receive_remark" aria-describedby="basic-addon1">
                                             </div>
@@ -222,6 +230,8 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
+                    <input type="hidden" id="update_mode" value="0" />
+                    <input type="hidden" id="update_receive_id" />
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">ยกเลิก</button>
                     <button type="button" id="receive_btn" class="btn btn-success">บันทึก</button>
                 </div>
@@ -256,6 +266,61 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
+
+    <input type="hidden" id="disapprove_id" />
+    <!-- The Modal DisapproveDetail-->
+    <div class="modal" id="DisapproveDetail">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">ยกเลิกการตรวจสอบ</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <span id="disapprove_text">ยกเลิกการตรวจสอบสินค้า</span>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <button type="button" class="btn btn-danger" id="disapprove_btn">ยืนยันยกเลิก</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
+    <input type="hidden" id="approve_id" />
+    <!-- The Modal ApproveDetail-->
+    <div class="modal" id="ApproveDetail">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">ยืนยันตรวจสอบสินค้า</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <span id="approve_text">ยืนยันตรวจสอบสินค้า</span>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <button type="button" class="btn btn-success" id="approve_btn">ยืนยัน</button>
                 </div>
 
             </div>

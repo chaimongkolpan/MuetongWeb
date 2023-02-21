@@ -83,7 +83,30 @@ function floatFormat(num) {
         return '0.00';
     return tmp.toFixed(2);
 }
+function createAutocomplete(id) {
+    const sorting = document.getElementById(id);
+    try {
+        const sortingchoices = new Choices(sorting, {
+            placeholder: false,
+            itemSelectText: ''
+        });
+        let sortingClass = sorting.getAttribute('class');
+        sorting.parentElement.setAttribute('class', sortingClass);
+    } catch (e) {
+        console.log('error choices', e);
+    }
+}
+function dynamicCreateAutocomplete(pane, id, text, selectCode) {
+    try {
 
+        $('#' + pane).empty();
+        $('#' + pane).append('<label class="input-group-text" for="' + id + '"><b>' + text + '</b></label>');
+        $('#' + pane).append(selectCode);
+        createAutocomplete(id);
+    } catch (e) {
+        console.log('error choices', e);
+    }
+}
 $(document).ready(function () {
     var jqxhr = $.get(mainUrl)
     .done(function (response) {
