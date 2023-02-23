@@ -920,84 +920,89 @@ $('#add_btn').click(function () {
     calAll();
 });
 $('#add_purchase').click(function () {
-    const input = document.getElementById('add_files');
-    var addUrl = baseUrl + 'add';
-    var data = new FormData();
-    data.append("StoreId", $('#add_store').val());
-    data.append("CreditType", $('#add_credit_type').val());
-    if ($('#add_credit_type').val() == creditType.non) {
-        data.append("DateValue", $('#add_non_credit_day').val());
-    } else if ($('#add_credit_type').val() == creditType.bg) {
-        data.append("BgContractNo", $('#add_bg_contract_no').val());
-        data.append("DateSpecific", $('#add_bg_date').val());
-    } else if ($('#add_credit_type').val() == creditType.check) {
-        data.append("ChequeNo", $('#add_port_check_no').val());
-        data.append("DateSpecific", $('#add_port_check_date').val());
-    } else if ($('#add_credit_type').val() == creditType.afTransfer) {
-        data.append("DateValue", $('#add_after_transfer_day').val());
-    } else if ($('#add_credit_type').val() == creditType.afBilling) {
-        data.append("DateValue", $('#add_after_billing_day').val());
-    }
-    data.append("PaymentType", $('#add_payment_type').val());
-    data.append("PaymentAccountId", $('#add_payment_account').val());
-    data.append("PayDate", $('#add_payment_date').val());
-    data.append("ReceiveBillingTypeId", $('#add_billing_receive').val());
-    data.append("ReceiveReceiptTypeId", $('#add_receipt_receive').val());
-    data.append("PlanTransferDate", $('#add_plan_transfer_date').val());
-    data.append("HasAdditional", $('#add_addition_check').prop('checked'));
-    data.append("AdditionalType", $('#add_addition').val());
-    data.append("AdditionalOther", $('#add_addition_other').val());
-    data.append("VatRate", vatRate);
-    data.append("WhtRate", $('#po_wht_value').val() / 100);
-    for (var i = 0; i < input.files.length; i++) {
-        data.append("Files", input.files[i]);
-    }
-    var details = [];
-    for (var i = 0; i < insertDetailList.length; i++) {
-        var detail = {
-            PrDetailId: insertDetailList[i].id,
-            PricePerUnit: insertDetailList[i].pricePerUnit,
-            Discount: insertDetailList[i].discount,
-            IsVat: insertDetailList[i].isVat,
-            IsWht: insertDetailList[i].isWht
-        };
-        details.push(detail);
-    }
-    if ($('#add_addition_check').prop('checked')) {
-        var other = {
-            PricePerUnit: prOther.pricePerUnit,
-            Discount: prOther.discount,
-            IsVat: prOther.isVat,
-            IsWht: prOther.isWht
-        };
-        var jsonStrOther = JSON.stringify(other);
-        data.append("JsonOther", jsonStrOther);
-    }
-    console.log(details);
-    var jsonStr = JSON.stringify(details);
-    data.append("JsonDetails", jsonStr);
-    console.log(jsonStr);
-    $.ajax({
-        type: "POST",
-        url: addUrl,
-        contentType: false,
-        processData: false,
-        data: data,
-        success: function (result) {
-            console.log(result);
-            alert('บันทึกสำเร็จ');
-            search();
-            $('#AddPurchase').modal('hide');
-        },
-        error: function (xhr, status, p3, p4) {
-            var err = "Error " + " " + status + " " + p3 + " " + p4;
-            if (xhr.responseText && xhr.responseText[0] == "{")
-                err = JSON.parse(xhr.responseText).Message;
-            console.log(err);
-            alert('บันทึกไม่สำเร็จ');
-            $('#AddPurchase').modal('hide');
+    if (true) {
+        const input = document.getElementById('add_files');
+        var addUrl = baseUrl + 'add';
+        var data = new FormData();
+        data.append("StoreId", $('#add_store').val());
+        data.append("CreditType", $('#add_credit_type').val());
+        if ($('#add_credit_type').val() == creditType.non) {
+            data.append("DateValue", $('#add_non_credit_day').val());
+        } else if ($('#add_credit_type').val() == creditType.bg) {
+            data.append("BgContractNo", $('#add_bg_contract_no').val());
+            data.append("DateSpecific", $('#add_bg_date').val());
+        } else if ($('#add_credit_type').val() == creditType.check) {
+            data.append("ChequeNo", $('#add_port_check_no').val());
+            data.append("DateSpecific", $('#add_port_check_date').val());
+        } else if ($('#add_credit_type').val() == creditType.afTransfer) {
+            data.append("DateValue", $('#add_after_transfer_day').val());
+        } else if ($('#add_credit_type').val() == creditType.afBilling) {
+            data.append("DateValue", $('#add_after_billing_day').val());
         }
-    });
+        data.append("PaymentType", $('#add_payment_type').val());
+        data.append("PaymentAccountId", $('#add_payment_account').val());
+        data.append("PayDate", $('#add_payment_date').val());
+        data.append("ReceiveBillingTypeId", $('#add_billing_receive').val());
+        data.append("ReceiveReceiptTypeId", $('#add_receipt_receive').val());
+        data.append("PlanTransferDate", $('#add_plan_transfer_date').val());
+        data.append("HasAdditional", $('#add_addition_check').prop('checked'));
+        data.append("AdditionalType", $('#add_addition').val());
+        data.append("AdditionalOther", $('#add_addition_other').val());
+        data.append("VatRate", vatRate);
+        data.append("WhtRate", $('#po_wht_value').val() / 100);
+        for (var i = 0; i < input.files.length; i++) {
+            data.append("Files", input.files[i]);
+        }
+        var details = [];
+        for (var i = 0; i < insertDetailList.length; i++) {
+            var detail = {
+                PrDetailId: insertDetailList[i].id,
+                PricePerUnit: insertDetailList[i].pricePerUnit,
+                Discount: insertDetailList[i].discount,
+                IsVat: insertDetailList[i].isVat,
+                IsWht: insertDetailList[i].isWht
+            };
+            details.push(detail);
+        }
+        if ($('#add_addition_check').prop('checked')) {
+            var other = {
+                PricePerUnit: prOther.pricePerUnit,
+                Discount: prOther.discount,
+                IsVat: prOther.isVat,
+                IsWht: prOther.isWht
+            };
+            var jsonStrOther = JSON.stringify(other);
+            data.append("JsonOther", jsonStrOther);
+        }
+        console.log(details);
+        var jsonStr = JSON.stringify(details);
+        data.append("JsonDetails", jsonStr);
+        console.log(jsonStr);
+        $.ajax({
+            type: "POST",
+            url: addUrl,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                console.log(result);
+                alert('บันทึกสำเร็จ');
+                search();
+                $('#AddPurchase').modal('hide');
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                console.log(err);
+                alert('บันทึกไม่สำเร็จ');
+                $('#AddPurchase').modal('hide');
+            }
+        });
+    } else {
+        alert('กรุณากรอกข้อมูลให้ครบ');
+        // set all red
+    }
 });
 $('#add_store').change(function () {
     bindPayment($('#add_store').val());
@@ -1689,86 +1694,91 @@ $('#edit_po_wht_value').keypress(function (event) {
     }
 });
 $('#edit_btn').click(function () {
-    const input = document.getElementById('edit_files');
-    var updateUrl = baseUrl + 'update/' + $('#edit_id').val();
-    var data = new FormData();
-    data.append("StoreId", $('#edit_store').val());
-    data.append("CreditType", $('#edit_credit_type').val());
-    if ($('#edit_credit_type').val() == creditType.non) {
-        data.append("DateValue", $('#edit_non_credit_day').val());
-    } else if ($('#edit_credit_type').val() == creditType.bg) {
-        data.append("BgContractNo", $('#edit_bg_contract_no').val());
-        data.append("DateSpecific", $('#edit_bg_date').val());
-    } else if ($('#edit_credit_type').val() == creditType.check) {
-        data.append("ChequeNo", $('#edit_port_check_no').val());
-        data.append("DateSpecific", $('#edit_port_check_date').val());
-    } else if ($('#edit_credit_type').val() == creditType.afTransfer) {
-        data.append("DateValue", $('#edit_after_transfer_day').val());
-    } else if ($('#edit_credit_type').val() == creditType.afBilling) {
-        data.append("DateValue", $('#edit_after_billing_day').val());
-    }
-    data.append("PaymentType", $('#edit_payment_type').val());
-    data.append("PaymentAccountId", $('#edit_payment_account').val());
-    data.append("PayDate", $('#edit_payment_date').val());
-    data.append("ReceiveBillingTypeId", $('#edit_billing_receive').val());
-    data.append("ReceiveReceiptTypeId", $('#edit_receipt_receive').val());
-    data.append("PlanTransferDate", $('#edit_plan_transfer_date').val());
-    data.append("HasAdditional", $('#edit_addition_check').prop('checked'));
-    data.append("AdditionalType", $('#edit_addition').val());
-    data.append("AdditionalOther", $('#edit_addition_other').val());
-    data.append("VatRate", vatRate);
-    data.append("WhtRate", $('#edit_po_wht_value').val() / 100);
-    for (var i = 0; i < input.files.length; i++) {
-        data.append("Files", input.files[i]);
-    }
-    var details = [];
-    for (var i = 0; i < insertEditDetailList.length; i++) {
-        var detail = {
-            Id: insertEditDetailList[i].poDetailId,
-            PrDetailId: insertEditDetailList[i].id,
-            PricePerUnit: insertEditDetailList[i].pricePerUnit,
-            Discount: insertEditDetailList[i].discount,
-            IsVat: insertEditDetailList[i].isVat,
-            IsWht: insertEditDetailList[i].isWht
-        };
-        details.push(detail);
-    }
-    if ($('#edit_addition_check').prop('checked')) {
-        var other = {
-            Id: prOtherEdit.poDetailId,
-            PricePerUnit: prOtherEdit.pricePerUnit,
-            Discount: prOtherEdit.discount,
-            IsVat: prOtherEdit.isVat,
-            IsWht: prOtherEdit.isWht
-        };
-        var jsonStrOther = JSON.stringify(other);
-        data.append("JsonOther", jsonStrOther);
-    }
-    console.log(details);
-    var jsonStr = JSON.stringify(details);
-    data.append("JsonDetails", jsonStr);
-    console.log(jsonStr);
-    $.ajax({
-        type: "POST",
-        url: updateUrl,
-        contentType: false,
-        processData: false,
-        data: data,
-        success: function (result) {
-            console.log(result);
-            alert('บันทึกสำเร็จ');
-            search();
-            $('#ActionPurchase').modal('hide');
-        },
-        error: function (xhr, status, p3, p4) {
-            var err = "Error " + " " + status + " " + p3 + " " + p4;
-            if (xhr.responseText && xhr.responseText[0] == "{")
-                err = JSON.parse(xhr.responseText).Message;
-            console.log(err);
-            alert('บันทึกไม่สำเร็จ');
-            $('#ActionPurchase').modal('hide');
+    if (true) {
+        const input = document.getElementById('edit_files');
+        var updateUrl = baseUrl + 'update/' + $('#edit_id').val();
+        var data = new FormData();
+        data.append("StoreId", $('#edit_store').val());
+        data.append("CreditType", $('#edit_credit_type').val());
+        if ($('#edit_credit_type').val() == creditType.non) {
+            data.append("DateValue", $('#edit_non_credit_day').val());
+        } else if ($('#edit_credit_type').val() == creditType.bg) {
+            data.append("BgContractNo", $('#edit_bg_contract_no').val());
+            data.append("DateSpecific", $('#edit_bg_date').val());
+        } else if ($('#edit_credit_type').val() == creditType.check) {
+            data.append("ChequeNo", $('#edit_port_check_no').val());
+            data.append("DateSpecific", $('#edit_port_check_date').val());
+        } else if ($('#edit_credit_type').val() == creditType.afTransfer) {
+            data.append("DateValue", $('#edit_after_transfer_day').val());
+        } else if ($('#edit_credit_type').val() == creditType.afBilling) {
+            data.append("DateValue", $('#edit_after_billing_day').val());
         }
-    });
+        data.append("PaymentType", $('#edit_payment_type').val());
+        data.append("PaymentAccountId", $('#edit_payment_account').val());
+        data.append("PayDate", $('#edit_payment_date').val());
+        data.append("ReceiveBillingTypeId", $('#edit_billing_receive').val());
+        data.append("ReceiveReceiptTypeId", $('#edit_receipt_receive').val());
+        data.append("PlanTransferDate", $('#edit_plan_transfer_date').val());
+        data.append("HasAdditional", $('#edit_addition_check').prop('checked'));
+        data.append("AdditionalType", $('#edit_addition').val());
+        data.append("AdditionalOther", $('#edit_addition_other').val());
+        data.append("VatRate", vatRate);
+        data.append("WhtRate", $('#edit_po_wht_value').val() / 100);
+        for (var i = 0; i < input.files.length; i++) {
+            data.append("Files", input.files[i]);
+        }
+        var details = [];
+        for (var i = 0; i < insertEditDetailList.length; i++) {
+            var detail = {
+                Id: insertEditDetailList[i].poDetailId,
+                PrDetailId: insertEditDetailList[i].id,
+                PricePerUnit: insertEditDetailList[i].pricePerUnit,
+                Discount: insertEditDetailList[i].discount,
+                IsVat: insertEditDetailList[i].isVat,
+                IsWht: insertEditDetailList[i].isWht
+            };
+            details.push(detail);
+        }
+        if ($('#edit_addition_check').prop('checked')) {
+            var other = {
+                Id: prOtherEdit.poDetailId,
+                PricePerUnit: prOtherEdit.pricePerUnit,
+                Discount: prOtherEdit.discount,
+                IsVat: prOtherEdit.isVat,
+                IsWht: prOtherEdit.isWht
+            };
+            var jsonStrOther = JSON.stringify(other);
+            data.append("JsonOther", jsonStrOther);
+        }
+        console.log(details);
+        var jsonStr = JSON.stringify(details);
+        data.append("JsonDetails", jsonStr);
+        console.log(jsonStr);
+        $.ajax({
+            type: "POST",
+            url: updateUrl,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                console.log(result);
+                alert('บันทึกสำเร็จ');
+                search();
+                $('#ActionPurchase').modal('hide');
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                console.log(err);
+                alert('บันทึกไม่สำเร็จ');
+                $('#ActionPurchase').modal('hide');
+            }
+        });
+    } else {
+        alert('กรุณากรอกข้อมูลให้ครบ');
+        // set all red
+    }
 });
 function edit_po(index, tab) {
     if (tab == 1) {
@@ -1926,6 +1936,9 @@ $(document).ready(function () {
     createAutocomplete('ProjectId');
     createAutocomplete('AddProjectId');
     createAutocomplete('EditProjectId');
+
+
+
     $('#add_files').fileinput({
         language: "th",
         showUpload: false,

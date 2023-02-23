@@ -10,39 +10,45 @@ var extraOther = 1;
 
 /*********************** Add ******************************/
 $('#add_billing_save_btn').click(function () {
-    console.log(billingPo);
-    const input = document.getElementById('billing_files');
-    var addUrl = baseUrl + 'add';
-    var data = new FormData();
-    data.append("BillingNo", $('#billing_no').val());
-    data.append("BillingDate", $('#billing_date').val());
-    for (var i = 0; i < input.files.length; i++) {
-        data.append("Files", input.files[i]);
-    }
-    var jsonStr = JSON.stringify(billingPo);
-    data.append("JsonDetails", jsonStr);
-    console.log(jsonStr);
-    $.ajax({
-        type: "POST",
-        url: addUrl,
-        contentType: false,
-        processData: false,
-        data: data,
-        success: function (result) {
-            console.log(result);
-            alert('บันทึกสำเร็จ');
-            search();
-            $('#AddBilling').modal('hide');
-        },
-        error: function (xhr, status, p3, p4) {
-            var err = "Error " + " " + status + " " + p3 + " " + p4;
-            if (xhr.responseText && xhr.responseText[0] == "{")
-                err = JSON.parse(xhr.responseText).Message;
-            console.log(err);
-            alert('บันทึกไม่สำเร็จ');
-            $('#AddBilling').modal('hide');
+    if (!isEmpty($('#billing_no').val()) && !isEmpty($('#billing_date').val())) {
+        console.log(billingPo);
+        const input = document.getElementById('billing_files');
+        var addUrl = baseUrl + 'add';
+        var data = new FormData();
+        data.append("BillingNo", $('#billing_no').val());
+        data.append("BillingDate", $('#billing_date').val());
+        for (var i = 0; i < input.files.length; i++) {
+            data.append("Files", input.files[i]);
         }
-    });
+        var jsonStr = JSON.stringify(billingPo);
+        data.append("JsonDetails", jsonStr);
+        console.log(jsonStr);
+        $.ajax({
+            type: "POST",
+            url: addUrl,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                console.log(result);
+                alert('บันทึกสำเร็จ');
+                search();
+                $('#AddBilling').modal('hide');
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                console.log(err);
+                alert('บันทึกไม่สำเร็จ');
+                $('#AddBilling').modal('hide');
+            }
+        });
+    } else {
+        alert('กรุณากรอกข้อมูลให้ครบ');
+        if (isEmpty($('#billing_no').val())) setBorderRed('billing_no');
+        if (isEmpty($('#billing_date').val())) setBorderRed('billing_date');
+    }
 });
 function remove_po(i) {
     billingPo.splice(i, 1);
@@ -457,73 +463,92 @@ $('#cancel_btn').click(function () {
     });
 });
 $('#edit_approve').click(function () {
-    var id = $('#edit_id').val();
-    var sendUrl = baseUrl + 'sendapprove/' + id;
-    $.ajax({
-        type: "GET",
-        url: sendUrl,
-        contentType: false,
-        processData: false,
-        success: function (result) {
-            alert('บันทึกสำเร็จ');
-            search();
-            $('#ActionBilling').modal('hide');
-        },
-        error: function (xhr, status, p3, p4) {
-            var err = "Error " + " " + status + " " + p3 + " " + p4;
-            if (xhr.responseText && xhr.responseText[0] == "{")
-                err = JSON.parse(xhr.responseText).Message;
-            console.log(err);
-            alert('บันทึกไม่สำเร็จ');
-            $('#ActionBilling').modal('hide');
-        }
-    });
+    if (!isEmpty($('#edit_billing_no').val())
+        && !isEmpty($('#edit_billing_date').val())
+        && !isEmpty($('#edit_amount').val())
+        && !isEmpty($('#edit_receipt_no').val())
+        && $('#edit_has_receipt').prop('checked')
+    ) {
+        var id = $('#edit_id').val();
+        var sendUrl = baseUrl + 'sendapprove/' + id;
+        $.ajax({
+            type: "GET",
+            url: sendUrl,
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                alert('บันทึกสำเร็จ');
+                search();
+                $('#ActionBilling').modal('hide');
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                console.log(err);
+                alert('บันทึกไม่สำเร็จ');
+                $('#ActionBilling').modal('hide');
+            }
+        });
+    } else {
+        alert('กรุณากรอกข้อมูลให้ครบ');
+        if (isEmpty($('#edit_billing_no').val())) setBorderRed('edit_billing_no');
+        if (isEmpty($('#edit_billing_date').val())) setBorderRed('edit_billing_date');
+        if (isEmpty($('#edit_amount').val())) setBorderRed('edit_amount');
+        if (isEmpty($('#edit_receipt_no').val())) setBorderRed('edit_receipt_no');
+    }
 });
 $('#edit_save_btn').click(function () {
-    const input = document.getElementById('edit_files');
-    var id = $('#edit_id').val();
-    var updateUrl = baseUrl + 'update/' + id;
-    var data = new FormData();
-    data.append("BillingNo", $('#edit_billing_no').val());
-    data.append("BillingDate", $('#edit_billing_date').val());
-    data.append("PaymentDate", $('#edit_payment_date').val());
-    data.append("PaymentType", $('#edit_payment_type').val());
-    data.append("PaymentAccount", $('#edit_payment_account').val());
-    data.append("Amount", floatValue($('#edit_amount').val()));
-    data.append("Remark", $('#edit_remark').val());
-    data.append("HasReceipt", $('#edit_has_receipt').prop('checked'));
-    if ($('#edit_has_receipt').prop('checked')) data.append("ReceiptNo", $('#edit_receipt_no').val());
-    data.append("HasExtra", $('#edit_has_extra').prop('checked'));
-    if ($('#edit_has_extra').prop('checked')) {
-        data.append("ExtraType", $('#edit_extra_type').val());
-        data.append("ExtraOther", $('#edit_extra_other').val());
-        data.append("ExtraAmount", floatValue($('#edit_extra_amount').val()));
-    }
-    data.append("HasInvoice", $('#edit_has_invoice').prop('checked'));
-    if ($('#edit_has_invoice').prop('checked')) data.append("InvoiceNo", $('#edit_invoice_no').val());
-    for (var i = 0; i < input.files.length; i++) {
-        data.append("Files", input.files[i]);
-    }
-    $.ajax({
-        type: "POST",
-        url: updateUrl,
-        contentType: false,
-        processData: false,
-        data: data,
-        success: function (result) {
-            alert('บันทึกสำเร็จ');
-            search();
-            $('#ActionBilling').modal('hide');
-        },
-        error: function (xhr, status, p3, p4) {
-            var err = "Error " + " " + status + " " + p3 + " " + p4;
-            if (xhr.responseText && xhr.responseText[0] == "{")
-                err = JSON.parse(xhr.responseText).Message;
-            console.log(err);
-            alert('บันทึกไม่สำเร็จ');
-            $('#ActionBilling').modal('hide');
+    if (!isEmpty($('#edit_billing_no').val()) && !isEmpty($('#edit_billing_date').val())) {
+        const input = document.getElementById('edit_files');
+        var id = $('#edit_id').val();
+        var updateUrl = baseUrl + 'update/' + id;
+        var data = new FormData();
+        data.append("BillingNo", $('#edit_billing_no').val());
+        data.append("BillingDate", $('#edit_billing_date').val());
+        data.append("PaymentDate", $('#edit_payment_date').val());
+        data.append("PaymentType", $('#edit_payment_type').val());
+        data.append("PaymentAccount", $('#edit_payment_account').val());
+        data.append("Amount", floatValue($('#edit_amount').val()));
+        data.append("Remark", $('#edit_remark').val());
+        data.append("HasReceipt", $('#edit_has_receipt').prop('checked'));
+        if ($('#edit_has_receipt').prop('checked')) data.append("ReceiptNo", $('#edit_receipt_no').val());
+        data.append("HasExtra", $('#edit_has_extra').prop('checked'));
+        if ($('#edit_has_extra').prop('checked')) {
+            data.append("ExtraType", $('#edit_extra_type').val());
+            data.append("ExtraOther", $('#edit_extra_other').val());
+            data.append("ExtraAmount", floatValue($('#edit_extra_amount').val()));
         }
-    });
+        data.append("HasInvoice", $('#edit_has_invoice').prop('checked'));
+        if ($('#edit_has_invoice').prop('checked')) data.append("InvoiceNo", $('#edit_invoice_no').val());
+        for (var i = 0; i < input.files.length; i++) {
+            data.append("Files", input.files[i]);
+        }
+        $.ajax({
+            type: "POST",
+            url: updateUrl,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                alert('บันทึกสำเร็จ');
+                search();
+                $('#ActionBilling').modal('hide');
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                console.log(err);
+                alert('บันทึกไม่สำเร็จ');
+                $('#ActionBilling').modal('hide');
+            }
+        });
+    } else {
+        alert('กรุณากรอกข้อมูลให้ครบ');
+        if (isEmpty($('#edit_billing_no').val())) setBorderRed('edit_billing_no');
+        if (isEmpty($('#edit_billing_date').val())) setBorderRed('edit_billing_date');
+    }
 });
 function cancel(i, tab) {
     var bill = {};
@@ -594,6 +619,7 @@ $('#edit_has_invoice').change(function () {
     }
 });
 function bindEditData(bill) {
+    setBorderNormal('edit_receipt_no');
     $('#edit_billing_no').val(bill.billingNo);
     $('#edit_billing_date').val(dateValue(bill.billingDate));
     $('#edit_payment_date').val(dateValue(bill.paymentDate));
@@ -1365,6 +1391,14 @@ $(document).ready(function () {
     bindFilter(0)
     createAutocomplete('ProjectId');
     bindStore();
+
+    checkTextInput('billing_no');
+    checkTextInput('billing_date');
+
+    checkTextInput('edit_billing_no');
+    checkTextInput('edit_billing_date');
+    checkTextInput('edit_amount');
+
     $('#billing_files').fileinput({
         language: "th",
         showUpload: false

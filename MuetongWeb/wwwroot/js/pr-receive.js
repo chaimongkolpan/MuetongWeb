@@ -466,53 +466,60 @@ function bindUpdateReceive(id, quantity, remark, date) {
     $('#receive_date').val(date);
 }
 $('#receive_btn').click(function () {
-    var mode = $('#update_mode').val();
-    var remain = $('#receive_remain').val();
-    var quantity = $('#receive_quantity').val();
-    if ((remain > 0 && remain >= quantity) || (remain <= 0)) {
-        if (confirm('คุณยืนยันที่จะรับสินค้านี้ใช่หรือไม่ ?')) {
-            const input = document.getElementById('receive_files');
-            var updateUrl = baseUrl + 'receive';
-            if (mode == 1) updateUrl = baseUrl + 'updatereceive/' + $('#update_receive_id').val();
-            var data = new FormData();
-            data.append("DetailId", $('#receive_id').val());
-            data.append("Quantity", quantity);
-            data.append("CreateDate", $('#receive_date').val());
-            data.append("Remark", $('#receive_remark').val());
-            for (var i = 0; i < input.files.length; i++) {
-                data.append("Files", input.files[i]);
-            }
-            $.ajax({
-                type: "POST",
-                url: updateUrl,
-                contentType: false,
-                processData: false,
-                data: data,
-                success: function (result) {
-                    console.log(result);
-                    alert('บันทึกสำเร็จ');
-                    $('#update_mode').val(0);
-                    search();
-                    $('#ActionDetail').modal('hide');
-                },
-                error: function (xhr, status, p3, p4) {
-                    var err = "Error " + " " + status + " " + p3 + " " + p4;
-                    if (xhr.responseText && xhr.responseText[0] == "{")
-                        err = JSON.parse(xhr.responseText).Message;
-                    console.log(err);
-                    alert('บันทึกไม่สำเร็จ');
-                    $('#update_mode').val(0);
-                    $('#ActionDetail').modal('hide');
+    if (!isEmpty($('#receive_quantity').val())) {
+        var mode = $('#update_mode').val();
+        var remain = $('#receive_remain').val();
+        var quantity = $('#receive_quantity').val();
+        if ((remain > 0 && remain >= quantity) || (remain <= 0)) {
+            if (confirm('คุณยืนยันที่จะรับสินค้านี้ใช่หรือไม่ ?')) {
+                const input = document.getElementById('receive_files');
+                var updateUrl = baseUrl + 'receive';
+                if (mode == 1) updateUrl = baseUrl + 'updatereceive/' + $('#update_receive_id').val();
+                var data = new FormData();
+                data.append("DetailId", $('#receive_id').val());
+                data.append("Quantity", quantity);
+                data.append("CreateDate", $('#receive_date').val());
+                data.append("Remark", $('#receive_remark').val());
+                for (var i = 0; i < input.files.length; i++) {
+                    data.append("Files", input.files[i]);
                 }
-            });
+                $.ajax({
+                    type: "POST",
+                    url: updateUrl,
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+                        console.log(result);
+                        alert('บันทึกสำเร็จ');
+                        $('#update_mode').val(0);
+                        search();
+                        $('#ActionDetail').modal('hide');
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        var err = "Error " + " " + status + " " + p3 + " " + p4;
+                        if (xhr.responseText && xhr.responseText[0] == "{")
+                            err = JSON.parse(xhr.responseText).Message;
+                        console.log(err);
+                        alert('บันทึกไม่สำเร็จ');
+                        $('#update_mode').val(0);
+                        $('#ActionDetail').modal('hide');
+                    }
+                });
+            }
+        } else {
+            alert('คุณต้องใส่ตัวเลขไม่เกินจำนวนที่เหลืออยู่ !!!');
+            setBorderRed('receive_quantity');
         }
     } else {
-        alert('คุณต้องใส่ตัวเลขไม่เกินจำนวนที่เหลืออยู่ !!!');
+        alert('กรุณากรอกข้อมูลให้ครบ');
+        setBorderRed('receive_quantity');
     }
 });
 $(document).ready(function () {
     console.log('ready', model);
     bindFilter(0)
     createAutocomplete('ProjectId');
+    checkTextInput('receive_quantity');
     search();
 });
