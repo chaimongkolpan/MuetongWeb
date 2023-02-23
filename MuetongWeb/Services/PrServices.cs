@@ -187,6 +187,23 @@ namespace MuetongWeb.Services
                 return false;
             }
         }
+        public async Task<bool> Disapprove(long id)
+        {
+            try
+            {
+                if (await _prRepositories.Disapprove(id))
+                {
+                    await _prRepositories.UpdateAllDetailStatus(id, StatusConstants.PrDetailWaitingApprove);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PrServices => Disapprove: " + ex.Message);
+                return false;
+            }
+        }
         public async Task<bool> IndexAddAsync(long userId, PrIndexAddRequest request)
         {
             try

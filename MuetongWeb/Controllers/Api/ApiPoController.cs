@@ -309,6 +309,28 @@ namespace MuetongWeb.Controllers.Api
                 return BadRequest(ex.Message);
             }
         }
+        [Route("DisapproveReceive/{poId}")]
+        [HttpGet]
+        public async Task<IActionResult> PoDisapproveReceiveAsync(long poId)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        var response = await _poServices.DisapproveReceiveAsync(poId);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPoController => PoDisapproveReceiveAsync: " + ex.Message);
+            }
+            return BadRequest();
+        }
     }
 }
 

@@ -144,6 +144,28 @@ namespace MuetongWeb.Controllers.Api
             }
             return BadRequest();
         }
+        [Route("Disapprove/{id}")]
+        [HttpPost]
+        public async Task<IActionResult> PrDisapprove(long id)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        var response = await _prServices.Disapprove(id);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiPrController => PrDisapprove: " + ex.Message);
+            }
+            return BadRequest();
+        }
         [Route("Cancel/{id}")]
         [HttpGet]
         public async Task<IActionResult> PrCancel(long id)

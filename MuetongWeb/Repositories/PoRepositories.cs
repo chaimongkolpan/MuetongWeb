@@ -99,6 +99,7 @@ namespace MuetongWeb.Repositories
                         .Include(po => po.PoDetails)
                         .ThenInclude(poDetail => poDetail.PrDetails)
                         .ThenInclude(prDetail => prDetail.ProjectCode)
+                        .Include(po => po.PoBillings).ThenInclude(bill => bill.Billing)
                         .Include(po => po.Store)
                         .Include(po => po.CreditTypeNavigation)
                         .Include(po => po.PaymentTypeNavigation)
@@ -114,7 +115,7 @@ namespace MuetongWeb.Repositories
             return await _dbContext.Pos.Where(po =>  (po.Status == StatusConstants.PoRequested || po.Status == StatusConstants.PoComplete)
                         && (po.PoBillings == null || !po.PoBillings.Any() || po.PoBillings.All(pb => pb.Billing != null && pb.Billing.Status == StatusConstants.BillingCancel))
                         && (request.StoreId == RequestConstants.AllValue || po.StoreId == request.StoreId)
-                        && (string.IsNullOrWhiteSpace(request.PoNo) || po.PoNo == request.PoNo)
+                        && (string.IsNullOrWhiteSpace(request.PoNo) || request.PoNo == RequestConstants.AllString || po.PoNo == request.PoNo)
                         )
                         .OrderBy(po => po.CreateDate)
                         .Include(po => po.PoDetails)
@@ -284,6 +285,26 @@ namespace MuetongWeb.Repositories
                                     && poDetailIds.Contains(detail.PoDetailId.Value))
                                     .ForEachAsync(detail => {
                                         detail.Status = StatusConstants.PrDetailWaitingTransfer;
+                                    });
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> Disapprove(long id)
+        {
+            var po = await _dbContext.Pos.FindAsync(id);
+            if (po == null)
+                return false;
+            po.Status = StatusConstants.PoWaitingApprove;
+            po.ApproverId = null;
+            po.ApproveDate = null;
+            po.ModifyDate = DateTime.Now;
+            var poDetailIds = await _dbContext.PoDetails.Where(detail => detail.PoId == id)
+                                                        .Select(detail => detail.Id)
+                                                        .ToListAsync();
+            await _dbContext.PrDetails.Where(detail => detail.PoDetailId.HasValue
+                                    && poDetailIds.Contains(detail.PoDetailId.Value))
+                                    .ForEachAsync(detail => {
+                                        detail.Status = StatusConstants.PrDetailWaitingOrder;
                                     });
             await _dbContext.SaveChangesAsync();
             return true;

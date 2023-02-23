@@ -219,6 +219,7 @@ function createTable() {
             html += '<td class="bgpo" ' + rowspan + '>' + po.receiptReceiveType + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + dateFormat(po.planTransferDate) + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.requesterName + '</td>';
+            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + po.id + ',\'po\',\'เอกสารอ้างอิงสั่งซื้อ\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = po.details[0];
                 html += '<td class="bgpr">' + detail.projectName + '</td>';
@@ -373,6 +374,9 @@ function createTable() {
             html += '<td class="bgpo" ' + rowspan + '>' + po.receiptReceiveType + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + dateFormat(po.planTransferDate) + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.requesterName + '</td>';
+            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + po.id + ',\'po\',\'เอกสารอ้างอิงสั่งซื้อ\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
+            html += '<td class="bgpo" ' + rowspan + '>' + po.approverName + '</td>';
+            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + po.id + ',\'poapprove\',\'เอกสารอ้างอิงตรวจสอบสั่งซื้อ\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = po.details[0];
                 html += '<td class="bgpr">' + detail.projectName + '</td>';
@@ -529,52 +533,79 @@ function bindFilter(projectId) {
     var jqxhr = $.get(requesterUrl)
         .done(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option value="' + item.id + '">' + item.fullname + '</option>';
-                $('#RequesterId').append(html);
+                html += '<option value="' + item.id + '">' + item.fullname + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         });
     var prnoUrl = baseUrl + 'prno/' + projectId;
     var jqxhr = $.get(prnoUrl)
         .done(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            var html1 = '<select id="AddPrNo" name="AddPrNo">';
+            var html2 = '<select id="EditPrNo" name="EditPrNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html1 += '<option selected>ทั้งหมด</option>';
+            html2 += '<option selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option>' + item + '</option>';
-                $('#PrNo').append(html);
+                html += '<option>' + item + '</option>';
+                html1 += '<option>' + item + '</option>';
+                html2 += '<option>' + item + '</option>';
             }
+            html += '</select>';
+            html1 += '</select>';
+            html2 += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
+            dynamicCreateAutocomplete('AddPrNoPane', 'AddPrNo', 'เลขที่ PR', html1);
+            dynamicCreateAutocomplete('EditPrNoPane', 'EditPrNo', 'เลขที่ PR', html2);
         })
         .fail(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            var html1 = '<select id="AddPrNo" name="AddPrNo">';
+            var html2 = '<select id="EditPrNo" name="EditPrNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html += '</select>';
+            html1 += '<option selected>ทั้งหมด</option>';
+            html1 += '</select>';
+            html2 += '<option selected>ทั้งหมด</option>';
+            html2 += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
+            dynamicCreateAutocomplete('AddPrNoPane', 'AddPrNo', 'เลขที่ PR', html1);
+            dynamicCreateAutocomplete('EditPrNoPane', 'EditPrNo', 'เลขที่ PR', html2);
         });
     var ponoUrl = baseUrl + 'pono/' + projectId;
     var jqxhr = $.get(ponoUrl)
         .done(function (response) {
             console.log(response);
-            $('#PoNo').empty();
-            $('#PoNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PoNo" name="PoNo">';
+            html += '<option selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option>' + item + '</option>';
-                $('#PoNo').append(html);
+                html += '<option>' + item + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('PoNoPane', 'PoNo', 'เลขที่ PO', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#PoNo').empty();
-            $('#PoNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PoNo" name="PoNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('PoNoPane', 'PoNo', 'เลขที่ PO', html);
         });
 }
 function bindProduct() {
@@ -585,15 +616,19 @@ function bindProduct() {
         .done(function (response) {
             console.log(response);
             products = response;
-            var html = '<option value="0">ทั้งหมด</option>';
-            $('#AddProductId').append(html);
-            $('#EditProductId').append(html);
+            var html = '<select id="AddProductId" name="AddProductId">';
+            var html1 = '<select id="EditProductId" name="EditProductId">';
+            html += '<option value="0">ทั้งหมด</option>';
+            html1 += '<option value="0">ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option value="' + item.id + '">' + item.name + '</option>';
-                $('#AddProductId').append(html);
-                $('#EditProductId').append(html);
+                html += '<option value="' + item.id + '">' + item.name + '</option>';
+                html1 += '<option value="' + item.id + '">' + item.name + '</option>';
             }
+            html += '</select>';
+            html1 += '</select>';
+            dynamicCreateAutocomplete('AddProductPane', 'AddProductId', 'รายการสินค้า', html);
+            dynamicCreateAutocomplete('EditProductPane', 'EditProductId', 'รายการสินค้า', html1);
         })
         .fail(function (response) {
             console.log(response);
@@ -601,18 +636,23 @@ function bindProduct() {
 }
 function bindStore() {
     var storeUrl = baseUrl + 'store';
-    $('#add_store').empty();
-    $('#edit_store').empty();
+    //$('#add_store').empty();
+    //$('#edit_store').empty();
     var jqxhr = $.get(storeUrl)
         .done(function (response) {
             console.log(response);
             stores = response.stores;
+            var html = '<select id="add_store" name="add_store">';
+            var html1 = '<select id="edit_store" name="edit_store">';
             for (var i in response.stores) {
                 var item = response.stores[i];
-                var html = '<option value="' + item.id + '">' + item.name + '</option>';
-                $('#add_store').append(html);
-                $('#edit_store').append(html);
+                html += '<option value="' + item.id + '">' + item.name + '</option>';
+                html1 += '<option value="' + item.id + '">' + item.name + '</option>';
             }
+            html += '</select>';
+            html1 += '</select>';
+            dynamicCreateAutocomplete('AddStorePane', 'add_store', 'ผู้จำหน่าย', html);
+            dynamicCreateAutocomplete('EditStorePane', 'edit_store', 'ผู้จำหน่าย', html1);
             bindPayment($('#add_store').val());
             bindPaymentEdit($('#edit_store').val());
         })
@@ -853,7 +893,7 @@ $('#add_detail_add_btn').click(function () {
 });
 $('#add_btn').click(function () {
     $('#AddProjectId').val(0);
-    $('#AddPrNo').val('');
+    $('#AddPrNo').val('ทั้งหมด');
     $('#AddProductId').val(0);
     $('#po_detail_table').empty();
     $('#add_pr_table').empty();
@@ -1873,6 +1913,9 @@ $(document).ready(function () {
     bindStore();
     bindReceiveType();
     bindPaymentType();
+    createAutocomplete('ProjectId');
+    createAutocomplete('AddProjectId');
+    createAutocomplete('EditProjectId');
     $('#add_files').fileinput({
         language: "th",
         showUpload: false,

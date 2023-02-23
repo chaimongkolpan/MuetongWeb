@@ -7,7 +7,7 @@
         <div class="col">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="ProjectId"><b>ชื่อโครงการ</b></label>
-                <select class="form-select" id="ProjectId">
+                <select id="ProjectId">
                     <option selected>ทั้งหมด</option>
                     @if (Model != null)
                     {
@@ -20,17 +20,17 @@
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="PrNoPane">
                 <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
-                <select class="form-select" id="PrNo">
+                <select id="PrNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="RequesterPane">
                 <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
-                <select class="form-select" id="RequesterId">
+                <select id="RequesterId">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
@@ -104,6 +104,7 @@
                             <th scope="col">จุดประสงค์</th>
                             <th scope="col">หมายเหตุสินค้า</th>
                             <th scope="col">สถานะสินค้า</th>
+                            <th scope="col">เอกสารอ้างอิงรับสินค้า</th>
                         </tr>
                     </thead>
                     <tbody id="wait_table">
@@ -241,7 +242,7 @@
     
     <!-- The Modal RefShowFile-->
     <div class="modal" id="RefShowFile">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
 
                 <!-- Modal Header -->

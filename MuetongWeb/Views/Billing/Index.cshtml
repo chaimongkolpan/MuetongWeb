@@ -7,7 +7,7 @@
         <div class="col">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="ProjectId"><b>ชื่อโครงการ</b></label>
-                <select class="form-select" id="ProjectId">
+                <select id="ProjectId">
                     <option value="0" selected>ทั้งหมด</option>
                     @if (Model != null)
                     {
@@ -20,33 +20,33 @@
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="PrNoPane">
                 <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
-                <select class="form-select" id="PrNo">
+                <select id="PrNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="PoNoPane">
                 <label class="input-group-text" for="PoNo"><b>เลขที่ PO</b></label>
-                <select class="form-select" id="PoNo">
+                <select id="PoNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="BillingNoPane">
                 <label class="input-group-text" for="BillingNo"><b>เลขที่ใบวางบิล</b></label>
-                <select class="form-select" id="BillingNo">
+                <select id="BillingNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="RequesterPane">
                 <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
-                <select class="form-select" id="RequesterId">
+                <select id="RequesterId">
                     <option value="0" selected>ทั้งหมด</option>
                 </select>
             </div>
@@ -220,7 +220,9 @@
                                     <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
                                     <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
                             <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงวางบิล</th>
                             <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงตรวจสอบวางบิล</th>
                             <th class="bgpc" scope="col">สถานะวางบิล</th>
                             <th class="bgpo" scope="col">เลขที่ P0</th>
                             <th class="bgpo" scope="col">ผู้จำหน่าย</th>
@@ -291,7 +293,9 @@
                                     <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
                                     <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
                             <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงวางบิล</th>
                             <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงตรวจสอบวางบิล</th>
                             <th class="bgpc" scope="col">สถานะวางบิล</th>
                             <th class="bgpo" scope="col">เลขที่ P0</th>
                             <th class="bgpo" scope="col">ผู้จำหน่าย</th>
@@ -362,7 +366,9 @@
                                     <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
                                     <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
                             <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงวางบิล</th>
                             <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงตรวจสอบวางบิล</th>
                             <th class="bgpc" scope="col">สถานะวางบิล</th>
                             <th class="bgpo" scope="col">เลขที่ P0</th>
                             <th class="bgpo" scope="col">ผู้จำหน่าย</th>
@@ -488,7 +494,9 @@
                                     <th class="bgpc" scope="col">สถานะใบกำกับภาษี</th>
                                     <th class="bgpc" scope="col">เลขที่ใบกำกับภาษี</th>
                             <th class="bgpc" scope="col">ผู้รับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงวางบิล</th>
                             <th class="bgpc" scope="col">ผู้ตรวจสอบรับวางบิล</th>
+                            <th class="bgpc" scope="col">เอกสารอ้างอิงตรวจสอบวางบิล</th>
                             <th class="bgpc" scope="col">สถานะวางบิล</th>
                             <th class="bgpo" scope="col">เลขที่ P0</th>
                             <th class="bgpo" scope="col">ผู้จำหน่าย</th>
@@ -820,16 +828,18 @@
                 <div class="modal-body">
                     <div class="row row-cols-1 row-cols-lg-2">
                         <div class="col">
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3" id="AddStorePane">
                                 <label class="input-group-text" for="add_store">ผู้จำหน่าย</label>
                                 <select class="form-select" id="add_store">
                                 </select>
                             </div>
                         </div>
                         <div class="col">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text" id="add_pono">เลขที่ PO</span>
-                                <input type="text" class="form-control" id="add_pono" aria-describedby="basic-addon1">
+                            <div class="input-group mb-3" id="AddPoNoPane">
+                                <span class="input-group-text">เลขที่ PO</span>
+                                <select class="form-select" id="add_pono">
+                                    <option selected>ทั้งหมด</option>
+                                </select>
                             </div>
                         </div>
                         <p></p><br />
@@ -1034,7 +1044,7 @@
     <!-- ///////////////// -->
     <!-- The Modal RefShowFile-->
     <div class="modal" id="RefShowFile">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
 
                 <!-- Modal Header -->

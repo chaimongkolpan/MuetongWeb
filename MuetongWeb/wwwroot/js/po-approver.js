@@ -41,52 +41,61 @@ function bindFilter(projectId) {
     var jqxhr = $.get(requesterUrl)
         .done(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option value="' + item.id + '">' + item.fullname + '</option>';
-                $('#RequesterId').append(html);
+                html += '<option value="' + item.id + '">' + item.fullname + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         });
     var prnoUrl = baseUrl + 'prno/' + projectId;
     var jqxhr = $.get(prnoUrl)
         .done(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            html += '<option selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option>' + item + '</option>';
-                $('#PrNo').append(html);
+                html += '<option>' + item + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
         });
     var ponoUrl = baseUrl + 'pono/' + projectId;
     var jqxhr = $.get(ponoUrl)
         .done(function (response) {
             console.log(response);
-            $('#PoNo').empty();
-            $('#PoNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PoNo" name="PoNo">';
+            html += '<option selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option>' + item + '</option>';
-                $('#PoNo').append(html);
+                html += '<option>' + item + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('PoNoPane', 'PoNo', 'เลขที่ PO', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#PoNo').empty();
-            $('#PoNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PoNo" name="PoNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('PoNoPane', 'PoNo', 'เลขที่ PO', html);
         });
 }
 function bindProduct() {
@@ -494,7 +503,10 @@ function createTable() {
             html += '<tr>';
             html += '<td class="bgpo" ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
             if (checkEditStatus(po.status)) {
-                html += '<td class="bgpo" ' + rowspan + '></td><td class="bgpo" ' + rowspan + '></td>';
+                if (po.status != 'รอตรวจสอบสั่งซื้อ' && po.status != 'ยกเลิก' && !po.hasBilling)
+                    html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_po_detail_disapprove(' + i + ')" style="color:red;" data-bs-toggle="modal" data-bs-target="#DisapproveDetail">cancel</span></td><td class="bgpo" ' + rowspan + '></td>';
+                else 
+                    html += '<td class="bgpo" ' + rowspan + '></td><td class="bgpo" ' + rowspan + '></td>';
             } else {
                 html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_po(' + i + ',1)" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionApprovePurchase">view_list</span></td>';
                 html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_po(' + i + ',1)" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
@@ -613,6 +625,7 @@ function createTable() {
             html += '<td class="bgpo" ' + rowspan + '>' + po.receiptReceiveType + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + dateFormat(po.planTransferDate) + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.requesterName + '</td>';
+            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + po.id + ',\'po\',\'เอกสารอ้างอิงสั่งซื้อ\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = po.details[0];
                 html += '<td class="bgpr">' + detail.projectName + '</td>';
@@ -713,6 +726,9 @@ function createTable() {
             html += '<td class="bgpo" ' + rowspan + '>' + po.receiptReceiveType + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + dateFormat(po.planTransferDate) + '</td>';
             html += '<td class="bgpo" ' + rowspan + '>' + po.requesterName + '</td>';
+            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + po.id + ',\'po\',\'เอกสารอ้างอิงสั่งซื้อ\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
+            html += '<td class="bgpo" ' + rowspan + '>' + po.approverName + '</td>';
+            html += '<td class="bgpo" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + po.id + ',\'poapprove\',\'เอกสารอ้างอิงตรวจสอบสั่งซื้อ\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = po.details[0];
                 html += '<td class="bgpr">' + detail.projectName + '</td>';
@@ -894,7 +910,31 @@ function edit_po(index, tab) {
         calEditAll();
     }
 }
-
+function edit_po_detail_disapprove(i) {
+    var po = poColl.all[i];
+    $('#disapprove_id').val(po.id);
+    $('#disapprove_text').html('ยกเลิกการตรวจสอบสั่งซื้อ PO เลขที่ : ' + po.poNo);
+    console.log('disapprove');
+}
+$('#disapprove_btn').click(function () {
+    var disapproveUrl = baseUrl + 'DisapproveReceive/' + $('#disapprove_id').val();
+    $.ajax({
+        type: "GET",
+        url: disapproveUrl,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            search();
+            $('#DisapproveDetail').modal('hide');
+        },
+        error: function (xhr, status, p3, p4) {
+            var err = "Error " + " " + status + " " + p3 + " " + p4;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).Message;
+            console.log(err);
+        }
+    });
+});
 function showFile() {
     $('#pr_files_pane').empty();
     $('#pr_files_pane').append('<div class="file-loading"><input id="pr_files" class="file" type="file" multiple data-preview-file-type="any" data-upload-url="#"></div>');
@@ -1255,6 +1295,7 @@ $(document).ready(function () {
     bindStore();
     bindReceiveType();
     bindPaymentType();
+    createAutocomplete('ProjectId');
     $('#approve_files').fileinput({
         language: "th",
         showUpload: false,

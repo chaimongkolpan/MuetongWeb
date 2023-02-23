@@ -301,7 +301,7 @@ function createTable() {
                 html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
             }
             html += '<td ' + rowspan + '>' + pr.requesterName + '</td>';
-            html += '<td ' + rowspan + '>' + pr.approverName + '</td>';
+            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + pr.id + ',\'pr\',\'เอกสารอ้างอิงสั่งสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = pr.details[0];
                 html += '<td>1</td>';
@@ -361,7 +361,9 @@ function createTable() {
                 html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
             }
             html += '<td ' + rowspan + '>' + pr.requesterName + '</td>';
+            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + pr.id + ',\'pr\',\'เอกสารอ้างอิงสั่งสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             html += '<td ' + rowspan + '>' + pr.approverName + '</td>';
+            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + pr.id + ',\'prapprove\',\'เอกสารอ้างอิงตรวจสอบสั่งสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = pr.details[0];
                 html += '<td>1</td>';

@@ -7,7 +7,7 @@
         <div class="col">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="ProjectName"><b>ชื่อโครงการ</b></label>
-                <select class="form-select" id="ProjectId" name="ProjectId">
+                <select id="ProjectId" name="ProjectId">
                     <option value="0" selected>ทั้งหมด</option>
                     @if (Model != null)
                     {
@@ -20,25 +20,25 @@
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="PrNoPane">
                 <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
-                <select class="form-select" id="PrNo" name="PrNo">
+                <select id="PrNo" name="PrNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="PoNoPane">
                 <label class="input-group-text" for="PoNo"><b>เลขที่ PO</b></label>
-                <select class="form-select" id="PoNo">
+                <select id="PoNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="RequesterPane">
                 <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
-                <select class="form-select" id="RequesterId" name="RequesterId">
+                <select id="RequesterId" name="RequesterId">
                     <option value="0" selected>ทั้งหมด</option>
                 </select>
             </div>
@@ -172,6 +172,7 @@
                             <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
                             <th class="bgpo" scope="col">แพลนของเข้า</th>
                             <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">เอกสารอ้างอิงสั่งซื้อ</th>
                             <th class="bgpr" scope="col">โครงการ</th>
                             <th class="bgpr" scope="col">เลขที่ PR</th>
                             <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
@@ -257,6 +258,9 @@
                             <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
                             <th class="bgpo" scope="col">แพลนของเข้า</th>
                             <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">เอกสารอ้างอิงสั่งซื้อ</th>
+                            <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                            <th class="bgpo" scope="col">เอกสารอ้างอิงตรวจสอบสั่งซื้อ</th>
                             <th class="bgpr" scope="col">โครงการ</th>
                             <th class="bgpr" scope="col">เลขที่ PR</th>
                             <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
@@ -302,8 +306,8 @@
                     <div class="row row-cols-1 row-cols-lg-2">
                         <div class="col">
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="ProjectName">ชื่อโครงการ</label>
-                                <select class="form-select" id="AddProjectId" name="AddProjectId">
+                                <label class="input-group-text" for="ProjectName"><b>ชื่อโครงการ</b></label>
+                                <select id="AddProjectId" name="AddProjectId">
                                     <option value="0" selected>ทั้งหมด</option>
                                     @if (Model != null)
                                     {
@@ -316,15 +320,17 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3" id="AddPrNoPane">
                                 <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
-                                <input type="text" class="form-control" id="AddPrNo" aria-describedby="basic-addon1">
+                                <select id="AddPrNo">
+                                    <option selected>ทั้งหมด</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col">
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3" id="AddProductPane">
                                 <label class="input-group-text" for="AddProductId">รายการสินค้า</label>
-                                <select class="form-select" id="AddProductId">
+                                <select id="AddProductId">
                                     <option selected>ทั้งหมด</option>
                                 </select>
                             </div>
@@ -388,7 +394,7 @@
                                         <div class="accordion-body">
                                             <div class="row row-cols-1 row-cols-lg-2">
                                                 <div class="col">
-                                                    <div class="input-group mb-3">
+                                                    <div class="input-group mb-3" id="AddStorePane">
                                                         <label class="input-group-text" for="add_store">ผู้จำหน่าย</label>
                                                         <select class="form-select" id="add_store" required>
                                                         </select>
@@ -635,8 +641,8 @@
                     <div class="row row-cols-1 row-cols-lg-2">
                         <div class="col">
                             <div class="input-group mb-3">
-                                <label class="input-group-text" for="EditProjectId">ชื่อโครงการ</label>
-                                <select class="form-select" id="EditProjectId" name="EditProjectId">
+                                <label class="input-group-text" for="EditProjectId"><b>ชื่อโครงการ</b></label>
+                                <select id="EditProjectId" name="EditProjectId">
                                     <option value="0" selected>ทั้งหมด</option>
                                     @if (Model != null)
                                     {
@@ -649,13 +655,15 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3" id="EditPrNoPane">
                                 <span class="input-group-text" id="basic-addon1">เลขที่ PR</span>
-                                <input type="text" class="form-control" id="EditPrNo" aria-describedby="basic-addon1">
+                                <select id="EditPrNo">
+                                    <option selected>ทั้งหมด</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col">
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3" id="EditProductPane">
                                 <label class="input-group-text" for="EditProductId">รายการสินค้า</label>
                                 <select class="form-select" id="EditProductId">
                                 </select>
@@ -721,7 +729,7 @@
                                         <div class="accordion-body">
                                             <div class="row row-cols-1 row-cols-lg-2">
                                                 <div class="col">
-                                                    <div class="input-group mb-3">
+                                                    <div class="input-group mb-3" id="EditStorePane">
                                                         <label class="input-group-text" for="ProjectName">ผู้จำหน่าย</label>
                                                         <select class="form-select" id="edit_store" required>
                                                         </select>
@@ -1081,7 +1089,7 @@
     
     <!-- The Modal RefShowFile-->
     <div class="modal" id="RefShowFile">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
 
                 <!-- Modal Header -->

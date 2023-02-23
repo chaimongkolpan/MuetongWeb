@@ -7,35 +7,41 @@ function bindFilter(projectId) {
     var jqxhr = $.get(requesterUrl)
         .done(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option value="' + item.id + '">' + item.fullname + '</option>';
-                $('#RequesterId').append(html);
+                html += '<option value="' + item.id + '">' + item.fullname + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         });
     var prnoUrl = baseUrl + 'prno/' + projectId;
     var jqxhr = $.get(prnoUrl)
         .done(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            html += '<option selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option>' + item + '</option>';
-                $('#PrNo').append(html);
+                html += '<option>' + item + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
         });
 }
 function bindContractor(projectId) {
@@ -150,6 +156,31 @@ function checkEditStatus(status) {
         return true;
     return false;
 }
+function disapprove(i) {
+    var pr = prColl.all[i];
+    $('#disapprove_id').val(pr.id);
+    $('#disapprove_text').html('ยกเลิกการตรวจสอบสั่งสินค้าเลขที่ : ' + pr.prNo);
+    console.log('disapprove');
+}
+$('#disapprove_btn').click(function () {
+    var disapproveUrl = baseUrl + 'Disapprove/' + $('#disapprove_id').val();
+    $.ajax({
+        type: "GET",
+        url: disapproveUrl,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            search();
+            $('#DisapproveDetail').modal('hide');
+        },
+        error: function (xhr, status, p3, p4) {
+            var err = "Error " + " " + status + " " + p3 + " " + p4;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).Message;
+            console.log(err);
+        }
+    });
+});
 function showRefFiles(id, type, text) {
     $('#show_files').val('');
     $('#show_files').fileinput('clear');
@@ -201,7 +232,10 @@ function createTable() {
             html += '<tr>';
             html += '<td ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
             if (checkEditStatus(pr.status)) {
-                html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
+                if (pr.status != 'รอตรวจสอบสั่งสินค้า' && pr.status != 'จัดส่งสำเร็จ' && pr.status != 'ยกเลิก' && !pr.hasPo)
+                    html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="disapprove(' + i + ')" style="color:red;" data-bs-toggle="modal" data-bs-target="#DisapproveDetail">cancel</span></td><td ' + rowspan + '></td>';
+                else
+                    html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
             } else {
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="edit_pr(' + pr.id + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionApproveOrder">view_list</span></td>';
                 html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel_pr(' + pr.id + ',\'' + pr.prNo + '\')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
@@ -282,7 +316,7 @@ function createTable() {
             }
             html += '</td>';
             html += '<td ' + rowspan + '>' + pr.requesterName + '</td>';
-            html += '<td ' + rowspan + '>' + pr.approverName + '</td>';
+            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + pr.id + ',\'pr\',\'เอกสารอ้างอิงสั่งสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = pr.details[0];
                 html += '<td>1</td>';
@@ -346,7 +380,9 @@ function createTable() {
                 html += '<td ' + rowspan + '></td><td ' + rowspan + '></td>';
             }
             html += '<td ' + rowspan + '>' + pr.requesterName + '</td>';
+            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + pr.id + ',\'pr\',\'เอกสารอ้างอิงสั่งสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             html += '<td ' + rowspan + '>' + pr.approverName + '</td>';
+            html += '<td ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + pr.id + ',\'prapprove\',\'เอกสารอ้างอิงตรวจสอบสั่งสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
             if (len > 0) {
                 var detail = pr.details[0];
                 html += '<td>1</td>';
@@ -710,7 +746,6 @@ $('#read_pr_btn').click(function () {
 });
 $(document).ready(function () {
     console.log('ready', model);
-
     $('#edit_approve_files').fileinput({
         language: "th",
         showUpload: false,
@@ -718,8 +753,9 @@ $(document).ready(function () {
     $('#edit_approve_files').on('fileselect', function (event, numFiles, label) {
         $('.kv-file-upload').hide();
     });
-
-    bindFilter(0)
+    bindFilter(0);
     bindProduct();
+    createAutocomplete('ProjectId');
+    createAutocomplete('edit_project');
     search();
 });

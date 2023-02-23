@@ -20,6 +20,7 @@ namespace MuetongWeb.Services.Interfaces
         Task<List<string>> GetPoNoByProject(long projectId);
         Task<List<string>> GetBillingNoByProject(long projectId);
         Task<bool> ApproveAsync(long id, BillingApproveRequest request);
+        Task<bool> DisapproveAsync(long id);
         Task<bool> ReadAsync(long id);
         Task<bool> CancelAsync(long id, BillingCancelRequest request);
         Task<BillPaymentResponse> GetPaymentByBill(long id);
