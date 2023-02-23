@@ -8,35 +8,41 @@ function bindFilter(projectId) {
     var jqxhr = $.get(requesterUrl)
         .done(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option value="' + item.id + '">' + item.fullname + '</option>';
-                $('#RequesterId').append(html);
+                html += '<option value="' + item.id + '">' + item.fullname + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         });
     var prnoUrl = baseUrl + 'prnoComplete/' + projectId;
     var jqxhr = $.get(prnoUrl)
         .done(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            html += '<option selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option>' + item + '</option>';
-                $('#PrNo').append(html);
+                html += '<option>' + item + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
         });
 }
 function createReceiveTable(receives, all, tab) {
@@ -45,7 +51,7 @@ function createReceiveTable(receives, all, tab) {
     if (tab == 1)
         html += '<td colspan="9">';
     else
-        html += '<td colspan="8">';
+        html += '<td colspan="9">';
     html += '<table class="table table-hover align-middle">';
     html += '<thead>';
     html += '<tr>';
@@ -168,7 +174,7 @@ function createRowExpand(pr, tab, i) {
                 html += '<td>' + detail.code + '</td>';
                 html += '<td>' + detail.remark + '</td>';
                 html += '<td>' + detail.status + '</td>';
-                if(tab == 1)
+                //if(tab == 1)
                     html += '<td><span class="material-symbols-outlined" onclick="showRefFiles(' + detail.id + ',\'prreceive\',\'เอกสารอ้างอิงรับสินค้า\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
                 html += '</tr>';
                 if (detail.receives.length > 0) html += rece.html;
@@ -503,5 +509,6 @@ $('#receive_btn').click(function () {
 $(document).ready(function () {
     console.log('ready', model);
     bindFilter(0)
+    createAutocomplete('ProjectId');
     search();
 });

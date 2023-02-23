@@ -25,7 +25,7 @@ namespace MuetongWeb.Controllers
                 if (SessionHelpers.SessionAlive(HttpContext.Session))
                 {
                     var user = SessionHelpers.GetUserInfo(HttpContext.Session);
-                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Setting_Index_View, user.Permissions))
+                    if (user != null && PermissionHelpers.Authenticate(PermissionConstants.Setting_Product_View, user.Permissions))
                     {
                         ProductRequest request = new ProductRequest();
                         var response = await _productServices.GetAsync(request);

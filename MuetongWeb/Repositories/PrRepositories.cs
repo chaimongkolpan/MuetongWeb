@@ -67,7 +67,7 @@ namespace MuetongWeb.Repositories
                             && (!request.ProjectId.HasValue || request.ProjectId.Value == RequestConstants.AllValue || pr.ProjectId == request.ProjectId.Value)
                             && (string.IsNullOrWhiteSpace(request.PrNo) || request.PrNo == RequestConstants.AllString || pr.PrNo == request.PrNo)
                             && (!request.RequesterId.HasValue || request.RequesterId.Value == RequestConstants.AllValue || pr.UserId == request.RequesterId.Value)
-                            && pr.PrDetails.Any(detail => detail.Status == StatusConstants.PrRequested)
+                            && pr.PrDetails.Any(detail => detail.Status == StatusConstants.PrDetailRequested || detail.Status == StatusConstants.PrDetailWaitingOrder)
                         )
                         .OrderBy(pr => pr.CreateDate)
                         .Include(pr => pr.Project)
@@ -218,6 +218,18 @@ namespace MuetongWeb.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> Disapprove(long id)
+        {
+            var pr = await _dbContext.Prs.FindAsync(id);
+            if (pr == null)
+                return false;
+            pr.Status = StatusConstants.PrWaitingApprove;
+            pr.ApproverId = null;
+            pr.ApproveDate = null;
+            pr.ModifyDate = DateTime.Now;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
         public async Task<bool> UpdateAllDetailStatus(long prId, string status)
         {
             var details = await _dbContext.PrDetails.Where(detail => detail.PrId == prId).ToListAsync();
@@ -297,8 +309,8 @@ namespace MuetongWeb.Repositories
         public async Task<bool> CheckReceive(List<long> detailId)
         {
             var details = await _dbContext.PrDetails.Where(detail => detailId.Contains(detail.Id))
-                                    .Include(detail => detail.PrReceives)
-                                       .ToListAsync();
+                                                    .Include(detail => detail.PrReceives)
+                                                    .ToListAsync();
             details.ForEach(detail =>
             {
                 if (detail.PrReceives != null && detail.PrReceives.Any())
@@ -311,8 +323,21 @@ namespace MuetongWeb.Repositories
                 }
             });
             await _dbContext.SaveChangesAsync();
+            var detailIds = details.Where(detail => detail.PoDetailId.HasValue).Select(detail => detail.PoDetailId.Value).ToList();
+            var pos = await _dbContext.Pos.Where(po => po.PoDetails.Any(detail => detailIds.Contains(detail.Id)))
+                                        .Include(po => po.PoDetails).ThenInclude(detail => detail.PrDetails)
+                                        .ToListAsync();
+            pos.ForEach(po =>
+            {
+                if (po.PoDetails.All(detail => detail.PrDetails.All(detail => detail.Status == StatusConstants.PrDetailComplete)))
+                {
+                    po.Status = StatusConstants.PoComplete;
+                    po.ModifyDate = DateTime.Now;
+                }
+            });
+            await _dbContext.SaveChangesAsync();
             var prIds = details.Select(detail => detail.PrId).Distinct().ToList();
-            var prs = await _dbContext.Prs.Where(pr => prIds.Contains(pr.Id)).ToListAsync();
+            var prs = await _dbContext.Prs.Where(pr => prIds.Contains(pr.Id)).Include(pr => pr.PrDetails).ToListAsync();
             prs.ForEach(pr =>
             {
                 if (pr.PrDetails.All(detail => detail.Status == StatusConstants.PrDetailComplete))
@@ -324,13 +349,26 @@ namespace MuetongWeb.Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> DisapproveReceive(List<long> detailId)
+        public async Task<bool> DisapproveReceive(List<long> detailId) 
         {
             var details = await _dbContext.PrDetails.Where(detail => detailId.Contains(detail.Id))
                                        .ToListAsync();
             details.ForEach(detail =>
             {
                 detail.Status = StatusConstants.PrDetailWaitingTransfer;
+            });
+            await _dbContext.SaveChangesAsync();
+            var detailIds = details.Where(detail => detail.PoDetailId.HasValue).Select(detail => detail.PoDetailId.Value).ToList();
+            var pos = await _dbContext.Pos.Where(po => po.PoDetails.Any(detail => detailIds.Contains(detail.Id)))
+                                        .Include(po => po.PoDetails).ThenInclude(detail => detail.PrDetails)
+                                        .ToListAsync();
+            pos.ForEach(po =>
+            {
+                if (po.PoDetails.Any(detail => detail.PrDetails.Any(detail => detail.Status != StatusConstants.PrDetailComplete)))
+                {
+                    po.Status = StatusConstants.PoRequested;
+                    po.ModifyDate = DateTime.Now;
+                }
             });
             await _dbContext.SaveChangesAsync();
             var prIds = details.Select(detail => detail.PrId).Distinct().ToList();

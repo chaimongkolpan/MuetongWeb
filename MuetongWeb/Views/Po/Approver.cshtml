@@ -7,7 +7,7 @@
         <div class="col">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="ProjectName"><b>ชื่อโครงการ</b></label>
-                <select class="form-select" id="ProjectId" name="ProjectId">
+                <select id="ProjectId" name="ProjectId">
                     <option value="0" selected>ทั้งหมด</option>
                     @if (Model != null)
                     {
@@ -20,25 +20,25 @@
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="PrNoPane">
                 <label class="input-group-text" for="PrNo"><b>เลขที่ PR</b></label>
-                <select class="form-select" id="PrNo">
+                <select id="PrNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
-                <label class="input-group-text" for="PrNo"><b>เลขที่ PO</b></label>
-                <select class="form-select" id="PoNo">
+            <div class="input-group mb-3" id="PoNoPane">
+                <label class="input-group-text" for="PoNo"><b>เลขที่ PO</b></label>
+                <select id="PoNo">
                     <option selected>ทั้งหมด</option>
                 </select>
             </div>
         </div>
         <div class="col">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" id="RequesterPane">
                 <label class="input-group-text" for="RequesterId"><b>ผู้สั่งสินค้า</b></label>
-                <select class="form-select" id="RequesterId">
+                <select id="RequesterId">
                     <option value="0" selected>ทั้งหมด</option>
                 </select>
             </div>
@@ -112,7 +112,7 @@
                             <th class="bgpr" scope="col">เลขที่ PR</th>
                             <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
                             <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
-                            <th class="bgpr" class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                            <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
                             <th class="bgpr" scope="col">หักผู้รับเหมา</th>
                             <th class="bgpr" scope="col">ผู้รับเหมา</th>
                             <th class="bgpr" scope="col">ลำดับสินค้า</th>
@@ -164,11 +164,12 @@
                             <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
                             <th class="bgpo" scope="col">แพลนของเข้า</th>
                             <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">เอกสารอ้างอิงสั่งซื้อ</th>
                             <th class="bgpr" scope="col">โครงการ</th>
                             <th class="bgpr" scope="col">เลขที่ PR</th>
                             <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
                             <th class="bgpr" scope="col">ผู้สั่งสินค้า</th>
-                            <th class="bgpr" class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
+                            <th class="bgpr" scope="col">ผู้ตรวจสอบสั่งสินค้า</th>
                             <th class="bgpr" scope="col">หักผู้รับเหมา</th>
                             <th class="bgpr" scope="col">ผู้รับเหมา</th>
                             <th class="bgpr" scope="col">ลำดับสินค้า</th>
@@ -219,6 +220,9 @@
                             <th class="bgpo" scope="col">ช่องทางรับใบเสร็จรับเงิน/ใบกำกับภาษี</th>
                             <th class="bgpo" scope="col">แพลนของเข้า</th>
                             <th class="bgpo" scope="col">ผู้สั่งซื้อ</th>
+                            <th class="bgpo" scope="col">เอกสารอ้างอิงสั่งซื้อ</th>
+                            <th class="bgpo" scope="col">ผู้ตรวจสอบสั่งซื้อ</th>
+                            <th class="bgpo" scope="col">เอกสารอ้างอิงตรวจสอบสั่งซื้อ</th>
                             <th class="bgpr" scope="col">โครงการ</th>
                             <th class="bgpr" scope="col">เลขที่ PR</th>
                             <th class="bgpr" scope="col">วันที่สั่งซื้อ</th>
@@ -692,7 +696,7 @@
     <!-- ///////////////// -->
     <!-- The Modal RefShowFile-->
     <div class="modal" id="RefShowFile">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
 
                 <!-- Modal Header -->
@@ -717,6 +721,34 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ///////////////// -->
+
+    <input type="hidden" id="disapprove_id" />
+    <!-- The Modal DisapproveDetail-->
+    <div class="modal" id="DisapproveDetail">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">ยกเลิกการตรวจสอบ</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <span id="disapprove_text">ยกเลิกการตรวจสอบสั่งซื้อ</span>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <button type="button" class="btn btn-danger" id="disapprove_btn">ยืนยันยกเลิก</button>
                 </div>
 
             </div>

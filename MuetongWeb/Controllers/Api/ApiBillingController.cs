@@ -237,6 +237,29 @@ namespace MuetongWeb.Controllers.Api
             }
             return BadRequest();
         }
+        [Route("Disapprove/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> Disapprove(long id)
+        {
+            try
+            {
+                if (SessionHelpers.SessionAlive(HttpContext.Session))
+                {
+                    var user = SessionHelpers.GetUserInfo(HttpContext.Session);
+                    if (user != null)
+                    {
+                        var response = await _billingServices.DisapproveAsync(id);
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("ApiBillingController => Disapprove: " + ex.Message);
+                return BadRequest(ex.Message);
+            }
+            return BadRequest();
+        }
         [Route("Read/{id}")]
         [HttpGet]
         public async Task<IActionResult> Read(long id)

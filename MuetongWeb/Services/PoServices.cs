@@ -299,8 +299,14 @@ namespace MuetongWeb.Services
                             vat += addDetail.Vat;
                             wht += addDetail.Wht;
                             grandtotal += addDetail.GrandTotal;
-                            addDetails.Add(addDetail);
-                            addPrDetails.Add(detail.PrDetailId.Value);
+
+                            await _poRepositories.AddDetailAsync(addDetail);
+                            prDetail.Status = StatusConstants.PrDetailWaitingOrder;
+                            prDetail.PoDetailId = addDetail.Id;
+                            await _prRepositories.UpdateDetailAsync(prDetail);
+
+                            //addDetails.Add(addDetail);
+                            //addPrDetails.Add(detail.PrDetailId.Value);
                         }
                         else 
                         {
@@ -322,11 +328,11 @@ namespace MuetongWeb.Services
                             grandtotal += tmp.GrandTotal;
                         }
                     }
-                    if (addDetails.Any())
-                    {
-                        await _poRepositories.AddDetailRangeAsync(addDetails);
-                        await _prRepositories.UpdateAllDetailStatus(addPrDetails, StatusConstants.PrDetailWaitingOrder);
-                    }
+                    //if (addDetails.Any())
+                    //{
+                    //    await _poRepositories.AddDetailRangeAsync(addDetails);
+                    //    await _prRepositories.UpdateAllDetailStatus(addPrDetails, StatusConstants.PrDetailWaitingOrder);
+                    //}
                     await _poRepositories.UpdateDetailRangeAsync(details);
                     ids = request.Details.Where(x => x.Id.HasValue && x.Id.Value != 0)
                         .Select(x => x.Id.Value).ToList();
@@ -544,6 +550,18 @@ namespace MuetongWeb.Services
             {
                 _logger.LogError("PoServices => GetFiles: " + ex.Message);
                 return new FileModalResponse();
+            }
+        }
+        public async Task<bool> DisapproveReceiveAsync(long poId)
+        {
+            try
+            {
+                return await _poRepositories.Disapprove(poId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PoServices => DisapproveReceiveAsync: " + ex.Message);
+                return false;
             }
         }
         #endregion

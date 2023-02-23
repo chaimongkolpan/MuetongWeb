@@ -38,26 +38,24 @@ namespace MuetongWeb.Models.Responses
                     {
                         UnreadCancelCount++;
                     }
-                    else
-                        All.Add(tmp);
+                    //else
+                        //All.Add(tmp);
                     Cancel.Add(tmp);
                 }
                 else if (status == StatusConstants.BillingWaitingApprove)
                 {
                     WaitingApproveCount++;
                     WaitingApprove.Add(tmp);
-                    All.Add(tmp);
+                    //All.Add(tmp);
                 }
                 else if (status == StatusConstants.BillingWaitingReceipt || status == StatusConstants.BillingWaitingPayment)
                 {
                     WaitingReceiptCount++;
                     WaitingReceipt.Add(tmp);
-                    All.Add(tmp);
+                    //All.Add(tmp);
                 }
-                else
-                {
+                //else
                     All.Add(tmp);
-                }
             }
         }
         public BillingIndexResponse(IEnumerable<Billing> bills, IEnumerable<Po> pos, IEnumerable<Po> poBills, List<Models.Entities.File> files)
@@ -91,18 +89,16 @@ namespace MuetongWeb.Models.Responses
                 {
                     WaitingApproveCount++;
                     WaitingApprove.Add(tmp);
-                    All.Add(tmp);
+                    //All.Add(tmp);
                 }
                 else if (status == StatusConstants.BillingWaitingReceipt || status == StatusConstants.BillingWaitingPayment)
                 {
                     WaitingReceiptCount++;
                     WaitingReceipt.Add(tmp);
-                    All.Add(tmp);
+                    //All.Add(tmp);
                 }
-                else
-                {
+                //else
                     All.Add(tmp);
-                }
             }
         }
     }

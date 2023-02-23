@@ -33,20 +33,18 @@ namespace MuetongWeb.Models.Responses
                     {
                         UnreadCancelCount++;
                     }
-                    else
-                        All.Add(tmp);
+                    //else
+                        //All.Add(tmp);
                     Cancel.Add(tmp);
                 }
                 else if (status == StatusConstants.PoWaitingApprove)
                 {
                     WaitingCount++;
                     Waiting.Add(tmp);
-                    All.Add(tmp);
+                    //All.Add(tmp);
                 }
-                else
-                {
+                //else
                     All.Add(tmp);
-                }
             }
         }
         public PoIndexResponse(IEnumerable<Po> pos, IEnumerable<Pr> prs, List<Models.Entities.File> files, List<Models.Entities.File> prFiles, List<Models.Entities.File> prApproveFiles)
@@ -85,16 +83,15 @@ namespace MuetongWeb.Models.Responses
                     WaitingCount++;
                     Waiting.Add(tmp);
                 }
-                else
-                {
+                //else
                     All.Add(tmp);
-                }
             }
         }
     }
     public class PoResponse
     {
         public long Id { get; set; }
+        public bool HasBilling { get; set; } = true;
         public string PoNo { get; set; } = null!;
         public long? StoreId { get; set; }
         public string? StoreName { get; set; }
@@ -139,6 +136,7 @@ namespace MuetongWeb.Models.Responses
         public PoResponse() { }
         public PoResponse(Po po)
         {
+            HasBilling = po.PoBillings.Any(bill => bill.Billing.Status != StatusConstants.BillingCancel);
             Id = po.Id;
             PoNo = string.IsNullOrWhiteSpace(po.PoNo) ? string.Empty : po.PoNo;
             StoreId = po.StoreId;

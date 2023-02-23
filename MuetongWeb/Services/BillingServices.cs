@@ -227,6 +227,24 @@ namespace MuetongWeb.Services
                 return false;
             }
         }
+        public async Task<bool> DisapproveAsync(long id)
+        {
+            try
+            {
+                var bill = await _billingRepositories.GetAsync(id);
+                if (bill == null)
+                    return false;
+                bill.Status = StatusConstants.BillingWaitingApprove;
+                bill.ModifyDate = DateTime.Now;
+                await _billingRepositories.UpdateAsync(bill);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("BillingServices => DisapproveAsync: " + ex.Message);
+                return false;
+            }
+        }
         public async Task<bool> ReadAsync(long id)
         {
             try
@@ -327,12 +345,12 @@ namespace MuetongWeb.Services
         }
         public async Task<List<string>> GetPoNoByProject(long projectId)
         {
-            IEnumerable<Pr> prs;
+            IEnumerable<Po> pos;
             if (projectId == 0)
-                prs = await _prRepositories.GetAsync();
+                pos = await _poRepositories.GetAsync();
             else
-                prs = await _prRepositories.GetByProjectAsync(projectId);
-            var response = prs.Select(pr => pr.PrNo).Distinct().ToList();
+                pos = await _poRepositories.GetByProjectAsync(projectId);
+            var response = pos.Select(po => po.PoNo).Distinct().ToList();
             return response;
         }
         public async Task<List<string>> GetBillingNoByProject(long projectId)

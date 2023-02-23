@@ -25,17 +25,17 @@ namespace MuetongWeb.Models.Responses
                     {
                         UnreadCancelCount++;
                     }
-                    else
-                        All.Add(tmp);
+                    //else
+                        //All.Add(tmp);
                     Cancel.Add(tmp);
                 }
                 else if (status == StatusConstants.PrWaitingApprove)
                 {
                     WaitingCount++;
                     Waiting.Add(tmp);
-                    All.Add(tmp);
+                    //All.Add(tmp);
                 }
-                else
+                //else
                     All.Add(tmp);
                 
             }
@@ -43,6 +43,7 @@ namespace MuetongWeb.Models.Responses
     }
 	public class PrResponse
     {
+        public bool HasPo { get; set; } = false;
         public long Id { get; set; }
         public long? ProjectId { get; set; }
         public string ProjectName { get; set; } = string.Empty;
@@ -61,6 +62,7 @@ namespace MuetongWeb.Models.Responses
         public PrResponse() { }
         public PrResponse(Pr pr)
         {
+            HasPo = pr.PrDetails.Any(detail => detail.PoDetail != null && detail.PoDetail.Po.Status != StatusConstants.PoCancel);
             Id = pr.Id;
             ProjectId = pr.ProjectId;
             if (pr.Project != null)

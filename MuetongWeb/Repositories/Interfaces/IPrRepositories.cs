@@ -25,6 +25,7 @@ namespace MuetongWeb.Repositories.Interfaces
         Task<bool> Read(long id);
         Task<bool> Cancel(long id);
         Task<bool> Approve(long id, long userId);
+        Task<bool> Disapprove(long id);
 
         Task<bool> UpdateAllDetailStatus(long prId, string status);
         Task<bool> UpdateAllDetailStatus(List<long> ids, string status);

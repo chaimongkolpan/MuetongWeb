@@ -14,69 +14,81 @@ function bindFilter(id) {
     var jqxhr = $.get(requesterUrl)
         .done(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option value="' + item.id + '">' + item.fullname + '</option>';
-                $('#RequesterId').append(html);
+                html += '<option value="' + item.id + '">' + item.fullname + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#RequesterId').empty();
-            $('#RequesterId').append('<option value="0" selected>ทั้งหมด</option>');
+            var html = '<select id="RequesterId" name="RequesterId">';
+            html += '<option value="0" selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('RequesterPane', 'RequesterId', 'ผู้สั่งสินค้า', html);
         });
     var prnoUrl = baseUrl + 'prno/' + id;
     var jqxhr = $.get(prnoUrl)
         .done(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            html += '<option selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option>' + item + '</option>';
-                $('#PrNo').append(html);
+                html += '<option>' + item + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#PrNo').empty();
-            $('#PrNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PrNo" name="PrNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('PrNoPane', 'PrNo', 'เลขที่ PR', html);
         });
     var ponoUrl = baseUrl + 'pono/' + id;
     var jqxhr = $.get(ponoUrl)
         .done(function (response) {
             console.log(response);
-            $('#PoNo').empty();
-            $('#PoNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PoNo" name="PoNo">';
+            html += '<option selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option>' + item + '</option>';
-                $('#PoNo').append(html);
+                html += '<option>' + item + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('PoNoPane', 'PoNo', 'เลขที่ PO', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#PoNo').empty();
-            $('#PoNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="PoNo" name="PoNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('PoNoPane', 'PoNo', 'เลขที่ PO', html);
         });
     var billingnoUrl = baseUrl + 'billingno/' + id;
     var jqxhr = $.get(billingnoUrl)
         .done(function (response) {
             console.log(response);
-            $('#BillingNo').empty();
-            $('#BillingNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="BillingNo" name="BillingNo">';
+            html += '<option selected>ทั้งหมด</option>';
             for (var i in response) {
                 var item = response[i];
-                var html = '<option>' + item + '</option>';
-                $('#BillingNo').append(html);
+                html += '<option>' + item + '</option>';
             }
+            html += '</select>';
+            dynamicCreateAutocomplete('BillingNoPane', 'BillingNo', 'เลขที่ใบวางบิล', html);
         })
         .fail(function (response) {
             console.log(response);
-            $('#BillingNo').empty();
-            $('#BillingNo').append('<option selected>ทั้งหมด</option>');
+            var html = '<select id="BillingNo" name="BillingNo">';
+            html += '<option selected>ทั้งหมด</option>';
+            html += '</select>';
+            dynamicCreateAutocomplete('BillingNoPane', 'BillingNo', 'เลขที่ใบวางบิล', html);
         });
 }
 function bindStore() {
@@ -260,7 +272,9 @@ function createRowApproveTable(bill, i, tab) {
         html += '<td class="bgpc" ' + rowspan + '></td><td class="bgpc" ' + rowspan + '></td>';
     }
     html += '<td class="bgpc" ' + rowspan + '>' + bill.requesterName + '</td>';
+    html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + bill.id + ',\'billing\',\'เอกสารอ้างอิงวางบิล\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
     html += '<td class="bgpc" ' + rowspan + '>' + bill.approverName + '</td>';
+    html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + bill.id + ',\'billingapprove\',\'เอกสารอ้างอิงตรวจสอบวางบิล\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
     html += '<td class="bgpc" ' + rowspan + '>' + bill.status + '</td>';
     if (bill.details.length > 0) {
         var po = bill.details[0];
@@ -343,7 +357,9 @@ function createRowCancelTable(bill, i) {
         html += '<td class="bgpc" ' + rowspan + '></td><td class="bgpc" ' + rowspan + '></td>';
     }
     html += '<td class="bgpc" ' + rowspan + '>' + bill.requesterName + '</td>';
+    html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + bill.id + ',\'billing\',\'เอกสารอ้างอิงวางบิล\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
     html += '<td class="bgpc" ' + rowspan + '>' + bill.approverName + '</td>';
+    html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + bill.id + ',\'billingapprove\',\'เอกสารอ้างอิงตรวจสอบวางบิล\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
     html += '<td class="bgpc" ' + rowspan + '>' + bill.status + '</td>';
     if (bill.details.length > 0) {
         var po = bill.details[0];
@@ -531,7 +547,9 @@ function createRowFullTable(bill, i, tab) {
     html += '<tr>';
     html += '<td class="bgpc" ' + rowspan + '>' + (parseInt(i) + 1) + '</td>';
     html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="edit(' + i + ',' + tab + ')" style="color:#0752AE;" data-bs-toggle="modal" data-bs-target="#ActionAll">view_list</span></td>';
-    if (bill.status == "วางบิลสำเร็จ" || bill.status == "ยกเลิก") {
+    if (bill.status == "วางบิลสำเร็จ") {
+        html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="disapprove(' + i + ')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#DisapproveDetail">cancel</span></td>';
+    } else if (bill.status == "ยกเลิก") {
         html += '<td class="bgpc" ' + rowspan + '></td>';
     } else {
         html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="cancel(' + i + ',' + tab + ')" style="color:#A42206;" data-bs-toggle="modal" data-bs-target="#ActionCancel">delete</span></td>';
@@ -561,10 +579,10 @@ function createRowFullTable(bill, i, tab) {
         html += '<td class="bgpc" ' + rowspan + '></td><td class="bgpc" ' + rowspan + '></td>';
     }
     html += '<td class="bgpc" ' + rowspan + '>' + bill.requesterName + '</td>';
-    if (tab == 1)
+    //if (tab == 1)
         html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + bill.id + ',\'billing\',\'เอกสารอ้างอิงวางบิล\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
     html += '<td class="bgpc" ' + rowspan + '>' + bill.approverName + '</td>';
-    if (tab == 1)
+    //if (tab == 1)
         html += '<td class="bgpc" ' + rowspan + '><span class="material-symbols-outlined" onclick="showRefFiles(' + bill.id + ',\'billingapprove\',\'เอกสารอ้างอิงตรวจสอบวางบิล\')" data-bs-toggle="modal" data-bs-target="#RefShowFile">description</span></td>';
     html += '<td class="bgpc" ' + rowspan + '>' + bill.status + '</td>';
     if (bill.details.length > 0) {
@@ -610,6 +628,31 @@ function createRowFullTable(bill, i, tab) {
     }
     return html;
 }
+function disapprove(i) {
+    var bill = billingColl.all[i];
+    $('#disapprove_id').val(bill.id);
+    $('#disapprove_text').html('ยกเลิกการตรวจสอบการวางบิลเลขที่ : ' + bill.billingNo);
+    console.log('disapprove');
+}
+$('#disapprove_btn').click(function () {
+    var disapproveUrl = baseUrl + 'Disapprove/' + $('#disapprove_id').val();
+    $.ajax({
+        type: "GET",
+        url: disapproveUrl,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            search();
+            $('#DisapproveDetail').modal('hide');
+        },
+        error: function (xhr, status, p3, p4) {
+            var err = "Error " + " " + status + " " + p3 + " " + p4;
+            if (xhr.responseText && xhr.responseText[0] == "{")
+                err = JSON.parse(xhr.responseText).Message;
+            console.log(err);
+        }
+    });
+});
 function createRowPoTable(po, i) {
     var html = '';
     html += '<tr>';
@@ -798,7 +841,8 @@ $('#search_btn').click(function () {
 
 $(document).ready(function () {
     console.log('ready', model);
-    bindFilter(0)
+    bindFilter(0);
+    createAutocomplete('ProjectId');
     bindStore();
     search();
 });

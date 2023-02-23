@@ -13,6 +13,8 @@
         #region Setting
         public static string Setting_Index_View = "setting_index_view";
         public static string Setting_Index_Edit = "setting_index_edit";
+        public static string Setting_Product_View = "setting_product_view";
+        public static string Setting_Store_View = "setting_store_view";
         #endregion
         // admin role
 
