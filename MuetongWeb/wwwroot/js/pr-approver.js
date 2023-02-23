@@ -170,6 +170,7 @@ $('#disapprove_btn').click(function () {
         contentType: false,
         processData: false,
         success: function (result) {
+            alert('บันทึกสำเร็จ');
             search();
             $('#DisapproveDetail').modal('hide');
         },
@@ -178,6 +179,7 @@ $('#disapprove_btn').click(function () {
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).Message;
             console.log(err);
+            alert('บันทึกไม่สำเร็จ');
         }
     });
 });
@@ -647,6 +649,7 @@ $('#edit_pr_btn').click(function () {
         data: data,
         success: function (result) {
             console.log(result);
+            alert('บันทึกสำเร็จ');
             search();
             $('#ActionApproveOrder').modal('hide');
         },
@@ -655,6 +658,7 @@ $('#edit_pr_btn').click(function () {
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).Message;
             console.log(err);
+            alert('บันทึกไม่สำเร็จ');
         }
     });
 });
@@ -672,6 +676,7 @@ $('#cancel_btn').click(function () {
         contentType: false,
         processData: false,
         success: function (result) {
+            alert('บันทึกสำเร็จ');
             search();
             $('#ActionCancel').modal('hide');
         },
@@ -680,6 +685,7 @@ $('#cancel_btn').click(function () {
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).Message;
             console.log(err);
+            alert('บันทึกไม่สำเร็จ');
             $('#ActionCancel').modal('hide');
         }
     });
@@ -707,6 +713,7 @@ $('#approve_btn').click(function () {
         processData: false,
         data: data,
         success: function (result) {
+            alert('บันทึกสำเร็จ');
             search();
             $('#ActionConfirm').modal('hide');
         },
@@ -715,6 +722,7 @@ $('#approve_btn').click(function () {
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).Message;
             console.log(err);
+            alert('บันทึกไม่สำเร็จ');
             $('#ActionConfirm').modal('hide');
         }
     });
@@ -732,6 +740,7 @@ $('#read_pr_btn').click(function () {
         contentType: false,
         processData: false,
         success: function (result) {
+            alert('บันทึกสำเร็จ');
             search();
             $('#ActionApproveCancel').modal('hide');
         },
@@ -740,6 +749,7 @@ $('#read_pr_btn').click(function () {
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).Message;
             console.log(err);
+            alert('บันทึกไม่สำเร็จ');
             $('#ActionApproveCancel').modal('hide');
         }
     });

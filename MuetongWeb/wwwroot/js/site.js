@@ -1,4 +1,6 @@
-﻿var url = window.location.pathname;
+﻿var alertBorder = '2px solid #ff2020';
+var normalBorder = '1px solid #ced4da';
+var url = window.location.pathname;
 if ((url.includes("/Po") || url.includes("/po"))
     && !(url.includes("/Approver") || url.includes("/approver"))) {
     $('#po-index').addClass("active");
@@ -54,7 +56,21 @@ if ((url.includes("/Po") || url.includes("/po"))
     $('#admin-dropdown').addClass("active");
     $('#admin-password').addClass("active");
 }
-
+function isEmpty(text) {
+    return text == null || text == '' || text.length == 0;
+}
+function setBorderRed(id) {
+    $('#' + id).css("border", alertBorder);
+}
+function setBorderNormal(id) {
+    $('#' + id).css("border", normalBorder);
+}
+function checkTextInput(id) {
+    $('#' + id).focusout(function () {
+        if (isEmpty(this.value)) $(this).css("border", alertBorder);
+        else $(this).css("border", normalBorder);
+    });
+}
 function dateValue(date) {
     if (date == null) return '';
     var dateTime = new Date(date);
@@ -92,6 +108,7 @@ function createAutocomplete(id) {
         });
         let sortingClass = sorting.getAttribute('class');
         sorting.parentElement.setAttribute('class', sortingClass);
+        return sortingchoices;
     } catch (e) {
         console.log('error choices', e);
     }
@@ -102,7 +119,7 @@ function dynamicCreateAutocomplete(pane, id, text, selectCode) {
         $('#' + pane).empty();
         $('#' + pane).append('<label class="input-group-text" for="' + id + '"><b>' + text + '</b></label>');
         $('#' + pane).append(selectCode);
-        createAutocomplete(id);
+        return createAutocomplete(id);
     } catch (e) {
         console.log('error choices', e);
     }

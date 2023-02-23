@@ -359,6 +359,7 @@ $('#approve_btn').click(function () {
         contentType: false,
         processData: false,
         success: function (result) {
+            alert('บันทึกสำเร็จ');
             search();
             $('#ApproveDetail').modal('hide');
         },
@@ -367,6 +368,7 @@ $('#approve_btn').click(function () {
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).Message;
             console.log(err);
+            alert('บันทึกไม่สำเร็จ');
         }
     });
 });
@@ -378,6 +380,7 @@ $('#disapprove_btn').click(function () {
         contentType: false,
         processData: false,
         success: function (result) {
+            alert('บันทึกสำเร็จ');
             search();
             $('#DisapproveDetail').modal('hide');
         },
@@ -386,6 +389,7 @@ $('#disapprove_btn').click(function () {
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).Message;
             console.log(err);
+            alert('บันทึกไม่สำเร็จ');
         }
     });
 });

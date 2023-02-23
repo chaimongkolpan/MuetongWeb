@@ -5,6 +5,9 @@ var projectCodes = [];
 var prColl = {};
 var prnoChoice = null;
 var requesterChoice = null;
+var addProduct;
+var editProduct;
+var editProject;
 function bindFilter(projectId) {
     var requesterUrl = baseUrl + 'requester/' + projectId;
     var jqxhr = $.get(requesterUrl)
@@ -146,8 +149,8 @@ function bindProduct() {
             $('#add_detail_product').append(html);
             $('#edit_detail_product').append(html);
         }
-        createAutocomplete('add_detail_product');
-        createAutocomplete('edit_detail_product');
+        addProduct = createAutocomplete('add_detail_product');
+        editProduct = createAutocomplete('edit_detail_product');
     })
     .fail(function (response) {
         console.log(response);
@@ -437,7 +440,8 @@ function add_edit_detail(index) {
     //console.log(index, detail);
     $('#add_detail_btn').hide();
     $('#add_detail_edit_btn').show();
-    $('#add_detail_product').val(detail.ProductId);
+    addProduct.setChoiceByValue(detail.ProductId.toString());
+    //$('#add_detail_product').val(detail.ProductId);
     $('#add_detail_project_code').val(detail.ProjectCodeId);
     $('#add_detail_quantity').val(detail.Quantity);
     $('#add_detail_usedate').val(detail.UseDate);
@@ -454,7 +458,8 @@ function edit_edit_detail(index) {
     //console.log(index, detail);
     $('#edit_detail_btn').hide();
     $('#edit_detail_edit_btn').show();
-    $('#edit_detail_product').val(detail.ProductId);
+    editProduct.setChoiceByValue(detail.ProductId.toString());
+    //$('#edit_detail_product').val(detail.ProductId);
     $('#edit_detail_project_code').val(detail.ProjectCodeId);
     $('#edit_detail_quantity').val(detail.Quantity);
     $('#edit_detail_usedate').val(detail.UseDate);
@@ -574,43 +579,50 @@ $('#add_detail_edit_btn').click(function () {
     bindDetailTable();
 });
 $('#add_pr_btn').click(function () {
-    console.log(add_detail);
-    const input = document.getElementById('add_files');
-    var addUrl = baseUrl + 'add';
-    var data = new FormData();
-    data.append("ProjectId", $('#add_project').val());
-    data.append("PrNo", $('#add_pr_no').val());
-    data.append("AdvancePay", $('#add_advance_pay').prop('checked'));
-    data.append("ContractorId", $('#add_contractor').val());
-    for (var i = 0;i < input.files.length;i++) {
-        data.append("Files", input.files[i]);
-    }
-    for (var i = 0; i < add_detail.length;i++) {
-        var detail = add_detail[i];
-        delete detail['Product'];
-        delete detail['ProjectCode']; 
-    }
-    var jsonStr = JSON.stringify(add_detail);
-    data.append("JsonDetails", jsonStr);
-    console.log(data);
-    $.ajax({
-        type: "POST",
-        url: addUrl,
-        contentType: false,
-        processData: false,
-        data: data,
-        success: function (result) {
-            console.log(result);
-            search();
-            $('#AddOrder').modal('hide');
-        },
-        error: function (xhr, status, p3, p4) {
-            var err = "Error " + " " + status + " " + p3 + " " + p4;
-            if (xhr.responseText && xhr.responseText[0] == "{")
-                err = JSON.parse(xhr.responseText).Message;
-            console.log(err);
+    if (!isEmpty($('#add_pr_no').val())) {
+        console.log(add_detail);
+        const input = document.getElementById('add_files');
+        var addUrl = baseUrl + 'add';
+        var data = new FormData();
+        data.append("ProjectId", $('#add_project').val());
+        data.append("PrNo", $('#add_pr_no').val());
+        data.append("AdvancePay", $('#add_advance_pay').prop('checked'));
+        data.append("ContractorId", $('#add_contractor').val());
+        for (var i = 0;i < input.files.length;i++) {
+            data.append("Files", input.files[i]);
         }
-    });
+        for (var i = 0; i < add_detail.length;i++) {
+            var detail = add_detail[i];
+            delete detail['Product'];
+            delete detail['ProjectCode']; 
+        }
+        var jsonStr = JSON.stringify(add_detail);
+        data.append("JsonDetails", jsonStr);
+        console.log(data);
+        $.ajax({
+            type: "POST",
+            url: addUrl,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                console.log(result);
+                alert('บันทึกสำเร็จ');
+                search();
+                $('#AddOrder').modal('hide');
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                console.log(err);
+                alert('บันทึกไม่สำเร็จ');
+            }
+        });
+    } else {
+        alert('กรุณากรอกข้อมูลให้ครบ');
+            setBorderRed('edit_pr_no');
+    }
 });
 $('#edit_project').change(function () {
     var projectId = $('#edit_project').val();
@@ -660,7 +672,8 @@ function edit_pr(id) {
             });
 
             $('#edit_id').val(id);
-            $('#edit_project').val(result.projectId);
+            editProject.setChoiceByValue(result.projectId.toString());
+            //$('#edit_project').val(result.projectId);
             $('#edit_detail_pane').hide();
             $('#edit_pr_no').val(result.prNo);
             if (result.isAdvancePay) {
@@ -738,44 +751,51 @@ $('#edit_detail_edit_btn').click(function () {
     bindDetailTableEdit();
 });
 $('#edit_pr_btn').click(function () {
-    console.log(edit_detail);
-    var id = $('#edit_id').val();
-    const input = document.getElementById('edit_files');
-    var updateUrl = baseUrl + 'update/' + id;
-    var data = new FormData();
-    data.append("ProjectId", $('#edit_project').val());
-    data.append("PrNo", $('#edit_pr_no').val());
-    data.append("AdvancePay", $('#edit_advance_pay').prop('checked'));
-    data.append("ContractorId", $('#edit_contractor').val());
-    for (var i = 0; i < input.files.length; i++) {
-        data.append("Files", input.files[i]);
-    }
-    for (var i = 0; i < edit_detail.length; i++) {
-        var detail = edit_detail[i];
-        delete detail['Product'];
-        delete detail['ProjectCode'];
-    }
-    var jsonStr = JSON.stringify(edit_detail);
-    data.append("JsonDetails", jsonStr);
-    console.log(data);
-    $.ajax({
-        type: "POST",
-        url: updateUrl,
-        contentType: false,
-        processData: false,
-        data: data,
-        success: function (result) {
-            console.log(result);
-            search();
-            $('#ActionOrder').modal('hide');
-        },
-        error: function (xhr, status, p3, p4) {
-            var err = "Error " + " " + status + " " + p3 + " " + p4;
-            if (xhr.responseText && xhr.responseText[0] == "{")
-                err = JSON.parse(xhr.responseText).Message;
-            console.log(err);
+    if (!isEmpty($('#edit_pr_no').val())) {
+        console.log(edit_detail);
+        var id = $('#edit_id').val();
+        const input = document.getElementById('edit_files');
+        var updateUrl = baseUrl + 'update/' + id;
+        var data = new FormData();
+        data.append("ProjectId", $('#edit_project').val());
+        data.append("PrNo", $('#edit_pr_no').val());
+        data.append("AdvancePay", $('#edit_advance_pay').prop('checked'));
+        data.append("ContractorId", $('#edit_contractor').val());
+        for (var i = 0; i < input.files.length; i++) {
+            data.append("Files", input.files[i]);
         }
-    });
+        for (var i = 0; i < edit_detail.length; i++) {
+            var detail = edit_detail[i];
+            delete detail['Product'];
+            delete detail['ProjectCode'];
+        }
+        var jsonStr = JSON.stringify(edit_detail);
+        data.append("JsonDetails", jsonStr);
+        console.log(data);
+        $.ajax({
+            type: "POST",
+            url: updateUrl,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                console.log(result);
+                alert('บันทึกสำเร็จ');
+                search();
+                $('#ActionOrder').modal('hide');
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                console.log(err);
+                alert('บันทึกไม่สำเร็จ');
+            }
+        });
+    } else {
+        alert('กรุณากรอกข้อมูลให้ครบ');
+        setBorderRed('edit_pr_no');
+    }
 });
 function cancel_pr(id, prno) {
     console.log(id, prno);
@@ -791,6 +811,7 @@ $('#cancel_btn').click(function () {
         contentType: false,
         processData: false,
         success: function (result) {
+            alert('บันทึกสำเร็จ');
             search();
             $('#ActionCancel').modal('hide');
         },
@@ -799,6 +820,7 @@ $('#cancel_btn').click(function () {
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).Message;
             console.log(err);
+            alert('บันทึกไม่สำเร็จ');
             $('#ActionCancel').modal('hide');
         }
     });
@@ -816,6 +838,7 @@ $('#read_pr_btn').click(function () {
         contentType: false,
         processData: false,
         success: function (result) {
+            alert('บันทึกสำเร็จ');
             search();
             $('#ActionApproveCancel').modal('hide');
         },
@@ -824,6 +847,7 @@ $('#read_pr_btn').click(function () {
             if (xhr.responseText && xhr.responseText[0] == "{")
                 err = JSON.parse(xhr.responseText).Message;
             console.log(err);
+            alert('บันทึกไม่สำเร็จ');
             $('#ActionApproveCancel').modal('hide');
         }
     });
@@ -835,7 +859,9 @@ $(document).ready(function () {
     bindProduct();
     createAutocomplete('ProjectId');
     createAutocomplete('add_project');
-    createAutocomplete('edit_project');
+    editProject = createAutocomplete('edit_project');
+    checkTextInput('add_pr_no');
+    checkTextInput('edit_pr_no');
     $('#add_files').fileinput({
         language: "th",
         showUpload: false
