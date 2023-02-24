@@ -104,7 +104,11 @@ function createAutocomplete(id) {
     try {
         const sortingchoices = new Choices(sorting, {
             placeholder: false,
-            itemSelectText: ''
+            itemSelectText: '',
+            sorter: function(a, b) {
+                //return b.label.length - a.label.length;
+                return b.label == 'ทั้งหมด' ? 99999 : a.label == 'ทั้งหมด' ? -99999 : a.label < b.label ? -1 : 1;
+            }
         });
         let sortingClass = sorting.getAttribute('class');
         sorting.parentElement.setAttribute('class', sortingClass);
